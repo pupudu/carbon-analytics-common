@@ -33,64 +33,62 @@ import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
  * via Carbon AuthenticationService
  */
 public class CarbonAuthenticationHandler implements AuthenticationHandler {
-    private AuthenticationService authenticationService;
-    private static final Log log = LogFactory.getLog(CarbonAuthenticationHandler.class);
+	private AuthenticationService authenticationService;
+	private static final Log log = LogFactory.getLog(CarbonAuthenticationHandler.class);
 
+	public CarbonAuthenticationHandler(AuthenticationService authenticationService) {
+		this.authenticationService = authenticationService;
+	}
 
-    public CarbonAuthenticationHandler(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
-    }
+	public boolean authenticate(String userName, String password) {
+		PrivilegedCarbonContext privilegedCarbonContext =
+				PrivilegedCarbonContext.getThreadLocalCarbonContext();
+		if (privilegedCarbonContext.getTenantDomain() == null) {
+			privilegedCarbonContext.setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
+			privilegedCarbonContext.setTenantId(MultitenantConstants.SUPER_TENANT_ID);
+		}
+		boolean authenticated = authenticationService.authenticate(userName, password);
+		if (authenticated) {
 
-    public boolean authenticate(String userName, String password) {
-        PrivilegedCarbonContext privilegedCarbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
-        if (privilegedCarbonContext.getTenantDomain() == null) {
-            privilegedCarbonContext.setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
-            privilegedCarbonContext.setTenantId(MultitenantConstants.SUPER_TENANT_ID);
-        }
-        boolean authenticated = authenticationService.authenticate(userName, password);
-        if (authenticated) {
+			String tenantDomain = MultitenantUtils.getTenantDomain(userName);
 
-            String tenantDomain = MultitenantUtils.getTenantDomain(userName);
+			// Load tenant : This is needed because we have removed ActivationHandler,
+			// which did the tenant loading part earlier with login. So we load tenant after successful login
+			try {
+				if (!MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
+					TenantAxisUtils.getTenantConfigurationContext(tenantDomain,
+					                                              DataBridgeServiceValueHolder.
+							                                                                          getConfigurationContextService()
+					                                                                          .
+							                                                                          getServerConfigContext());
+				}
+			} catch (Exception e) {
+				log.error("Error trying load tenant after successful login", e);
+			}
+		}
+		return authenticated;
+	}
 
-            // Load tenant : This is needed because we have removed ActivationHandler,
-            // which did the tenant loading part earlier with login. So we load tenant after successful login
-            try {
-                if (!MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
-                    TenantAxisUtils.getTenantConfigurationContext(tenantDomain,
-                            DataBridgeServiceValueHolder.
-                                    getConfigurationContextService().
-                                    getServerConfigContext()
-                    );
-                }
-            } catch (Exception e) {
-                log.error("Error trying load tenant after successful login", e);
-            }
-        }
-        return authenticated;
-    }
+	@Override public String getTenantDomain(String userName) {
+		return MultitenantUtils.getTenantDomain(userName);
+	}
 
-    @Override
-    public String getTenantDomain(String userName) {
-        return MultitenantUtils.getTenantDomain(userName);
-    }
+	@Override public int getTenantId(String tenantDomain) throws UserStoreException {
+		return DataBridgeServiceValueHolder.getRealmService().getTenantManager()
+		                                   .getTenantId(tenantDomain);
+	}
 
-    @Override
-    public int getTenantId(String tenantDomain) throws UserStoreException {
-        return DataBridgeServiceValueHolder.getRealmService().getTenantManager().getTenantId(tenantDomain);
-    }
+	@Override public void initContext(AgentSession agentSession) {
+		int tenantId = agentSession.getCredentials().getTenantId();
+		PrivilegedCarbonContext.startTenantFlow();
+		PrivilegedCarbonContext privilegedCarbonContext =
+				PrivilegedCarbonContext.getThreadLocalCarbonContext();
+		privilegedCarbonContext.setTenantId(tenantId);
+		privilegedCarbonContext.setTenantDomain(agentSession.getDomainName());
+	}
 
-    @Override
-    public void initContext(AgentSession agentSession) {
-        int tenantId = agentSession.getCredentials().getTenantId();
-        PrivilegedCarbonContext.startTenantFlow();
-        PrivilegedCarbonContext privilegedCarbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
-        privilegedCarbonContext.setTenantId(tenantId);
-        privilegedCarbonContext.setTenantDomain(agentSession.getDomainName());
-    }
-
-    @Override
-    public void destroyContext(AgentSession agentSession) {
-        PrivilegedCarbonContext.endTenantFlow();
-    }
+	@Override public void destroyContext(AgentSession agentSession) {
+		PrivilegedCarbonContext.endTenantFlow();
+	}
 
 }

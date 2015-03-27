@@ -22,26 +22,26 @@ package org.wso2.carbon.databridge.agent.thrift.exception;
 
 public class EventPublisherException extends Exception {
 
-    private String errorMessage;
+	private String errorMessage;
 
-    public EventPublisherException() {
-    }
+	public EventPublisherException() {
+	}
 
-    public EventPublisherException(String message) {
-        super(message);
-        errorMessage = message;
-    }
+	public EventPublisherException(String message) {
+		super(message);
+		errorMessage = message;
+	}
 
-    public EventPublisherException(String message, Throwable cause) {
-        super(message, cause);
-        errorMessage = message;
-    }
+	public EventPublisherException(String message, Throwable cause) {
+		super(message, cause);
+		errorMessage = message;
+	}
 
-    public EventPublisherException(Throwable cause) {
-        super(cause);
-    }
+	public EventPublisherException(Throwable cause) {
+		super(cause);
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

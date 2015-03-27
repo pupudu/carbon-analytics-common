@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.databridge.agent.thrift.internal.publisher.client;
-
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,135 +40,139 @@ import java.util.concurrent.ThreadPoolExecutor;
  * The publisher who sends all the arrived events to the Agent Server using a pool of threads
  */
 public class ThriftEventPublisher extends EventPublisher {
-    private static Log log = LogFactory.getLog(ThriftEventPublisher.class);
+	private static Log log = LogFactory.getLog(ThriftEventPublisher.class);
 
-    public ThriftEventPublisher(EventQueue<Event> eventQueue, GenericKeyedObjectPool transportPool,
-                                Semaphore queueSemaphore, int maxMessageBundleSize,
-                                DataPublisherConfiguration dataPublisherConfiguration,
-                                AgentAuthenticator agentAuthenticator,
-                                ThreadPoolExecutor threadPool) {
-        super(eventQueue, transportPool, queueSemaphore, maxMessageBundleSize, dataPublisherConfiguration, agentAuthenticator, threadPool);
-    }
+	public ThriftEventPublisher(EventQueue<Event> eventQueue, GenericKeyedObjectPool transportPool,
+	                            Semaphore queueSemaphore, int maxMessageBundleSize,
+	                            DataPublisherConfiguration dataPublisherConfiguration,
+	                            AgentAuthenticator agentAuthenticator,
+	                            ThreadPoolExecutor threadPool) {
+		super(eventQueue, transportPool, queueSemaphore, maxMessageBundleSize,
+		      dataPublisherConfiguration, agentAuthenticator, threadPool);
+	}
 
-    @Override
-    protected int getNumberOfEvents(Object eventBundle) {
-        return ((ThriftEventBundle) eventBundle).getEventNum();
-    }
+	@Override protected int getNumberOfEvents(Object eventBundle) {
+		return ((ThriftEventBundle) eventBundle).getEventNum();
+	}
 
+	@Override protected ThriftEventBundle convertToEventBundle(Object eventBundle, Event event,
+	                                                           String sessionId) {
+		return ThriftEventConverter.
+				                           toThriftEventBundle(event,
+				                                               (ThriftEventBundle) eventBundle,
+				                                               sessionId);
+	}
 
-    @Override
-    protected ThriftEventBundle convertToEventBundle(Object eventBundle, Event event,
-                                                     String sessionId) {
-        return ThriftEventConverter.
-                toThriftEventBundle(event, (ThriftEventBundle) eventBundle, sessionId);
-    }
+	@Override protected void setSessionId(Object eventBundle, String sessionId) {
+		((ThriftEventBundle) eventBundle).setSessionId(sessionId);
+	}
 
-    @Override
-    protected void setSessionId(Object eventBundle, String sessionId) {
-        ((ThriftEventBundle) eventBundle).setSessionId(sessionId);
-    }
+	@Override protected String getSessionId(Object eventBundle) {
+		return ((ThriftEventBundle) eventBundle).getSessionId();
+	}
 
-    @Override
-    protected String getSessionId(Object eventBundle) {
-        return ((ThriftEventBundle) eventBundle).getSessionId();
-    }
+	@Override void publish(Object client, Object eventBundle)
+			throws UndefinedEventTypeException, SessionTimeoutException, EventPublisherException {
+		try {
+			if (client instanceof ThriftSecureEventTransmissionService.Client) {
+				((ThriftSecureEventTransmissionService.Client) client)
+						.publish((ThriftEventBundle) eventBundle);
+			} else {
+				((ThriftEventTransmissionService.Client) client)
+						.publish((ThriftEventBundle) eventBundle);
+			}
+		} catch (ThriftUndefinedEventTypeException e) {
+			throw new UndefinedEventTypeException("Thrift Undefined Event Type Exception ", e);
+		} catch (ThriftSessionExpiredException e) {
+			throw new SessionTimeoutException("Thrift Session Expired Exception ", e);
+		} catch (TException e) {
+			throw new EventPublisherException("Cannot send Events", e);
+		}
 
+	}
 
-    @Override
-    void publish(Object client, Object eventBundle)
-            throws UndefinedEventTypeException, SessionTimeoutException, EventPublisherException {
-        try {
-            if (client instanceof ThriftSecureEventTransmissionService.Client) {
-                ((ThriftSecureEventTransmissionService.Client) client).publish((ThriftEventBundle) eventBundle);
-            } else {
-                ((ThriftEventTransmissionService.Client) client).publish((ThriftEventBundle) eventBundle);
-            }
-        } catch (ThriftUndefinedEventTypeException e) {
-            throw new UndefinedEventTypeException("Thrift Undefined Event Type Exception ", e);
-        } catch (ThriftSessionExpiredException e) {
-            throw new SessionTimeoutException("Thrift Session Expired Exception ", e);
-        } catch (TException e) {
-            throw new EventPublisherException("Cannot send Events", e);
-        }
+	@Override protected String defineStream(Object client, String sessionId,
+	                                        String streamDefinition)
+			throws DifferentStreamDefinitionAlreadyDefinedException,
+			       MalformedStreamDefinitionException, EventPublisherException,
+			       SessionTimeoutException, StreamDefinitionException {
+		try {
+			if (client instanceof ThriftSecureEventTransmissionService.Client) {
+				return ((ThriftSecureEventTransmissionService.Client) client)
+						.defineStream(sessionId, streamDefinition);
+			} else {
+				return ((ThriftEventTransmissionService.Client) client)
+						.defineStream(sessionId, streamDefinition);
+			}
+		} catch (ThriftDifferentStreamDefinitionAlreadyDefinedException e) {
+			throw new DifferentStreamDefinitionAlreadyDefinedException(
+					"Thrift Different Stream Definition Already Defined ", e);
+		} catch (ThriftMalformedStreamDefinitionException e) {
+			throw new MalformedStreamDefinitionException("Malformed Stream Definition ", e);
+		} catch (ThriftStreamDefinitionException e) {
+			throw new StreamDefinitionException("Thrift Stream Definition Exception ", e);
+		} catch (ThriftSessionExpiredException e) {
+			throw new SessionTimeoutException("Session Expired ", e);
+		} catch (TException e) {
+			throw new EventPublisherException("TException ", e);
+		}
+	}
 
-    }
+	@Override protected String findStreamId(Object client, String currentSessionId, String name,
+	                                        String version)
+			throws SessionTimeoutException, EventPublisherException {
+		try {
+			if (client instanceof ThriftSecureEventTransmissionService.Client) {
+				return ((ThriftSecureEventTransmissionService.Client) client)
+						.findStreamId(currentSessionId, name, version);
+			} else {
+				return ((ThriftEventTransmissionService.Client) client)
+						.findStreamId(currentSessionId, name, version);
+			}
+		} catch (ThriftSessionExpiredException e) {
+			throw new SessionTimeoutException("Session Expired ", e);
+		} catch (TException e) {
+			throw new EventPublisherException("Thrift Exception", e);
+		} catch (ThriftNoStreamDefinitionExistException e) {
+			//this is used as Thrift cannot send null values
+			return null;
+		}
+	}
 
+	@Override protected boolean deleteStream(Object client, String currentSessionId,
+	                                         String streamId)
+			throws EventPublisherException, SessionTimeoutException {
+		try {
+			if (client instanceof ThriftSecureEventTransmissionService.Client) {
+				return ((ThriftSecureEventTransmissionService.Client) client)
+						.deleteStreamById(currentSessionId, streamId);
+			} else {
+				return ((ThriftEventTransmissionService.Client) client)
+						.deleteStreamById(currentSessionId, streamId);
+			}
+		} catch (TException e) {
+			throw new EventPublisherException("Thrift Exception", e);
+		} catch (ThriftSessionExpiredException e) {
+			throw new SessionTimeoutException("Session Expired ", e);
+		}
+	}
 
-    @Override
-    protected String defineStream(Object client, String sessionId,
-                                       String streamDefinition)
-            throws DifferentStreamDefinitionAlreadyDefinedException,
-                   MalformedStreamDefinitionException, EventPublisherException,
-                   SessionTimeoutException, StreamDefinitionException {
-        try {
-            if (client instanceof ThriftSecureEventTransmissionService.Client) {
-                return ((ThriftSecureEventTransmissionService.Client) client).defineStream(sessionId, streamDefinition);
-            } else {
-                return ((ThriftEventTransmissionService.Client) client).defineStream(sessionId, streamDefinition);
-            }
-        } catch (ThriftDifferentStreamDefinitionAlreadyDefinedException e) {
-            throw new DifferentStreamDefinitionAlreadyDefinedException("Thrift Different Stream Definition Already Defined ", e);
-        } catch (ThriftMalformedStreamDefinitionException e) {
-            throw new MalformedStreamDefinitionException("Malformed Stream Definition ", e);
-        } catch (ThriftStreamDefinitionException e) {
-            throw new StreamDefinitionException("Thrift Stream Definition Exception ", e);
-        } catch (ThriftSessionExpiredException e) {
-            throw new SessionTimeoutException("Session Expired ", e);
-        } catch (TException e) {
-            throw new EventPublisherException("TException ", e);
-        }
-    }
-
-    @Override
-    protected String findStreamId(Object client, String currentSessionId, String name,
-                                       String version)
-            throws SessionTimeoutException,
-                   EventPublisherException {
-        try {
-            if (client instanceof ThriftSecureEventTransmissionService.Client) {
-                return ((ThriftSecureEventTransmissionService.Client) client).findStreamId(currentSessionId, name, version);
-            } else {
-                return ((ThriftEventTransmissionService.Client) client).findStreamId(currentSessionId, name, version);
-            }
-        } catch (ThriftSessionExpiredException e) {
-            throw new SessionTimeoutException("Session Expired ", e);
-        } catch (TException e) {
-            throw new EventPublisherException("Thrift Exception", e);
-        } catch (ThriftNoStreamDefinitionExistException e) {
-            //this is used as Thrift cannot send null values
-            return null;
-        }
-    }
-
-    @Override
-    protected boolean deleteStream(Object client, String currentSessionId, String streamId) throws EventPublisherException, SessionTimeoutException {
-        try {
-            if (client instanceof ThriftSecureEventTransmissionService.Client) {
-                return ((ThriftSecureEventTransmissionService.Client) client).deleteStreamById(currentSessionId, streamId);
-            } else {
-                return ((ThriftEventTransmissionService.Client) client).deleteStreamById(currentSessionId, streamId);
-            }
-        } catch (TException e) {
-            throw new EventPublisherException("Thrift Exception", e);
-        } catch (ThriftSessionExpiredException e) {
-            throw new SessionTimeoutException("Session Expired ", e);
-        }
-    }
-
-    @Override
-    protected boolean deleteStream(Object client, String currentSessionId, String streamName, String streamVersion) throws EventPublisherException, SessionTimeoutException {
-        try {
-            if (client instanceof ThriftSecureEventTransmissionService.Client) {
-                return ((ThriftSecureEventTransmissionService.Client) client).deleteStreamByNameVersion(currentSessionId, streamName, streamVersion);
-            } else {
-                return ((ThriftEventTransmissionService.Client) client).deleteStreamByNameVersion(currentSessionId, streamName, streamVersion);
-            }
-        } catch (TException e) {
-            throw new EventPublisherException("Thrift Exception", e);
-        } catch (ThriftSessionExpiredException e) {
-            throw new SessionTimeoutException("Session Expired ", e);
-        }
-    }
-
+	@Override protected boolean deleteStream(Object client, String currentSessionId,
+	                                         String streamName, String streamVersion)
+			throws EventPublisherException, SessionTimeoutException {
+		try {
+			if (client instanceof ThriftSecureEventTransmissionService.Client) {
+				return ((ThriftSecureEventTransmissionService.Client) client)
+						.deleteStreamByNameVersion(currentSessionId, streamName, streamVersion);
+			} else {
+				return ((ThriftEventTransmissionService.Client) client)
+						.deleteStreamByNameVersion(currentSessionId, streamName, streamVersion);
+			}
+		} catch (TException e) {
+			throw new EventPublisherException("Thrift Exception", e);
+		} catch (ThriftSessionExpiredException e) {
+			throw new SessionTimeoutException("Session Expired ", e);
+		}
+	}
 
 }

@@ -18,54 +18,52 @@ import org.wso2.carbon.databridge.commons.Credentials;
  * limitations under the License.
  */
 public class SessionBean {
-    private Credentials credentials;
-    private String sessionId;
+	private Credentials credentials;
+	private String sessionId;
 
-    public SessionBean(String sessionId) {
-        this.sessionId = sessionId;
-    }
+	public SessionBean(String sessionId) {
+		this.sessionId = sessionId;
+	}
 
-    public SessionBean(String sessionId, Credentials credentials) {
-        this.credentials = credentials;
-        this.sessionId = sessionId;
-    }
+	public SessionBean(String sessionId, Credentials credentials) {
+		this.credentials = credentials;
+		this.sessionId = sessionId;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+	@Override public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
-        SessionBean that = (SessionBean) o;
+		SessionBean that = (SessionBean) o;
 
-        if (sessionId != null ? !sessionId.equals(that.sessionId) : that.sessionId != null) {
-            return false;
-        }
+		if (sessionId != null ? !sessionId.equals(that.sessionId) : that.sessionId != null) {
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public int hashCode() {
-        return sessionId != null ? sessionId.hashCode() : 0;
-    }
+	@Override public int hashCode() {
+		return sessionId != null ? sessionId.hashCode() : 0;
+	}
 
-    public Credentials getCredentials() {
-        return credentials;
-    }
+	public Credentials getCredentials() {
+		return credentials;
+	}
 
-    public void setCredentials(Credentials credentials) {
-        this.credentials = credentials;
-    }
+	public void setCredentials(Credentials credentials) {
+		this.credentials = credentials;
+	}
 
-    public String getSessionId() {
-        return sessionId;
-    }
+	public String getSessionId() {
+		return sessionId;
+	}
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
 }

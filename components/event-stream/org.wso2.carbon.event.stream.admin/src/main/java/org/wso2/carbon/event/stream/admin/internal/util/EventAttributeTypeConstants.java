@@ -22,28 +22,28 @@ import java.util.Map;
 
 public final class EventAttributeTypeConstants {
 
-    private EventAttributeTypeConstants() {
-    }
+	private EventAttributeTypeConstants() {
+	}
 
-    public static final String ATTR_TYPE_FLOAT = "float";
-    public static final String ATTR_TYPE_DOUBLE = "double";
-    public static final String ATTR_TYPE_INTEGER = "int";
-    public static final String ATTR_TYPE_LONG = "long";
-    public static final String ATTR_TYPE_STRING = "string";
-    public static final String ATTR_TYPE_BOOL = "boolean";
+	public static final String ATTR_TYPE_FLOAT = "float";
+	public static final String ATTR_TYPE_DOUBLE = "double";
+	public static final String ATTR_TYPE_INTEGER = "int";
+	public static final String ATTR_TYPE_LONG = "long";
+	public static final String ATTR_TYPE_STRING = "string";
+	public static final String ATTR_TYPE_BOOL = "boolean";
 
+	public static final Map<String, AttributeType> STRING_ATTRIBUTE_TYPE_MAP =
+			Collections.unmodifiableMap(new HashMap<String, AttributeType>() {{
+				put(ATTR_TYPE_BOOL, AttributeType.BOOL);
+				put(ATTR_TYPE_STRING, AttributeType.STRING);
+				put(ATTR_TYPE_DOUBLE, AttributeType.DOUBLE);
+				put(ATTR_TYPE_FLOAT, AttributeType.FLOAT);
+				put(ATTR_TYPE_INTEGER, AttributeType.INT);
+				put(ATTR_TYPE_LONG, AttributeType.LONG);
+			}});
 
-    public static final Map<String, AttributeType> STRING_ATTRIBUTE_TYPE_MAP = Collections.unmodifiableMap(new HashMap<String, AttributeType>() {{
-        put(ATTR_TYPE_BOOL, AttributeType.BOOL);
-        put(ATTR_TYPE_STRING, AttributeType.STRING);
-        put(ATTR_TYPE_DOUBLE, AttributeType.DOUBLE);
-        put(ATTR_TYPE_FLOAT, AttributeType.FLOAT);
-        put(ATTR_TYPE_INTEGER, AttributeType.INT);
-        put(ATTR_TYPE_LONG, AttributeType.LONG);
-    }});
-
-    public static final String xmlEvent = "xml";
-    public static final String jsonEvent = "json";
-    public static final String textEvent = "text";
+	public static final String xmlEvent = "xml";
+	public static final String jsonEvent = "json";
+	public static final String textEvent = "text";
 
 }

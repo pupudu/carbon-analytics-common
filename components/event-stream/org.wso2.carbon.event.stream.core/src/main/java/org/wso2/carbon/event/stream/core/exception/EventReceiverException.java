@@ -19,18 +19,18 @@ package org.wso2.carbon.event.stream.core.exception;
  */
 public class EventReceiverException extends RuntimeException {
 
-    public EventReceiverException() {
-    }
+	public EventReceiverException() {
+	}
 
-    public EventReceiverException(String message) {
-        super(message);
-    }
+	public EventReceiverException(String message) {
+		super(message);
+	}
 
-    public EventReceiverException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public EventReceiverException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public EventReceiverException(Throwable cause) {
-        super(cause);
-    }
+	public EventReceiverException(Throwable cause) {
+		super(cause);
+	}
 }

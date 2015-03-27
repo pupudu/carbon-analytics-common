@@ -27,8 +27,8 @@ import org.apache.commons.pool.impl.GenericKeyedObjectPool;
  */
 public class AgentAuthenticatorFactory {
 
-    public static AgentAuthenticator getAgentAuthenticator(
-            GenericKeyedObjectPool secureTransportPool) {
-        return new ThriftAgentAuthenticator(secureTransportPool);
-    }
+	public static AgentAuthenticator getAgentAuthenticator(
+			GenericKeyedObjectPool secureTransportPool) {
+		return new ThriftAgentAuthenticator(secureTransportPool);
+	}
 }

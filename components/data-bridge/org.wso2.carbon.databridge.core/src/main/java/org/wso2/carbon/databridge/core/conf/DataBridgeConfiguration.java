@@ -19,8 +19,6 @@
  */
 package org.wso2.carbon.databridge.core.conf;
 
-import org.wso2.carbon.databridge.core.internal.utils.DataBridgeConstants;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
@@ -28,56 +26,51 @@ import java.util.List;
 /**
  * configuration details related to DataReceiver
  */
-@XmlRootElement(name = "dataBridgeConfiguration")
-public class DataBridgeConfiguration {
+@XmlRootElement(name = "dataBridgeConfiguration") public class DataBridgeConfiguration {
 
-    private List<DataReceiver> dataReceivers;
-    private int workerThreads;
-    private int eventBufferCapacity;
-    private int clientTimeoutMin;
+	private List<DataReceiver> dataReceivers;
+	private int workerThreads;
+	private int eventBufferCapacity;
+	private int clientTimeoutMin;
 
-    @XmlElement(name = "dataReceiver")
-    public List<DataReceiver> getDataReceivers() {
-        return dataReceivers;
-    }
+	@XmlElement(name = "dataReceiver") public List<DataReceiver> getDataReceivers() {
+		return dataReceivers;
+	}
 
-    public void setDataReceivers(List<DataReceiver> dataReceivers) {
-        this.dataReceivers = dataReceivers;
-    }
+	public void setDataReceivers(List<DataReceiver> dataReceivers) {
+		this.dataReceivers = dataReceivers;
+	}
 
-    @XmlElement(name = "workerThreads")
-    public int getWorkerThreads() {
-        return workerThreads;
-    }
+	@XmlElement(name = "workerThreads") public int getWorkerThreads() {
+		return workerThreads;
+	}
 
-    public void setWorkerThreads(int workerThreads) {
-        this.workerThreads = workerThreads;
-    }
+	public void setWorkerThreads(int workerThreads) {
+		this.workerThreads = workerThreads;
+	}
 
-    @XmlElement(name = "eventBufferCapacity")
-    public int getEventBufferCapacity() {
-        return eventBufferCapacity;
-    }
+	@XmlElement(name = "eventBufferCapacity") public int getEventBufferCapacity() {
+		return eventBufferCapacity;
+	}
 
-    public void setEventBufferCapacity(int eventBufferCapacity) {
-        this.eventBufferCapacity = eventBufferCapacity;
-    }
+	public void setEventBufferCapacity(int eventBufferCapacity) {
+		this.eventBufferCapacity = eventBufferCapacity;
+	}
 
-    @XmlElement(name = "clientTimeoutMin")
-    public int getClientTimeoutMin() {
-        return clientTimeoutMin;
-    }
+	@XmlElement(name = "clientTimeoutMin") public int getClientTimeoutMin() {
+		return clientTimeoutMin;
+	}
 
-    public void setClientTimeoutMin(int clientTimeoutMin) {
-        this.clientTimeoutMin = clientTimeoutMin;
-    }
+	public void setClientTimeoutMin(int clientTimeoutMin) {
+		this.clientTimeoutMin = clientTimeoutMin;
+	}
 
-    public DataReceiver getDataReceiver(String name){
-        for (DataReceiver dataReceiver: dataReceivers){
-            if (dataReceiver.getName().equalsIgnoreCase(name)){
-                return dataReceiver;
-            }
-        }
-        return null;
-    }
+	public DataReceiver getDataReceiver(String name) {
+		for (DataReceiver dataReceiver : dataReceivers) {
+			if (dataReceiver.getName().equalsIgnoreCase(name)) {
+				return dataReceiver;
+			}
+		}
+		return null;
+	}
 }

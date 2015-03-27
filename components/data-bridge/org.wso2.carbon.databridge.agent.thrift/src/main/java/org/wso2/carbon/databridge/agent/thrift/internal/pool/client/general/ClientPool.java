@@ -18,45 +18,40 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.databridge.agent.thrift.internal.pool.client.general;
-
 
 import org.apache.commons.pool.KeyedPoolableObjectFactory;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
 
 public class ClientPool {
 
-    private volatile GenericKeyedObjectPool socketPool = null;
+	private volatile GenericKeyedObjectPool socketPool = null;
 
-    public GenericKeyedObjectPool getClientPool(KeyedPoolableObjectFactory factory,
-                                                       int maxActive,
-                                                       int maxIdle,
-                                                       boolean testOnBorrow,
-                                                       long timeBetweenEvictionRunsMillis,
-                                                       long minEvictableIdleTimeMillis) {
-        if (socketPool == null) {
-            synchronized (ClientPool.class) {
-                if (socketPool == null) {
-                    socketPool = new GenericKeyedObjectPoolImpl();
-                    socketPool.setFactory(factory);
-                    socketPool.setMaxActive(maxActive);
-                    socketPool.setTestOnBorrow(testOnBorrow);
-                    socketPool.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
-                    socketPool.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
-                    socketPool.setMaxIdle(maxIdle);
-                    socketPool.setWhenExhaustedAction(GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW);
-                }
-            }
-        }
-        return socketPool;
-    }
+	public GenericKeyedObjectPool getClientPool(KeyedPoolableObjectFactory factory, int maxActive,
+	                                            int maxIdle, boolean testOnBorrow,
+	                                            long timeBetweenEvictionRunsMillis,
+	                                            long minEvictableIdleTimeMillis) {
+		if (socketPool == null) {
+			synchronized (ClientPool.class) {
+				if (socketPool == null) {
+					socketPool = new GenericKeyedObjectPoolImpl();
+					socketPool.setFactory(factory);
+					socketPool.setMaxActive(maxActive);
+					socketPool.setTestOnBorrow(testOnBorrow);
+					socketPool.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
+					socketPool.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
+					socketPool.setMaxIdle(maxIdle);
+					socketPool.setWhenExhaustedAction(GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW);
+				}
+			}
+		}
+		return socketPool;
+	}
 
-    static class GenericKeyedObjectPoolImpl extends GenericKeyedObjectPool {
-        @Override
-        public void close() throws Exception {
-            super.close();
-        }
-    }
+	static class GenericKeyedObjectPoolImpl extends GenericKeyedObjectPool {
+		@Override public void close() throws Exception {
+			super.close();
+		}
+	}
 
 }

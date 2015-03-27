@@ -22,100 +22,98 @@ import org.wso2.carbon.databridge.agent.util.DataEndpointConstants;
 
 public class DataEndpointConfiguration {
 
-    private String receiverURL;
+	private String receiverURL;
 
-    private String authURL;
+	private String authURL;
 
-    private String username;
+	private String username;
 
-    private String password;
+	private String password;
 
-    private GenericKeyedObjectPool transportPool;
+	private GenericKeyedObjectPool transportPool;
 
-    private GenericKeyedObjectPool securedTransportPool;
+	private GenericKeyedObjectPool securedTransportPool;
 
-    private int batchSize;
+	private int batchSize;
 
-    private String publisherKey;
+	private String publisherKey;
 
-    private String authKey;
+	private String authKey;
 
-    private String sessionId;
+	private String sessionId;
 
-    public enum Protocol {
-        TCP, SSL;
+	public enum Protocol {
+		TCP, SSL;
 
-        @Override
-        public String toString() {
-            return super.toString().toLowerCase();
-        }
-    }
+		@Override public String toString() {
+			return super.toString().toLowerCase();
+		}
+	}
 
-    public DataEndpointConfiguration(String receiverURL, String authURL, String username, String password,
-                                     GenericKeyedObjectPool transportPool,
-                                     GenericKeyedObjectPool securedTransportPool,
-                                     int batchSize) {
-        this.receiverURL = receiverURL;
-        this.authURL = authURL;
-        this.username = username;
-        this.password = password;
-        this.transportPool = transportPool;
-        this.securedTransportPool = securedTransportPool;
-        this.publisherKey = this.receiverURL + DataEndpointConstants.SEPARATOR + username +
-                DataEndpointConstants.SEPARATOR + password;
-        this.authKey = this.authURL + DataEndpointConstants.SEPARATOR + username +
-                DataEndpointConstants.SEPARATOR + password;
-        this.batchSize = batchSize;
-    }
+	public DataEndpointConfiguration(String receiverURL, String authURL, String username,
+	                                 String password, GenericKeyedObjectPool transportPool,
+	                                 GenericKeyedObjectPool securedTransportPool, int batchSize) {
+		this.receiverURL = receiverURL;
+		this.authURL = authURL;
+		this.username = username;
+		this.password = password;
+		this.transportPool = transportPool;
+		this.securedTransportPool = securedTransportPool;
+		this.publisherKey = this.receiverURL + DataEndpointConstants.SEPARATOR + username +
+		                    DataEndpointConstants.SEPARATOR + password;
+		this.authKey = this.authURL + DataEndpointConstants.SEPARATOR + username +
+		               DataEndpointConstants.SEPARATOR + password;
+		this.batchSize = batchSize;
+	}
 
-    public String getReceiverURL() {
-        return receiverURL;
-    }
+	public String getReceiverURL() {
+		return receiverURL;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public String getAuthURL() {
-        return authURL;
-    }
+	public String getAuthURL() {
+		return authURL;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public String toString() {
-        return "ReceiverURL: " + receiverURL + "," +
-                "Authentication URL: " + authURL + "," +
-                "Username: " + username;
-    }
+	public String toString() {
+		return "ReceiverURL: " + receiverURL + "," +
+		       "Authentication URL: " + authURL + "," +
+		       "Username: " + username;
+	}
 
-    public String getPublisherKey() {
-        return publisherKey;
-    }
+	public String getPublisherKey() {
+		return publisherKey;
+	}
 
-    public String getAuthKey() {
-        return authKey;
-    }
+	public String getAuthKey() {
+		return authKey;
+	}
 
-    public String getSessionId() {
-        return sessionId;
-    }
+	public String getSessionId() {
+		return sessionId;
+	}
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
 
-    public GenericKeyedObjectPool getTransportPool() {
-        return transportPool;
-    }
+	public GenericKeyedObjectPool getTransportPool() {
+		return transportPool;
+	}
 
-    public GenericKeyedObjectPool getSecuredTransportPool() {
-        return securedTransportPool;
-    }
+	public GenericKeyedObjectPool getSecuredTransportPool() {
+		return securedTransportPool;
+	}
 
-    public int getBatchSize() {
-        return batchSize;
-    }
+	public int getBatchSize() {
+		return batchSize;
+	}
 }
 

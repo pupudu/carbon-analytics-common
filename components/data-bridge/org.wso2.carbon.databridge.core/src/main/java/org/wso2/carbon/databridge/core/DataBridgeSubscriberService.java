@@ -23,24 +23,22 @@ import java.util.List;
 
 public interface DataBridgeSubscriberService extends StreamDefinitionStore {
 
+	/**
+	 * CEP/BAM can subscribe for Event Streams
+	 *
+	 * @param agentCallback callbacks of the subscribers
+	 */
+	public void subscribe(AgentCallback agentCallback);
 
-    /**
-     * CEP/BAM can subscribe for Event Streams
-     *
-     * @param agentCallback callbacks of the subscribers
-     */
-    public void subscribe(AgentCallback agentCallback);
+	/**
+	 * CEP/BAM can subscribe for Raw Event Streams
+	 *
+	 * @param agentCallback callbacks of the subscribers
+	 */
+	public void subscribe(RawDataAgentCallback agentCallback);
 
-    /**
-     * CEP/BAM can subscribe for Raw Event Streams
-     *
-     * @param agentCallback callbacks of the subscribers
-     */
-    public void subscribe(RawDataAgentCallback agentCallback);
+	public List<AgentCallback> getSubscribers();
 
-    public List<AgentCallback> getSubscribers();
-
-    public List<RawDataAgentCallback> getRawDataSubscribers();
-
+	public List<RawDataAgentCallback> getRawDataSubscribers();
 
 }

@@ -18,30 +18,29 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.databridge.commons.exception;
 
 public class DifferentStreamDefinitionAlreadyDefinedException extends Exception {
-    private String errorMessage;
+	private String errorMessage;
 
-    public DifferentStreamDefinitionAlreadyDefinedException() {
-    }
+	public DifferentStreamDefinitionAlreadyDefinedException() {
+	}
 
-    public DifferentStreamDefinitionAlreadyDefinedException(String message) {
-        super(message);
-        errorMessage = message;
-    }
+	public DifferentStreamDefinitionAlreadyDefinedException(String message) {
+		super(message);
+		errorMessage = message;
+	}
 
-    public DifferentStreamDefinitionAlreadyDefinedException(String message, Throwable cause) {
-        super(message, cause);
-        errorMessage = message;
-    }
+	public DifferentStreamDefinitionAlreadyDefinedException(String message, Throwable cause) {
+		super(message, cause);
+		errorMessage = message;
+	}
 
-    public DifferentStreamDefinitionAlreadyDefinedException(Throwable cause) {
-        super(cause);
-    }
+	public DifferentStreamDefinitionAlreadyDefinedException(Throwable cause) {
+		super(cause);
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

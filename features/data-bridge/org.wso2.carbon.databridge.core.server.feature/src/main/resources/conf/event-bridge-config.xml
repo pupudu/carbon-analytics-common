@@ -16,14 +16,16 @@
 
 <eventBridgeConfiguration xmlns="http://wso2.org/carbon/databridge">
 
-    <StreamDefinitionStore>org.wso2.carbon.databridge.streamdefn.cassandra.datastore.CassandraStreamDefinitionStore</StreamDefinitionStore>
+    <StreamDefinitionStore>
+        org.wso2.carbon.databridge.streamdefn.cassandra.datastore.CassandraStreamDefinitionStore
+    </StreamDefinitionStore>
 
     <workerThreads>10</workerThreads>
     <eventBufferCapacity>10000</eventBufferCapacity>
     <clientTimeoutMS>30000</clientTimeoutMS>
 
     <thriftEventReceiver>
-    <!--<hostName>localhost</hostName>-->
+        <!--<hostName>localhost</hostName>-->
         <port>7611</port>
         <securePort>7711</securePort>
     </thriftEventReceiver>

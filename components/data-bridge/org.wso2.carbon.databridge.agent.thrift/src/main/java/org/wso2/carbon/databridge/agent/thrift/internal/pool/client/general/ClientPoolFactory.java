@@ -18,9 +18,7 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.databridge.agent.thrift.internal.pool.client.general;
-
 
 import org.apache.commons.pool.BaseKeyedPoolableObjectFactory;
 import org.apache.thrift.protocol.TBinaryProtocol;
@@ -39,44 +37,45 @@ import java.net.SocketException;
 
 public class ClientPoolFactory extends BaseKeyedPoolableObjectFactory {
 
-    @Override
-    public ThriftEventTransmissionService.Client makeObject(Object key) throws TTransportException {
-        String[] keyElements = key.toString().split(AgentConstants.SEPARATOR);
-        if (keyElements[0].equals(ReceiverConfiguration.Protocol.TCP.toString())) {
+	@Override public ThriftEventTransmissionService.Client makeObject(Object key)
+			throws TTransportException {
+		String[] keyElements = key.toString().split(AgentConstants.SEPARATOR);
+		if (keyElements[0].equals(ReceiverConfiguration.Protocol.TCP.toString())) {
 
-            String[] hostNameAndPort = keyElements[1].split(AgentConstants.HOSTNAME_AND_PORT_SEPARATOR);
+			String[] hostNameAndPort =
+					keyElements[1].split(AgentConstants.HOSTNAME_AND_PORT_SEPARATOR);
 
-            TTransport receiverTransport = null;
-            try {
-                receiverTransport = new TSocket(HostAddressFinder.findAddress(hostNameAndPort[0]),
-                                                           Integer.parseInt(hostNameAndPort[1]));
-            } catch (SocketException ignored) {
-                //already checked
-            }
-            TProtocol protocol = new TBinaryProtocol(receiverTransport);
-            ThriftEventTransmissionService.Client client = new ThriftEventTransmissionService.Client(protocol);
-            receiverTransport.open();
+			TTransport receiverTransport = null;
+			try {
+				receiverTransport = new TSocket(HostAddressFinder.findAddress(hostNameAndPort[0]),
+				                                Integer.parseInt(hostNameAndPort[1]));
+			} catch (SocketException ignored) {
+				//already checked
+			}
+			TProtocol protocol = new TBinaryProtocol(receiverTransport);
+			ThriftEventTransmissionService.Client client =
+					new ThriftEventTransmissionService.Client(protocol);
+			receiverTransport.open();
 
-            return client;
-        } else {
-            THttpClient client = new THttpClient("http://" + keyElements[1] + "/thriftReceiver");
-            TProtocol protocol = new TCompactProtocol(client);
-            ThriftEventTransmissionService.Client publisherClient = new ThriftEventTransmissionService.Client(protocol);
-            client.open();
-            return publisherClient;
-        }
-    }
+			return client;
+		} else {
+			THttpClient client = new THttpClient("http://" + keyElements[1] + "/thriftReceiver");
+			TProtocol protocol = new TCompactProtocol(client);
+			ThriftEventTransmissionService.Client publisherClient =
+					new ThriftEventTransmissionService.Client(protocol);
+			client.open();
+			return publisherClient;
+		}
+	}
 
-    @Override
-    public boolean validateObject(Object key, Object obj) {
-        ThriftEventTransmissionService.Client client = (ThriftEventTransmissionService.Client) obj;
-        return client.getOutputProtocol().getTransport().isOpen();
-    }
+	@Override public boolean validateObject(Object key, Object obj) {
+		ThriftEventTransmissionService.Client client = (ThriftEventTransmissionService.Client) obj;
+		return client.getOutputProtocol().getTransport().isOpen();
+	}
 
-    public void destroyObject(Object key, Object obj)  {
-      ThriftEventTransmissionService.Client client = (ThriftEventTransmissionService.Client) obj;
-      client.getOutputProtocol().getTransport().close();
-    }
-
+	public void destroyObject(Object key, Object obj) {
+		ThriftEventTransmissionService.Client client = (ThriftEventTransmissionService.Client) obj;
+		client.getOutputProtocol().getTransport().close();
+	}
 
 }

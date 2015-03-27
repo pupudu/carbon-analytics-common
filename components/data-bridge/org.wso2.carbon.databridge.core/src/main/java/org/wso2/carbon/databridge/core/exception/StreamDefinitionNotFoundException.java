@@ -20,26 +20,26 @@
 package org.wso2.carbon.databridge.core.exception;
 
 public class StreamDefinitionNotFoundException extends Exception {
-    private String errorMessage;
+	private String errorMessage;
 
-    public StreamDefinitionNotFoundException() {
-    }
+	public StreamDefinitionNotFoundException() {
+	}
 
-    public StreamDefinitionNotFoundException(String message) {
-        super(message);
-        errorMessage = message;
-    }
+	public StreamDefinitionNotFoundException(String message) {
+		super(message);
+		errorMessage = message;
+	}
 
-    public StreamDefinitionNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-        errorMessage = message;
-    }
+	public StreamDefinitionNotFoundException(String message, Throwable cause) {
+		super(message, cause);
+		errorMessage = message;
+	}
 
-    public StreamDefinitionNotFoundException(Throwable cause) {
-        super(cause);
-    }
+	public StreamDefinitionNotFoundException(Throwable cause) {
+		super(cause);
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

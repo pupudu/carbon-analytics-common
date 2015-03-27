@@ -19,11 +19,11 @@ package org.wso2.carbon.event.stream.core;
  */
 public interface SiddhiEventConsumer {
 
-    public String getStreamId();
+	public String getStreamId();
 
-    public void consumeEvents(org.wso2.siddhi.core.event.Event[] events);
+	public void consumeEvents(org.wso2.siddhi.core.event.Event[] events);
 
-    public void consumeEventData(Object[] data);
+	public void consumeEventData(Object[] data);
 
-    public void shutdown();
+	public void shutdown();
 }

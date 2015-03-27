@@ -18,30 +18,29 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.databridge.commons.exception;
 
 public class AuthenticationException extends Exception {
-    private String errorMessage;
+	private String errorMessage;
 
-    public AuthenticationException() {
-    }
+	public AuthenticationException() {
+	}
 
-    public AuthenticationException(String message) {
-        super(message);
-        errorMessage = message;
-    }
+	public AuthenticationException(String message) {
+		super(message);
+		errorMessage = message;
+	}
 
-    public AuthenticationException(String message, Throwable cause) {
-        super(message, cause);
-        errorMessage = message;
-    }
+	public AuthenticationException(String message, Throwable cause) {
+		super(message, cause);
+		errorMessage = message;
+	}
 
-    public AuthenticationException(Throwable cause) {
-        super(cause);
-    }
+	public AuthenticationException(Throwable cause) {
+		super(cause);
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

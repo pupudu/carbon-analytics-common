@@ -41,170 +41,166 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BinaryTestServer {
-    Logger log = Logger.getLogger(BinaryTestServer.class);
-    BinaryDataReceiver binaryDataReceiver;
-    InMemoryStreamDefinitionStore streamDefinitionStore;
-    AtomicInteger numberOfEventsReceived;
-    RestarterThread restarterThread;
+	Logger log = Logger.getLogger(BinaryTestServer.class);
+	BinaryDataReceiver binaryDataReceiver;
+	InMemoryStreamDefinitionStore streamDefinitionStore;
+	AtomicInteger numberOfEventsReceived;
+	RestarterThread restarterThread;
 
-    public void startTestServer() throws DataBridgeException, InterruptedException, IOException {
-        BinaryTestServer testServer = new BinaryTestServer();
-        testServer.start(9611, 9711);
-        Thread.sleep(100000000);
-        testServer.stop();
-    }
+	public void startTestServer() throws DataBridgeException, InterruptedException, IOException {
+		BinaryTestServer testServer = new BinaryTestServer();
+		testServer.start(9611, 9711);
+		Thread.sleep(100000000);
+		testServer.stop();
+	}
 
-    public void addStreamDefinition(StreamDefinition streamDefinition, int tenantId)
-            throws StreamDefinitionStoreException {
-        streamDefinitionStore.saveStreamDefinitionToStore(streamDefinition, tenantId);
-    }
+	public void addStreamDefinition(StreamDefinition streamDefinition, int tenantId)
+			throws StreamDefinitionStoreException {
+		streamDefinitionStore.saveStreamDefinitionToStore(streamDefinition, tenantId);
+	}
 
-    public void addStreamDefinition(String streamDefinitionStr, int tenantId)
-            throws StreamDefinitionStoreException, MalformedStreamDefinitionException {
-        StreamDefinition streamDefinition = EventDefinitionConverterUtils.convertFromJson(streamDefinitionStr);
-        getStreamDefinitionStore().saveStreamDefinitionToStore(streamDefinition, tenantId);
-    }
+	public void addStreamDefinition(String streamDefinitionStr, int tenantId)
+			throws StreamDefinitionStoreException, MalformedStreamDefinitionException {
+		StreamDefinition streamDefinition =
+				EventDefinitionConverterUtils.convertFromJson(streamDefinitionStr);
+		getStreamDefinitionStore().saveStreamDefinitionToStore(streamDefinition, tenantId);
+	}
 
-    private InMemoryStreamDefinitionStore getStreamDefinitionStore() {
-        if (streamDefinitionStore == null) {
-            streamDefinitionStore = new InMemoryStreamDefinitionStore();
-        }
-        return streamDefinitionStore;
-    }
+	private InMemoryStreamDefinitionStore getStreamDefinitionStore() {
+		if (streamDefinitionStore == null) {
+			streamDefinitionStore = new InMemoryStreamDefinitionStore();
+		}
+		return streamDefinitionStore;
+	}
 
-    public void start(int tcpPort, int securePort) throws DataBridgeException, IOException {
-        DataPublisherTestUtil.setKeyStoreParams();
-        streamDefinitionStore = getStreamDefinitionStore();
-        numberOfEventsReceived = new AtomicInteger(0);
-        DataBridge databridge = new DataBridge(new AuthenticationHandler() {
-            @Override
-            public boolean authenticate(String userName,
-                                        String password) {
-                return true;// allays authenticate to true
-            }
+	public void start(int tcpPort, int securePort) throws DataBridgeException, IOException {
+		DataPublisherTestUtil.setKeyStoreParams();
+		streamDefinitionStore = getStreamDefinitionStore();
+		numberOfEventsReceived = new AtomicInteger(0);
+		DataBridge databridge = new DataBridge(new AuthenticationHandler() {
+			@Override public boolean authenticate(String userName, String password) {
+				return true;// allays authenticate to true
+			}
 
-            @Override
-            public String getTenantDomain(String userName) {
-                return "admin";
-            }
+			@Override public String getTenantDomain(String userName) {
+				return "admin";
+			}
 
-            @Override
-            public int getTenantId(String tenantDomain) throws UserStoreException {
-                return -1234;
-            }
+			@Override public int getTenantId(String tenantDomain) throws UserStoreException {
+				return -1234;
+			}
 
-            @Override
-            public void initContext(AgentSession agentSession) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
+			@Override public void initContext(AgentSession agentSession) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
 
-            @Override
-            public void destroyContext(AgentSession agentSession) {
+			@Override public void destroyContext(AgentSession agentSession) {
 
-            }
-        }, streamDefinitionStore, DataPublisherTestUtil.getDataBridgeConfigPath());
+			}
+		}, streamDefinitionStore, DataPublisherTestUtil.getDataBridgeConfigPath());
 
-        BinaryDataReceiverConfiguration dataReceiverConfiguration = new BinaryDataReceiverConfiguration(securePort, tcpPort);
+		BinaryDataReceiverConfiguration dataReceiverConfiguration =
+				new BinaryDataReceiverConfiguration(securePort, tcpPort);
 
-        binaryDataReceiver = new BinaryDataReceiver(dataReceiverConfiguration, databridge);
+		binaryDataReceiver = new BinaryDataReceiver(dataReceiverConfiguration, databridge);
 
-        databridge.subscribe(new AgentCallback() {
-            int totalSize = 0;
+		databridge.subscribe(new AgentCallback() {
+			int totalSize = 0;
 
-            public void definedStream(StreamDefinition streamDefinition,
-                                      int tenantId) {
-                log.info("StreamDefinition " + streamDefinition);
-            }
+			public void definedStream(StreamDefinition streamDefinition, int tenantId) {
+				log.info("StreamDefinition " + streamDefinition);
+			}
 
-            @Override
-            public void removeStream(StreamDefinition streamDefinition, int tenantId) {
-                log.info("StreamDefinition remove " + streamDefinition);
-            }
+			@Override public void removeStream(StreamDefinition streamDefinition, int tenantId) {
+				log.info("StreamDefinition remove " + streamDefinition);
+			}
 
-            @Override
-            public void receive(List<Event> eventList, Credentials credentials) {
-                numberOfEventsReceived.addAndGet(eventList.size());
-                log.info("Received events : " + numberOfEventsReceived);
-//                log.info("eventListSize=" + eventList.size() + " eventList " + eventList + " for username " + credentials.getUsername());
-            }
+			@Override public void receive(List<Event> eventList, Credentials credentials) {
+				numberOfEventsReceived.addAndGet(eventList.size());
+				log.info("Received events : " + numberOfEventsReceived);
+				//                log.info("eventListSize=" + eventList.size() + " eventList " + eventList + " for username " + credentials.getUsername());
+			}
 
-        });
+		});
 
-        String address = "localhost";
-        log.info("Test Server starting on " + address);
-        binaryDataReceiver.start();
-        log.info("Test Server Started");
-    }
+		String address = "localhost";
+		log.info("Test Server starting on " + address);
+		binaryDataReceiver.start();
+		log.info("Test Server Started");
+	}
 
-    public int getNumberOfEventsReceived() {
-        if (numberOfEventsReceived != null) return numberOfEventsReceived.get();
-        else return 0;
-    }
+	public int getNumberOfEventsReceived() {
+		if (numberOfEventsReceived != null)
+			return numberOfEventsReceived.get();
+		else
+			return 0;
+	}
 
-    public void resetReceivedEvents() {
-        numberOfEventsReceived.set(0);
-    }
+	public void resetReceivedEvents() {
+		numberOfEventsReceived.set(0);
+	}
 
-    public void stop() {
-        binaryDataReceiver.stop();
-        log.info("Test Server Stopped");
-    }
+	public void stop() {
+		binaryDataReceiver.stop();
+		log.info("Test Server Stopped");
+	}
 
-    public void stopAndStartDuration(int port, int sslPort, long stopAfterTimeMilliSeconds, long startAfterTimeMS)
-            throws SocketException, DataBridgeException {
-        restarterThread = new RestarterThread(port, sslPort, stopAfterTimeMilliSeconds, startAfterTimeMS);
-        Thread thread = new Thread(restarterThread);
-        thread.start();
-    }
+	public void stopAndStartDuration(int port, int sslPort, long stopAfterTimeMilliSeconds,
+	                                 long startAfterTimeMS)
+			throws SocketException, DataBridgeException {
+		restarterThread =
+				new RestarterThread(port, sslPort, stopAfterTimeMilliSeconds, startAfterTimeMS);
+		Thread thread = new Thread(restarterThread);
+		thread.start();
+	}
 
-    public int getEventsReceivedBeforeLastRestart() {
-        return restarterThread.eventReceived;
-    }
+	public int getEventsReceivedBeforeLastRestart() {
+		return restarterThread.eventReceived;
+	}
 
+	class RestarterThread implements Runnable {
+		int eventReceived;
+		int port;
+		int sslPort;
 
-    class RestarterThread implements Runnable {
-        int eventReceived;
-        int port;
-        int sslPort;
+		long stopAfterTimeMilliSeconds;
+		long startAfterTimeMS;
 
-        long stopAfterTimeMilliSeconds;
-        long startAfterTimeMS;
+		RestarterThread(int port, int sslPort, long stopAfterTime, long startAfterTime) {
+			this.port = port;
+			this.sslPort = sslPort;
+			stopAfterTimeMilliSeconds = stopAfterTime;
+			startAfterTimeMS = startAfterTime;
+		}
 
-        RestarterThread(int port, int sslPort, long stopAfterTime, long startAfterTime) {
-            this.port = port;
-            this.sslPort = sslPort;
-            stopAfterTimeMilliSeconds = stopAfterTime;
-            startAfterTimeMS = startAfterTime;
-        }
+		@Override public void run() {
+			try {
+				Thread.sleep(stopAfterTimeMilliSeconds);
+			} catch (InterruptedException e) {
+			}
+			if (binaryDataReceiver != null)
+				binaryDataReceiver.stop();
 
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(stopAfterTimeMilliSeconds);
-            } catch (InterruptedException e) {
-            }
-            if (binaryDataReceiver != null) binaryDataReceiver.stop();
+			eventReceived = getNumberOfEventsReceived();
 
-            eventReceived = getNumberOfEventsReceived();
+			log.info("Number of events received in server shutdown :" + eventReceived);
+			try {
+				Thread.sleep(startAfterTimeMS);
+			} catch (InterruptedException e) {
+			}
 
-            log.info("Number of events received in server shutdown :" + eventReceived);
-            try {
-                Thread.sleep(startAfterTimeMS);
-            } catch (InterruptedException e) {
-            }
+			try {
+				if (binaryDataReceiver != null) {
+					binaryDataReceiver.start();
+				} else {
+					start(port, sslPort);
+				}
+			} catch (DataBridgeException e) {
+				log.error(e);
+			} catch (IOException e) {
+				log.error(e);
+			}
 
-            try {
-                if (binaryDataReceiver != null) {
-                    binaryDataReceiver.start();
-                } else {
-                    start(port, sslPort);
-                }
-            } catch (DataBridgeException e) {
-                log.error(e);
-            } catch (IOException e) {
-                log.error(e);
-            }
-
-        }
-    }
+		}
+	}
 }

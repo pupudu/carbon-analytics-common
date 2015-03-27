@@ -27,58 +27,58 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @param <E>
  */
 public class EventQueue<E> {
-    private LinkedBlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>();
-    private volatile boolean isScheduledForEventDispatching = false;
+	private LinkedBlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>();
+	private volatile boolean isScheduledForEventDispatching = false;
 
-    /**
-     * Polls the event queue and updates the dispatching state of the queue
-     *
-     * @return event if exist
-     */
-    public synchronized Event poll() {
-        Event event = eventQueue.poll();
-        if (null == event) {
-            //no more events ot dispatch
-            isScheduledForEventDispatching = false;
-        }
-        return event;
-    }
+	/**
+	 * Polls the event queue and updates the dispatching state of the queue
+	 *
+	 * @return event if exist
+	 */
+	public synchronized Event poll() {
+		Event event = eventQueue.poll();
+		if (null == event) {
+			//no more events ot dispatch
+			isScheduledForEventDispatching = false;
+		}
+		return event;
+	}
 
-    /**
-     * Puts the event to the Queue and informs the dispatching state of the queue
-     *
-     * @param event to be sent
-     * @return true if event queue is scheduled to be dispatches else false
-     * @throws InterruptedException
-     */
-    public synchronized boolean put(Event event) throws InterruptedException {
-        eventQueue.put(event);
-        if (!isScheduledForEventDispatching) {
-            isScheduledForEventDispatching = true;
-            return false;
-        }
-        return isScheduledForEventDispatching;
-    }
+	/**
+	 * Puts the event to the Queue and informs the dispatching state of the queue
+	 *
+	 * @param event to be sent
+	 * @return true if event queue is scheduled to be dispatches else false
+	 * @throws InterruptedException
+	 */
+	public synchronized boolean put(Event event) throws InterruptedException {
+		eventQueue.put(event);
+		if (!isScheduledForEventDispatching) {
+			isScheduledForEventDispatching = true;
+			return false;
+		}
+		return isScheduledForEventDispatching;
+	}
 
-    public synchronized short tryPut(Event event) throws InterruptedException {
-        // Return 0 if isScheduledForEventDispatching is false
-        // Return 1 if isScheduledForEventDispatching is true
-        // Return 2 if eventQueue is full
-        if(!eventQueue.offer(event)){
-            return 2;
-        }
-        if (!isScheduledForEventDispatching) {
-            isScheduledForEventDispatching = true;
-            return 0;
-        }
-        return 1;
-    }
+	public synchronized short tryPut(Event event) throws InterruptedException {
+		// Return 0 if isScheduledForEventDispatching is false
+		// Return 1 if isScheduledForEventDispatching is true
+		// Return 2 if eventQueue is full
+		if (!eventQueue.offer(event)) {
+			return 2;
+		}
+		if (!isScheduledForEventDispatching) {
+			isScheduledForEventDispatching = true;
+			return 0;
+		}
+		return 1;
+	}
 
-    public synchronized LinkedBlockingQueue<Event> getAndResetQueue() {
-        LinkedBlockingQueue<Event> oldQueue = eventQueue;
-        eventQueue = new LinkedBlockingQueue<Event>();
-        isScheduledForEventDispatching = false;
-        return oldQueue;
-    }
+	public synchronized LinkedBlockingQueue<Event> getAndResetQueue() {
+		LinkedBlockingQueue<Event> oldQueue = eventQueue;
+		eventQueue = new LinkedBlockingQueue<Event>();
+		isScheduledForEventDispatching = false;
+		return oldQueue;
+	}
 
 }

@@ -16,23 +16,23 @@ package org.wso2.carbon.databridge.commons.exception;
  * limitations under the License.
  */
 public class MalformedEventException extends RuntimeException {
-    private String errorMessage;
+	private String errorMessage;
 
-    public MalformedEventException() {
-    }
+	public MalformedEventException() {
+	}
 
-    public MalformedEventException(String s) {
-        super(s);
-        errorMessage = s;
-    }
+	public MalformedEventException(String s) {
+		super(s);
+		errorMessage = s;
+	}
 
-    public MalformedEventException(String s, Throwable throwable) {
-        super(s, throwable);
-        errorMessage = s;
-    }
+	public MalformedEventException(String s, Throwable throwable) {
+		super(s, throwable);
+		errorMessage = s;
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 
 }

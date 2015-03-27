@@ -18,9 +18,7 @@
 
 package org.wso2.carbon.databridge.core;
 
-
 import org.wso2.carbon.databridge.commons.Event;
-import org.wso2.carbon.databridge.core.Utils.AgentSession;
 
 import java.util.List;
 
@@ -29,6 +27,5 @@ import java.util.List;
  */
 public interface EventConverter {
 
-    public List<Event> toEventList(Object eventBundle,
-                                   StreamTypeHolder streamTypeHolder);
+	public List<Event> toEventList(Object eventBundle, StreamTypeHolder streamTypeHolder);
 }

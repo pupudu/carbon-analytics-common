@@ -26,50 +26,59 @@ import org.wso2.carbon.databridge.commons.utils.EventDefinitionConverterUtils;
  */
 
 public class StreamAttributeComposite {
-    private AttributeType[][] attributeTypes;
-    private StreamDefinition streamDefinition;
-    private int attributeSize;
+	private AttributeType[][] attributeTypes;
+	private StreamDefinition streamDefinition;
+	private int attributeSize;
 
-    public StreamAttributeComposite(StreamDefinition streamDefinition) {
-        this.streamDefinition = streamDefinition;
-        this.attributeTypes = new AttributeType[][]{EventDefinitionConverterUtils.generateAttributeTypeArray(streamDefinition.getMetaData()),
-                                                    EventDefinitionConverterUtils.generateAttributeTypeArray(streamDefinition.getCorrelationData()),
-                                                    EventDefinitionConverterUtils.generateAttributeTypeArray(streamDefinition.getPayloadData())};
-        this.attributeSize = getSize(attributeTypes);
+	public StreamAttributeComposite(StreamDefinition streamDefinition) {
+		this.streamDefinition = streamDefinition;
+		this.attributeTypes = new AttributeType[][] { EventDefinitionConverterUtils
+				                                              .generateAttributeTypeArray(
+						                                              streamDefinition
+								                                              .getMetaData()),
+		                                              EventDefinitionConverterUtils
+				                                              .generateAttributeTypeArray(
+						                                              streamDefinition
+								                                              .getCorrelationData()),
+		                                              EventDefinitionConverterUtils
+				                                              .generateAttributeTypeArray(
+						                                              streamDefinition
+								                                              .getPayloadData()) };
+		this.attributeSize = getSize(attributeTypes);
 
-    }
+	}
 
-    private int getSize(AttributeType[][] attributeTypes) {
-        int size = 0;
-        if (attributeTypes[0] != null) {
-            size += attributeTypes[0].length;
-        }
-        if (attributeTypes[1] != null) {
-            size += attributeTypes[1].length;
-        }
-        if (attributeTypes[2] != null) {
-            size += attributeTypes[2].length;
-        }
-        return size;
-    }
+	private int getSize(AttributeType[][] attributeTypes) {
+		int size = 0;
+		if (attributeTypes[0] != null) {
+			size += attributeTypes[0].length;
+		}
+		if (attributeTypes[1] != null) {
+			size += attributeTypes[1].length;
+		}
+		if (attributeTypes[2] != null) {
+			size += attributeTypes[2].length;
+		}
+		return size;
+	}
 
-    public int getAttributeSize() {
-        return attributeSize;
-    }
+	public int getAttributeSize() {
+		return attributeSize;
+	}
 
-    public void setAttributeSize(int attributeSize) {
-        this.attributeSize = attributeSize;
-    }
+	public void setAttributeSize(int attributeSize) {
+		this.attributeSize = attributeSize;
+	}
 
-    public AttributeType[][] getAttributeTypes() {
-        return attributeTypes;
-    }
+	public AttributeType[][] getAttributeTypes() {
+		return attributeTypes;
+	}
 
-    public void setAttributeTypes(AttributeType[][] attributeTypes) {
-        this.attributeTypes = attributeTypes;
-    }
+	public void setAttributeTypes(AttributeType[][] attributeTypes) {
+		this.attributeTypes = attributeTypes;
+	}
 
-    public StreamDefinition getStreamDefinition() {
-        return streamDefinition;
-    }
+	public StreamDefinition getStreamDefinition() {
+		return streamDefinition;
+	}
 }

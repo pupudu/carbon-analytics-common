@@ -22,61 +22,63 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * limitations under the License.
  */
 public class DataPublisherHolder {
-    private String authenticationUrl = null;
-    private String receiverUrl = null;
-    private String username = null;
-    private String password = null;
-    private Agent agent = null;
-    private AtomicBoolean connected = new AtomicBoolean(false);
+	private String authenticationUrl = null;
+	private String receiverUrl = null;
+	private String username = null;
+	private String password = null;
+	private Agent agent = null;
+	private AtomicBoolean connected = new AtomicBoolean(false);
 
-    private AsyncDataPublisher dataPublisher;
+	private AsyncDataPublisher dataPublisher;
 
-    public DataPublisherHolder(String authenticationUrl, String receiverUrl, String username, String password) {
-        this.authenticationUrl = authenticationUrl;
-        this.receiverUrl = receiverUrl;
-        this.username = username;
-        this.password = password;
-        this.agent = null;
-    }
+	public DataPublisherHolder(String authenticationUrl, String receiverUrl, String username,
+	                           String password) {
+		this.authenticationUrl = authenticationUrl;
+		this.receiverUrl = receiverUrl;
+		this.username = username;
+		this.password = password;
+		this.agent = null;
+	}
 
-    protected void setAgent(Agent agent) {
-        this.agent = agent;
-    }
+	protected void setAgent(Agent agent) {
+		this.agent = agent;
+	}
 
+	public void generateDataPublisher(ConcurrentHashMap<String, String> streamDefnCache) {
+		dataPublisher =
+				new AsyncDataPublisher(authenticationUrl, receiverUrl, username, password, agent,
+				                       streamDefnCache);
+	}
 
-    public void generateDataPublisher(ConcurrentHashMap<String, String> streamDefnCache) {
-            dataPublisher = new AsyncDataPublisher(authenticationUrl, receiverUrl, username, password, agent,streamDefnCache);
-    }
+	public String getAuthenticationUrl() {
+		return authenticationUrl;
+	}
 
-    public String getAuthenticationUrl() {
-        return authenticationUrl;
-    }
+	public String getReceiverUrl() {
+		return receiverUrl;
+	}
 
-    public String getReceiverUrl() {
-        return receiverUrl;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public Agent getAgent() {
+		return agent;
+	}
 
-    public Agent getAgent() {
-        return agent;
-    }
+	public AtomicBoolean getConnected() {
+		return connected;
+	}
 
-    public AtomicBoolean getConnected() {
-        return connected;
-    }
+	public AsyncDataPublisher getDataPublisher() {
+		return dataPublisher;
+	}
 
-    public AsyncDataPublisher getDataPublisher() {
-        return dataPublisher;
-    }
-
-    public void setConnected(boolean state) {
-        connected.set(state);
-    }
+	public void setConnected(boolean state) {
+		connected.set(state);
+	}
 }

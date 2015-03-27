@@ -19,8 +19,8 @@ package org.wso2.carbon.event.stream.core;
  */
 public interface EventProducer {
 
-    public String getStreamId();
+	public String getStreamId();
 
-    public void setCallBack(EventProducerCallback callBack);
+	public void setCallBack(EventProducerCallback callBack);
 
 }

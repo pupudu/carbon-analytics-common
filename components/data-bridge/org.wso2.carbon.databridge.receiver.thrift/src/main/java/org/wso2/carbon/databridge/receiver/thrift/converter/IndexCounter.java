@@ -23,50 +23,49 @@ package org.wso2.carbon.databridge.receiver.thrift.converter;
  */
 public class IndexCounter {
 
-    private int intCount = 0;
-    private int longCount = 0;
-    private int boolCount = 0;
-    private int stringCount = 0;
-    private int doubleCount = 0;
+	private int intCount = 0;
+	private int longCount = 0;
+	private int boolCount = 0;
+	private int stringCount = 0;
+	private int doubleCount = 0;
 
-    public int getIntCount() {
-        return intCount;
-    }
+	public int getIntCount() {
+		return intCount;
+	}
 
-    public int getLongCount() {
-        return longCount;
-    }
+	public int getLongCount() {
+		return longCount;
+	}
 
-    public int getBoolCount() {
-        return boolCount;
-    }
+	public int getBoolCount() {
+		return boolCount;
+	}
 
-    public int getStringCount() {
-        return stringCount;
-    }
+	public int getStringCount() {
+		return stringCount;
+	}
 
-    public int getDoubleCount() {
-        return doubleCount;
-    }
+	public int getDoubleCount() {
+		return doubleCount;
+	}
 
+	public void incrementIntCount() {
+		intCount++;
+	}
 
-    public void incrementIntCount() {
-        intCount++;
-    }
+	public void incrementLongCount() {
+		longCount++;
+	}
 
-    public void incrementLongCount() {
-        longCount++;
-    }
+	public void incrementBoolCount() {
+		boolCount++;
+	}
 
-    public void incrementBoolCount() {
-        boolCount++;
-    }
+	public void incrementStringCount() {
+		stringCount++;
+	}
 
-    public void incrementStringCount() {
-        stringCount++;
-    }
-
-    public void incrementDoubleCount() {
-        doubleCount++;
-    }
+	public void incrementDoubleCount() {
+		doubleCount++;
+	}
 }

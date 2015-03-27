@@ -27,43 +27,42 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * The in memory implementation of the Event Stream definition Store
  */
-public class InMemoryStreamDefinitionStore extends
-        AbstractStreamDefinitionStore {
+public class InMemoryStreamDefinitionStore extends AbstractStreamDefinitionStore {
 
-    private ConcurrentHashMap<String, StreamDefinition> streamDefinitionStore = new ConcurrentHashMap<String, StreamDefinition>();
+	private ConcurrentHashMap<String, StreamDefinition> streamDefinitionStore =
+			new ConcurrentHashMap<String, StreamDefinition>();
 
-    @Override
-    public boolean removeStreamDefinition(String name, String version, int tenantId) {
-        if (null != streamDefinitionStore.remove(DataBridgeCommonsUtils.generateStreamId(name, version))) {
-            return true;
-        }
-        return false;
-    }
+	@Override public boolean removeStreamDefinition(String name, String version, int tenantId) {
+		if (null !=
+		    streamDefinitionStore.remove(DataBridgeCommonsUtils.generateStreamId(name, version))) {
+			return true;
+		}
+		return false;
+	}
 
-    @Override
-    public void saveStreamDefinitionToStore(StreamDefinition streamDefinition, int tenantId)
-            throws StreamDefinitionStoreException {
+	@Override public void saveStreamDefinitionToStore(StreamDefinition streamDefinition,
+	                                                  int tenantId)
+			throws StreamDefinitionStoreException {
 
-        streamDefinitionStore.put(streamDefinition.getStreamId(), streamDefinition);
-    }
+		streamDefinitionStore.put(streamDefinition.getStreamId(), streamDefinition);
+	}
 
+	public StreamDefinition getStreamDefinitionFromStore(String name, String version, int tenantId)
+			throws StreamDefinitionStoreException {
+		return getStreamDefinition(DataBridgeCommonsUtils.generateStreamId(name, version),
+		                           tenantId);
+	}
 
-    public StreamDefinition getStreamDefinitionFromStore(String name, String version, int tenantId)
-            throws StreamDefinitionStoreException {
-        return getStreamDefinition(DataBridgeCommonsUtils.generateStreamId(name, version), tenantId);
-    }
+	@Override public StreamDefinition getStreamDefinitionFromStore(String streamId, int tenantId)
+			throws StreamDefinitionStoreException {
+		return streamDefinitionStore.get(streamId);
+	}
 
-    @Override
-    public StreamDefinition getStreamDefinitionFromStore(String streamId, int tenantId)
-            throws StreamDefinitionStoreException {
-        return streamDefinitionStore.get(streamId);
-    }
-
-    public Collection<StreamDefinition> getAllStreamDefinitionsFromStore(int tenantId) {
-        if (streamDefinitionStore != null) {
-            return streamDefinitionStore.values();
-        }
-        return null;
-    }
+	public Collection<StreamDefinition> getAllStreamDefinitionsFromStore(int tenantId) {
+		if (streamDefinitionStore != null) {
+			return streamDefinitionStore.values();
+		}
+		return null;
+	}
 
 }

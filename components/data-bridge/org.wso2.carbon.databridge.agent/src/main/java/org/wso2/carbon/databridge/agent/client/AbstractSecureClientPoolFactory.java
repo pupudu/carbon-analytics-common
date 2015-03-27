@@ -22,20 +22,20 @@ package org.wso2.carbon.databridge.agent.client;
  */
 public abstract class AbstractSecureClientPoolFactory extends AbstractClientPoolFactory {
 
-    private String trustStorePassword;
+	private String trustStorePassword;
 
-    private String trustStore;
+	private String trustStore;
 
-    public AbstractSecureClientPoolFactory(String trustStore, String trustStorePassword) {
-        this.trustStore = trustStore;
-        this.trustStorePassword = trustStorePassword;
-    }
+	public AbstractSecureClientPoolFactory(String trustStore, String trustStorePassword) {
+		this.trustStore = trustStore;
+		this.trustStorePassword = trustStorePassword;
+	}
 
-    public String getTrustStorePassword() {
-        return trustStorePassword;
-    }
+	public String getTrustStorePassword() {
+		return trustStorePassword;
+	}
 
-    public String getTrustStore() {
-        return trustStore;
-    }
+	public String getTrustStore() {
+		return trustStore;
+	}
 }

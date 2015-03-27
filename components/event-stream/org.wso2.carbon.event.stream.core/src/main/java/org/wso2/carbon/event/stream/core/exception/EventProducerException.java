@@ -19,18 +19,18 @@ package org.wso2.carbon.event.stream.core.exception;
  */
 public class EventProducerException extends RuntimeException {
 
-    public EventProducerException() {
-    }
+	public EventProducerException() {
+	}
 
-    public EventProducerException(String message) {
-        super(message);
-    }
+	public EventProducerException(String message) {
+		super(message);
+	}
 
-    public EventProducerException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public EventProducerException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public EventProducerException(Throwable cause) {
-        super(cause);
-    }
+	public EventProducerException(Throwable cause) {
+		super(cause);
+	}
 }

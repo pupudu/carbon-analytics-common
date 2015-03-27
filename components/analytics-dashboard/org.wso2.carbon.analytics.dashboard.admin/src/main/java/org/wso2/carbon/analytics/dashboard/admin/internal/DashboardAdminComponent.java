@@ -16,21 +16,23 @@ import org.wso2.carbon.analytics.dataservice.SecureAnalyticsDataService;
  */
 public class DashboardAdminComponent {
 
-    private static final Log logger = LogFactory.getLog(DashboardAdminComponent.class);
+	private static final Log logger = LogFactory.getLog(DashboardAdminComponent.class);
 
-    protected void activate(ComponentContext ctx) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Activating Analytics DashboardAdminComponent module.");
-        }
-        BundleContext bundleContext = ctx.getBundleContext();
-        bundleContext.registerService(DashboardAdminService.class, new DashboardAdminService(), null);
-    }
+	protected void activate(ComponentContext ctx) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Activating Analytics DashboardAdminComponent module.");
+		}
+		BundleContext bundleContext = ctx.getBundleContext();
+		bundleContext
+				.registerService(DashboardAdminService.class, new DashboardAdminService(), null);
+	}
 
-    protected void setAnalyticsDataService(SecureAnalyticsDataService secureAnalyticsDataService) {
-        ServiceHolder.setAnalyticsDataService(secureAnalyticsDataService);
-    }
+	protected void setAnalyticsDataService(SecureAnalyticsDataService secureAnalyticsDataService) {
+		ServiceHolder.setAnalyticsDataService(secureAnalyticsDataService);
+	}
 
-    protected void unsetAnalyticsDataService(SecureAnalyticsDataService secureAnalyticsDataService) {
-        ServiceHolder.setAnalyticsDataService(null);
-    }
+	protected void unsetAnalyticsDataService(
+			SecureAnalyticsDataService secureAnalyticsDataService) {
+		ServiceHolder.setAnalyticsDataService(null);
+	}
 }

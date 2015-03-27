@@ -16,19 +16,18 @@ package org.wso2.carbon.event.stream.core;
 
 public interface EventStreamListener {
 
-    /**
-     * @param tenantId
-     * @param streamName
-     * @param streamVersion
-     */
-    public void removedEventStream(int tenantId, String streamName, String streamVersion);
+	/**
+	 * @param tenantId
+	 * @param streamName
+	 * @param streamVersion
+	 */
+	public void removedEventStream(int tenantId, String streamName, String streamVersion);
 
-    /**
-     * @param tenantId
-     * @param streamName
-     * @param streamVersion
-     */
-    public void addedEventStream(int tenantId, String streamName, String streamVersion);
-
+	/**
+	 * @param tenantId
+	 * @param streamName
+	 * @param streamVersion
+	 */
+	public void addedEventStream(int tenantId, String streamName, String streamVersion);
 
 }

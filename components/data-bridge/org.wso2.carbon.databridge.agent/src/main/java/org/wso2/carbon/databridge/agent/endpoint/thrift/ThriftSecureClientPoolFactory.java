@@ -22,11 +22,10 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSSLTransportFactory;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
-import org.wso2.carbon.databridge.agent.exception.DataEndpointSecurityException;
 import org.wso2.carbon.databridge.agent.client.AbstractSecureClientPoolFactory;
 import org.wso2.carbon.databridge.agent.conf.DataEndpointConfiguration;
+import org.wso2.carbon.databridge.agent.exception.DataEndpointSecurityException;
 import org.wso2.carbon.databridge.commons.thrift.service.secure.ThriftSecureEventTransmissionService;
-
 
 /**
  * This is a Thrift secure transport implementation for AbstractSecureClientPoolFactory
@@ -35,42 +34,44 @@ import org.wso2.carbon.databridge.commons.thrift.service.secure.ThriftSecureEven
 
 public class ThriftSecureClientPoolFactory extends AbstractSecureClientPoolFactory {
 
-    private TSSLTransportFactory.TSSLTransportParameters params;
+	private TSSLTransportFactory.TSSLTransportParameters params;
 
-    public ThriftSecureClientPoolFactory(String trustStore, String trustStorePassword) {
-        super(trustStore, trustStorePassword);
-        params = new TSSLTransportFactory.TSSLTransportParameters();
-        params.setTrustStore(getTrustStore(), getTrustStorePassword());
-    }
+	public ThriftSecureClientPoolFactory(String trustStore, String trustStorePassword) {
+		super(trustStore, trustStorePassword);
+		params = new TSSLTransportFactory.TSSLTransportParameters();
+		params.setTrustStore(getTrustStore(), getTrustStorePassword());
+	}
 
-    @Override
-    public Object createClient(String protocol, String hostName, int port) throws
-            DataEndpointSecurityException {
-        if (protocol.equalsIgnoreCase(DataEndpointConfiguration.Protocol.SSL.toString())) {
-            try {
-                TTransport receiverTransport = TSSLTransportFactory.
-                        getClientSocket(hostName, port, 0, params);
-                TProtocol tProtocol = new TBinaryProtocol(receiverTransport);
-                return new ThriftSecureEventTransmissionService.Client(tProtocol);
-            } catch (TTransportException e) {
-                throw new DataEndpointSecurityException("Error while trying to connect to " +
-                        protocol + "://" + hostName + ":" + port, e);
-            }
-        }
-        throw new DataEndpointSecurityException("Unsupported protocol :" + protocol
-                + " used to authenticate the client, only " + DataEndpointConfiguration.Protocol.SSL.toString()
-                + " is supported");
-    }
+	@Override public Object createClient(String protocol, String hostName, int port)
+			throws DataEndpointSecurityException {
+		if (protocol.equalsIgnoreCase(DataEndpointConfiguration.Protocol.SSL.toString())) {
+			try {
+				TTransport receiverTransport = TSSLTransportFactory.
+						                                                   getClientSocket(hostName,
+						                                                                   port, 0,
+						                                                                   params);
+				TProtocol tProtocol = new TBinaryProtocol(receiverTransport);
+				return new ThriftSecureEventTransmissionService.Client(tProtocol);
+			} catch (TTransportException e) {
+				throw new DataEndpointSecurityException("Error while trying to connect to " +
+				                                        protocol + "://" + hostName + ":" + port,
+				                                        e);
+			}
+		}
+		throw new DataEndpointSecurityException(
+				"Unsupported protocol :" + protocol + " used to authenticate the client, only " +
+				DataEndpointConfiguration.Protocol.SSL.toString() + " is supported");
+	}
 
-    @Override
-    public boolean validateClient(Object client) {
-        ThriftSecureEventTransmissionService.Client thriftClient = (ThriftSecureEventTransmissionService.Client) client;
-        return thriftClient.getOutputProtocol().getTransport().isOpen();
-    }
+	@Override public boolean validateClient(Object client) {
+		ThriftSecureEventTransmissionService.Client thriftClient =
+				(ThriftSecureEventTransmissionService.Client) client;
+		return thriftClient.getOutputProtocol().getTransport().isOpen();
+	}
 
-    @Override
-    public void terminateClient(Object client) {
-        ThriftSecureEventTransmissionService.Client thriftClient = (ThriftSecureEventTransmissionService.Client) client;
-        thriftClient.getOutputProtocol().getTransport().close();
-    }
+	@Override public void terminateClient(Object client) {
+		ThriftSecureEventTransmissionService.Client thriftClient =
+				(ThriftSecureEventTransmissionService.Client) client;
+		thriftClient.getOutputProtocol().getTransport().close();
+	}
 }

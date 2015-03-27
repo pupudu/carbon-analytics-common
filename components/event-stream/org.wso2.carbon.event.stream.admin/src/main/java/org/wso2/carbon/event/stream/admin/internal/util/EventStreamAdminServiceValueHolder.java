@@ -16,17 +16,16 @@ package org.wso2.carbon.event.stream.admin.internal.util;
 
 import org.wso2.carbon.event.stream.core.EventStreamService;
 
-
 public class EventStreamAdminServiceValueHolder {
 
-    private static EventStreamService eventStreamService;
+	private static EventStreamService eventStreamService;
 
-    public static void registerEventStreamService(EventStreamService eventBuilderService) {
-        EventStreamAdminServiceValueHolder.eventStreamService = eventBuilderService;
-    }
+	public static void registerEventStreamService(EventStreamService eventBuilderService) {
+		EventStreamAdminServiceValueHolder.eventStreamService = eventBuilderService;
+	}
 
-    public static EventStreamService getEventStreamService() {
-        return EventStreamAdminServiceValueHolder.eventStreamService;
-    }
+	public static EventStreamService getEventStreamService() {
+		return EventStreamAdminServiceValueHolder.eventStreamService;
+	}
 
 }

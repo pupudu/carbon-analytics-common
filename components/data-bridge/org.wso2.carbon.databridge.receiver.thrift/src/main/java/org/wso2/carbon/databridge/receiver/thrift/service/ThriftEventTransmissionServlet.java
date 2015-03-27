@@ -21,9 +21,9 @@ import org.apache.thrift.server.TServlet;
 
 public class ThriftEventTransmissionServlet extends TServlet {
 
-    public ThriftEventTransmissionServlet(TProcessor processor, TProtocolFactory inProtocolFactory,
-                                          TProtocolFactory outProtocolFactory) {
-        super(processor, inProtocolFactory, outProtocolFactory);
-    }
+	public ThriftEventTransmissionServlet(TProcessor processor, TProtocolFactory inProtocolFactory,
+	                                      TProtocolFactory outProtocolFactory) {
+		super(processor, inProtocolFactory, outProtocolFactory);
+	}
 
 }

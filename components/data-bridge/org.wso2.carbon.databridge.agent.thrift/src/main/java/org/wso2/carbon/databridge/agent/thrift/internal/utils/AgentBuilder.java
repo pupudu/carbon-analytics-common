@@ -32,82 +32,89 @@ import java.io.File;
  */
 public final class AgentBuilder {
 
-    private static final Log log = LogFactory.getLog(AgentBuilder.class);
+	private static final Log log = LogFactory.getLog(AgentBuilder.class);
 
-    private AgentBuilder() {
+	private AgentBuilder() {
 
-    }
+	}
 
-    /**
-     * Helper method to load the agent config
-     *
-     * @return the Agent configuration
-     */
-    public static AgentConfiguration loadAgentConfiguration() {
+	/**
+	 * Helper method to load the agent config
+	 *
+	 * @return the Agent configuration
+	 */
+	public static AgentConfiguration loadAgentConfiguration() {
 
-        ThriftAgentConfiguration agentConfig = loadConfigXML();
-        if (agentConfig != null) {
-            return buildAgentConfiguration(agentConfig);
-        }
-        return new AgentConfiguration();
-    }
+		ThriftAgentConfiguration agentConfig = loadConfigXML();
+		if (agentConfig != null) {
+			return buildAgentConfiguration(agentConfig);
+		}
+		return new AgentConfiguration();
+	}
 
-    /**
-     * Helper method to load the agent config
-     *
-     * @return ThriftAgentConfiguration representation of the agent config in xml file
-     */
-    private static ThriftAgentConfiguration loadConfigXML() {
+	/**
+	 * Helper method to load the agent config
+	 *
+	 * @return ThriftAgentConfiguration representation of the agent config in xml file
+	 */
+	private static ThriftAgentConfiguration loadConfigXML() {
 
-        String carbonHome = System.getProperty(AgentConstants.CARBON_CONFIG_DIR_PATH);
-        String path = carbonHome + File.separator + AgentConstants.AGENT_CONF_DIR + File.separator
-                      + AgentConstants.AGENT_CONF;
+		String carbonHome = System.getProperty(AgentConstants.CARBON_CONFIG_DIR_PATH);
+		String path = carbonHome + File.separator + AgentConstants.AGENT_CONF_DIR + File.separator +
+		              AgentConstants.AGENT_CONF;
 
-        // if the agent config file not exists then simply return null.
-        File agentConfigFile = new File(path);
-        if (!agentConfigFile.exists()) {
-            return null;
-        }
+		// if the agent config file not exists then simply return null.
+		File agentConfigFile = new File(path);
+		if (!agentConfigFile.exists()) {
+			return null;
+		}
 
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(ThriftAgentConfiguration.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(ThriftAgentConfiguration.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
-            return (ThriftAgentConfiguration)
-                    jaxbUnmarshaller.unmarshal(agentConfigFile);
-        } catch (JAXBException e) {
-            String errorMessage = "Unable to unmarshal config xml.";
-            log.error(errorMessage, e);
-        }
-        return null;
-    }
+			return (ThriftAgentConfiguration) jaxbUnmarshaller.unmarshal(agentConfigFile);
+		} catch (JAXBException e) {
+			String errorMessage = "Unable to unmarshal config xml.";
+			log.error(errorMessage, e);
+		}
+		return null;
+	}
 
-    private static AgentConfiguration buildAgentConfiguration(
-            ThriftAgentConfiguration agentServerConfig) {
+	private static AgentConfiguration buildAgentConfiguration(
+			ThriftAgentConfiguration agentServerConfig) {
 
-        return buildReceiverConfiguration(agentServerConfig);
-    }
+		return buildReceiverConfiguration(agentServerConfig);
+	}
 
-    private static AgentConfiguration buildReceiverConfiguration(
-            ThriftAgentConfiguration agentServerConfig) {
+	private static AgentConfiguration buildReceiverConfiguration(
+			ThriftAgentConfiguration agentServerConfig) {
 
-        AgentConfiguration agentConfiguration = new AgentConfiguration();
+		AgentConfiguration agentConfiguration = new AgentConfiguration();
 
-        agentConfiguration.setMaxTransportPoolSize(agentServerConfig.getMaxTransportPoolSize());
-        agentConfiguration.setMaxIdleConnections(agentServerConfig.getMaxIdleConnections());
-        agentConfiguration.setMaxMessageBundleSize(agentServerConfig.getMaxMessageBundleSize());
-        agentConfiguration.setMinIdleTimeInPool(agentServerConfig.getMinIdleTimeInPool());
-        agentConfiguration.setBufferedEventsSize(agentServerConfig.getBufferedEventsSize());
-        agentConfiguration.setPoolSize(agentServerConfig.getPoolSize());
-        agentConfiguration.setMaxPoolSize((agentServerConfig.getMaxPoolSize() != 0) ? agentServerConfig.getMaxPoolSize() : 50);
-        agentConfiguration.setEvictionTimePeriod(agentServerConfig.getEvictionTimePeriod());
-        agentConfiguration.setSecureEvictionTimePeriod(agentServerConfig.getSecureEvictionTimePeriod());
-        agentConfiguration.setSecureMaxIdleConnections(agentServerConfig.getSecureMaxIdleConnections());
-        agentConfiguration.setSecureMaxTransportPoolSize(agentServerConfig.getSecureMaxTransportPoolSize());
-        agentConfiguration.setSecureMinIdleTimeInPool(agentServerConfig.getSecureMinIdleTimeInPool());
-        agentConfiguration.setAsyncDataPublisherBufferedEventSize(agentServerConfig.getAsyncDataPublisherBufferedEventSize());
-        agentConfiguration.setReconnectionInterval(agentServerConfig.getLoadBalancingReconnectionInterval());
+		agentConfiguration.setMaxTransportPoolSize(agentServerConfig.getMaxTransportPoolSize());
+		agentConfiguration.setMaxIdleConnections(agentServerConfig.getMaxIdleConnections());
+		agentConfiguration.setMaxMessageBundleSize(agentServerConfig.getMaxMessageBundleSize());
+		agentConfiguration.setMinIdleTimeInPool(agentServerConfig.getMinIdleTimeInPool());
+		agentConfiguration.setBufferedEventsSize(agentServerConfig.getBufferedEventsSize());
+		agentConfiguration.setPoolSize(agentServerConfig.getPoolSize());
+		agentConfiguration.setMaxPoolSize(
+				(agentServerConfig.getMaxPoolSize() != 0) ? agentServerConfig.getMaxPoolSize() :
+				50);
+		agentConfiguration.setEvictionTimePeriod(agentServerConfig.getEvictionTimePeriod());
+		agentConfiguration
+				.setSecureEvictionTimePeriod(agentServerConfig.getSecureEvictionTimePeriod());
+		agentConfiguration
+				.setSecureMaxIdleConnections(agentServerConfig.getSecureMaxIdleConnections());
+		agentConfiguration
+				.setSecureMaxTransportPoolSize(agentServerConfig.getSecureMaxTransportPoolSize());
+		agentConfiguration
+				.setSecureMinIdleTimeInPool(agentServerConfig.getSecureMinIdleTimeInPool());
+		agentConfiguration.setAsyncDataPublisherBufferedEventSize(
+				agentServerConfig.getAsyncDataPublisherBufferedEventSize());
+		agentConfiguration
+				.setReconnectionInterval(agentServerConfig.getLoadBalancingReconnectionInterval());
 
-        return agentConfiguration;
-    }
+		return agentConfiguration;
+	}
 }

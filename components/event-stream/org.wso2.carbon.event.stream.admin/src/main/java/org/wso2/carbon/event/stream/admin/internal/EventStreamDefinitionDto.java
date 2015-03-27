@@ -14,121 +14,121 @@
  */
 package org.wso2.carbon.event.stream.admin.internal;
 
-import java.util.Arrays;
-
 public class EventStreamDefinitionDto {
 
-    private String name;
-    private String version;
-    private String description;
-    private String nickName;
-    private EventStreamAttributeDto[] metaAttributes;
-    private EventStreamAttributeDto[] correlationAttributes;
-    private EventStreamAttributeDto[] payloadAttributes;
-    private String streamDefinitionString;
-    private boolean editable;
+	private String name;
+	private String version;
+	private String description;
+	private String nickName;
+	private EventStreamAttributeDto[] metaAttributes;
+	private EventStreamAttributeDto[] correlationAttributes;
+	private EventStreamAttributeDto[] payloadAttributes;
+	private String streamDefinitionString;
+	private boolean editable;
 
-    public EventStreamAttributeDto[] getMetaData() {
-        return metaAttributes;
-    }
+	public EventStreamAttributeDto[] getMetaData() {
+		return metaAttributes;
+	}
 
-    public void setMetaData(EventStreamAttributeDto[] metaData) {
-        this.metaAttributes = metaData;
-    }
+	public void setMetaData(EventStreamAttributeDto[] metaData) {
+		this.metaAttributes = metaData;
+	}
 
-    public EventStreamAttributeDto[] getCorrelationData() {
-        return correlationAttributes;
-    }
+	public EventStreamAttributeDto[] getCorrelationData() {
+		return correlationAttributes;
+	}
 
-    public void setCorrelationData(EventStreamAttributeDto[] correlationData) {
-        this.correlationAttributes = correlationData;
-    }
+	public void setCorrelationData(EventStreamAttributeDto[] correlationData) {
+		this.correlationAttributes = correlationData;
+	}
 
-    public EventStreamAttributeDto[] getPayloadData() {
-        return payloadAttributes;
-    }
+	public EventStreamAttributeDto[] getPayloadData() {
+		return payloadAttributes;
+	}
 
-    public void setPayloadData(EventStreamAttributeDto[] payloadData) {
-        this.payloadAttributes = payloadData;
-    }
+	public void setPayloadData(EventStreamAttributeDto[] payloadData) {
+		this.payloadAttributes = payloadData;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getVersion() {
-        return version;
-    }
+	public String getVersion() {
+		return version;
+	}
 
-    public void setVersion(String version) {
-        this.version = version;
-    }
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public String getNickName() {
-        return nickName;
-    }
+	public String getNickName() {
+		return nickName;
+	}
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
 
-    public void setStreamDefinitionString(String streamDefinitionString){
-        this.streamDefinitionString = streamDefinitionString;
-    }
+	public void setStreamDefinitionString(String streamDefinitionString) {
+		this.streamDefinitionString = streamDefinitionString;
+	}
 
-    public String getStreamDefinitionString(){
-        return streamDefinitionString;
-    }
+	public String getStreamDefinitionString() {
+		return streamDefinitionString;
+	}
 
+	public String convertToJsonString() {
+		final StringBuffer sb = new StringBuffer('{');
+		sb.append("\"name\":\"").append(name).append("\",");
+		sb.append("\"version\":\"").append(version).append("\",");
+		sb.append("\"description\":\"").append(description).append("\",");
+		sb.append("\"nickName\":\"").append(nickName).append("\",");
+		sb.append("\"metaAttributes\":[").append(convertAttributeArrayToString(metaAttributes))
+		  .append("],");
+		sb.append("\"correlationAttributes\":[")
+		  .append(convertAttributeArrayToString(correlationAttributes)).append("],");
+		sb.append("\"payloadAttributes\":[")
+		  .append(convertAttributeArrayToString(payloadAttributes)).append("]");
+		sb.append('}');
+		return sb.toString();
+	}
 
-    public String convertToJsonString() {
-        final StringBuffer sb = new StringBuffer('{');
-        sb.append("\"name\":\"").append(name).append("\",");
-        sb.append("\"version\":\"").append(version).append("\",");
-        sb.append("\"description\":\"").append(description).append("\",");
-        sb.append("\"nickName\":\"").append(nickName).append("\",");
-        sb.append("\"metaAttributes\":[").append(convertAttributeArrayToString(metaAttributes)).append("],");
-        sb.append("\"correlationAttributes\":[").append(convertAttributeArrayToString(correlationAttributes)).append("],");
-        sb.append("\"payloadAttributes\":[").append(convertAttributeArrayToString(payloadAttributes)).append("]");
-        sb.append('}');
-        return sb.toString();
-    }
+	private String convertAttributeArrayToString(EventStreamAttributeDto[] attributes) {
+		String attributeString = "";
 
-    private String convertAttributeArrayToString(EventStreamAttributeDto[] attributes){
-        String attributeString = "";
+		if (0 < attributes.length) {
+			final StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < attributes.length; i++) {
+				if (i != 0) {
+					sb.append(',');
+				}
+				sb.append("{\"name\":\"").append(attributes[i].getAttributeName()).append("\",");
+				sb.append("\"type\":\"").append(attributes[i].getAttributeType()).append("\"}");
+			}
+			return sb.toString();
+		}
+		return attributeString;
 
-        if(0<attributes.length){
-            final StringBuffer sb = new StringBuffer();
-            for(int i=0; i<attributes.length;i++){
-                if(i!=0){
-                    sb.append(',');
-                }
-                sb.append("{\"name\":\"").append(attributes[i].getAttributeName()).append("\",");
-                sb.append("\"type\":\"").append(attributes[i].getAttributeType()).append("\"}");
-            }
-            return sb.toString();
-        }
-        return attributeString;
+	}
 
-    }
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
 
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-    }
-
-    public boolean isEditable() {
-        return editable;
-    }
+	public boolean isEditable() {
+		return editable;
+	}
 }

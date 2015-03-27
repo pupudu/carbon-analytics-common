@@ -18,9 +18,7 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.databridge.agent.thrift.internal.pool.client.secure;
-
 
 import org.apache.commons.pool.BaseKeyedPoolableObjectFactory;
 import org.apache.http.conn.scheme.Scheme;
@@ -44,103 +42,108 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.net.SocketException;
 
-
 public class SecureClientPoolFactory extends BaseKeyedPoolableObjectFactory {
 
-    private TSSLTransportFactory.TSSLTransportParameters params;
-    private String trustStorePassword;
-    private String trustStore;
+	private TSSLTransportFactory.TSSLTransportParameters params;
+	private String trustStorePassword;
+	private String trustStore;
 
-    public SecureClientPoolFactory(String trustStore, String trustStorePassword) {
-        this.trustStorePassword = trustStorePassword;
-        this.trustStore = trustStore;
-    }
+	public SecureClientPoolFactory(String trustStore, String trustStorePassword) {
+		this.trustStorePassword = trustStorePassword;
+		this.trustStore = trustStore;
+	}
 
-    @Override
-    public ThriftSecureEventTransmissionService.Client makeObject(Object key)
-            throws AgentSecurityException, TTransportException {
-        String[] keyElements = key.toString().split(AgentConstants.SEPARATOR);
-        if (keyElements[2].equals(ReceiverConfiguration.Protocol.TCP.toString())) {
-            if (params == null) {
-                if (trustStore == null) {
-                    trustStore = System.getProperty("javax.net.ssl.trustStore");
-                    if (trustStore == null) {
-                        throw new AgentSecurityException("No trustStore found");
-                    }
-                    // trustStore = "/home/suho/projects/wso2/trunk/carbon/distribution/product/modules/distribution/target/wso2carbon-4.0.0-SNAPSHOT/repository/resources/security/client-truststore.jks";
-                }
+	@Override public ThriftSecureEventTransmissionService.Client makeObject(Object key)
+			throws AgentSecurityException, TTransportException {
+		String[] keyElements = key.toString().split(AgentConstants.SEPARATOR);
+		if (keyElements[2].equals(ReceiverConfiguration.Protocol.TCP.toString())) {
+			if (params == null) {
+				if (trustStore == null) {
+					trustStore = System.getProperty("javax.net.ssl.trustStore");
+					if (trustStore == null) {
+						throw new AgentSecurityException("No trustStore found");
+					}
+					// trustStore = "/home/suho/projects/wso2/trunk/carbon/distribution/product/modules/distribution/target/wso2carbon-4.0.0-SNAPSHOT/repository/resources/security/client-truststore.jks";
+				}
 
-                if (trustStorePassword == null) {
-                    trustStorePassword = System.getProperty("javax.net.ssl.trustStorePassword");
-                    if (trustStorePassword == null) {
-                        throw new AgentSecurityException("No trustStore password found");
-                    }
-                    //trustStorePassword = "wso2carbon";
-                }
+				if (trustStorePassword == null) {
+					trustStorePassword = System.getProperty("javax.net.ssl.trustStorePassword");
+					if (trustStorePassword == null) {
+						throw new AgentSecurityException("No trustStore password found");
+					}
+					//trustStorePassword = "wso2carbon";
+				}
 
-                params = new TSSLTransportFactory.TSSLTransportParameters();
-                params.setTrustStore(trustStore, trustStorePassword);
-            }
+				params = new TSSLTransportFactory.TSSLTransportParameters();
+				params.setTrustStore(trustStore, trustStorePassword);
+			}
 
+			String[] hostNameAndPort =
+					keyElements[3].split(AgentConstants.HOSTNAME_AND_PORT_SEPARATOR);
 
-            String[] hostNameAndPort = keyElements[3].split(AgentConstants.HOSTNAME_AND_PORT_SEPARATOR);
+			TTransport receiverTransport = null;
+			try {
+				receiverTransport = TSSLTransportFactory.
+						                                        getClientSocket(HostAddressFinder
+								                                                        .findAddress(
+										                                                        hostNameAndPort[0]),
+						                                                        Integer.parseInt(
+								                                                        hostNameAndPort[1]),
+						                                                        0, params);
+			} catch (SocketException ignored) {
+				//already checked
+			}
 
-            TTransport receiverTransport = null;
-            try {
-                receiverTransport = TSSLTransportFactory.
-                        getClientSocket(HostAddressFinder.findAddress(hostNameAndPort[0]), Integer.parseInt(hostNameAndPort[1]), 0, params);
-            } catch (SocketException ignored) {
-                //already checked
-            }
+			TProtocol protocol = new TBinaryProtocol(receiverTransport);
+			return new ThriftSecureEventTransmissionService.Client(protocol);
+		} else {
+			try {
+				TrustManager easyTrustManager = new X509TrustManager() {
+					public void checkClientTrusted(
+							java.security.cert.X509Certificate[] x509Certificates, String s)
+							throws java.security.cert.CertificateException {
+					}
 
-            TProtocol protocol = new TBinaryProtocol(receiverTransport);
-            return new ThriftSecureEventTransmissionService.Client(protocol);
-        } else {
-            try {
-                TrustManager easyTrustManager = new X509TrustManager() {
-                    public void checkClientTrusted(
-                            java.security.cert.X509Certificate[] x509Certificates,
-                            String s)
-                            throws java.security.cert.CertificateException {
-                    }
+					public void checkServerTrusted(
+							java.security.cert.X509Certificate[] x509Certificates, String s)
+							throws java.security.cert.CertificateException {
+					}
 
-                    public void checkServerTrusted(
-                            java.security.cert.X509Certificate[] x509Certificates,
-                            String s)
-                            throws java.security.cert.CertificateException {
-                    }
+					public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+						return null;
+					}
+				};
+				String[] hostNameAndPort =
+						keyElements[3].split(AgentConstants.HOSTNAME_AND_PORT_SEPARATOR);
 
-                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                        return null;
-                    }
-                };
-                String[] hostNameAndPort = keyElements[3].split(AgentConstants.HOSTNAME_AND_PORT_SEPARATOR);
+				SSLContext sslContext = SSLContext.getInstance("TLS");
+				sslContext.init(null, new TrustManager[] { easyTrustManager }, null);
+				SSLSocketFactory sf = new SSLSocketFactory(sslContext);
+				sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+				Scheme httpsScheme = new Scheme("https", sf, Integer.parseInt(hostNameAndPort[1]));
 
-                SSLContext sslContext = SSLContext.getInstance("TLS");
-                sslContext.init(null, new TrustManager[]{easyTrustManager}, null);
-                SSLSocketFactory sf = new SSLSocketFactory(sslContext);
-                sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-                Scheme httpsScheme = new Scheme("https", sf, Integer.parseInt(hostNameAndPort[1]));
+				DefaultHttpClient client = new DefaultHttpClient();
+				client.getConnectionManager().getSchemeRegistry().register(httpsScheme);
 
-                DefaultHttpClient client = new DefaultHttpClient();
-                client.getConnectionManager().getSchemeRegistry().register(httpsScheme);
+				THttpClient tclient =
+						new THttpClient("https://" + keyElements[3] + "/securedThriftReceiver",
+						                client);
+				TProtocol protocol = new TCompactProtocol(tclient);
+				ThriftSecureEventTransmissionService.Client authClient =
+						new ThriftSecureEventTransmissionService.Client(protocol);
+				tclient.open();
+				return authClient;
+			} catch (Exception e) {
+				throw new AgentSecurityException(
+						"Cannot create Secure client for " + keyElements[3], e);
+			}
+		}
+	}
 
-                THttpClient tclient = new THttpClient("https://" + keyElements[3] + "/securedThriftReceiver", client);
-                TProtocol protocol = new TCompactProtocol(tclient);
-                ThriftSecureEventTransmissionService.Client authClient = new ThriftSecureEventTransmissionService.Client(protocol);
-                tclient.open();
-                return authClient;
-            } catch (Exception e) {
-                throw new AgentSecurityException("Cannot create Secure client for " + keyElements[3], e);
-            }
-        }
-    }
-
-    @Override
-    public boolean validateObject(Object key, Object obj) {
-        ThriftSecureEventTransmissionService.Client client = (ThriftSecureEventTransmissionService.Client) obj;
-        return client.getOutputProtocol().getTransport().isOpen();
-    }
-
+	@Override public boolean validateObject(Object key, Object obj) {
+		ThriftSecureEventTransmissionService.Client client =
+				(ThriftSecureEventTransmissionService.Client) obj;
+		return client.getOutputProtocol().getTransport().isOpen();
+	}
 
 }

@@ -16,10 +16,10 @@ package org.wso2.carbon.databridge.commons;
  * limitations under the License.
  */
 public class IndexDefinitionConstants {
-    public static final String INCREMENTAL_INDEX = "INCREMENTAL_INDEX";
-    public static final String SECONDARY_INDEX = "SECONDARY_INDEX";
-    public static final String CUSTOM_INDEX = "CUSTOM_INDEX";
-    public static final String FIXED_INDEX = "FIXED_INDEX";
-    public static final String ARBITRARY_INDEX = "ARBITRARY_INDEX";
+	public static final String INCREMENTAL_INDEX = "INCREMENTAL_INDEX";
+	public static final String SECONDARY_INDEX = "SECONDARY_INDEX";
+	public static final String CUSTOM_INDEX = "CUSTOM_INDEX";
+	public static final String FIXED_INDEX = "FIXED_INDEX";
+	public static final String ARBITRARY_INDEX = "ARBITRARY_INDEX";
 
 }

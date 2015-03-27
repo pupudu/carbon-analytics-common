@@ -19,24 +19,24 @@ package org.wso2.carbon.databridge.commons.utils;
 
 public class DataBridgeCommonsUtils {
 
-    public static final String STREAM_NAME_VERSION_SPLITTER = ":";
+	public static final String STREAM_NAME_VERSION_SPLITTER = ":";
 
-    public static String generateStreamId(String streamName, String streamVersion) {
-        return streamName + STREAM_NAME_VERSION_SPLITTER + streamVersion;
-    }
+	public static String generateStreamId(String streamName, String streamVersion) {
+		return streamName + STREAM_NAME_VERSION_SPLITTER + streamVersion;
+	}
 
-    public static String getStreamNameFromStreamId(String streamId) {
-        if (streamId == null) {
-            return null;
-        }
-        return streamId.split(STREAM_NAME_VERSION_SPLITTER)[0];
-    }
+	public static String getStreamNameFromStreamId(String streamId) {
+		if (streamId == null) {
+			return null;
+		}
+		return streamId.split(STREAM_NAME_VERSION_SPLITTER)[0];
+	}
 
-    public static String getStreamVersionFromStreamId(String streamId) {
-        if (streamId == null) {
-            return null;
-        }
-        return streamId.split(STREAM_NAME_VERSION_SPLITTER)[1];
-    }
+	public static String getStreamVersionFromStreamId(String streamId) {
+		if (streamId == null) {
+			return null;
+		}
+		return streamId.split(STREAM_NAME_VERSION_SPLITTER)[1];
+	}
 
 }

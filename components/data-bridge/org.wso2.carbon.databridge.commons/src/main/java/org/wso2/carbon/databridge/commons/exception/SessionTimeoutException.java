@@ -18,30 +18,29 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.databridge.commons.exception;
 
 public class SessionTimeoutException extends Exception {
-    private String errorMessage;
+	private String errorMessage;
 
-    public SessionTimeoutException() {
-    }
+	public SessionTimeoutException() {
+	}
 
-    public SessionTimeoutException(String message) {
-        super(message);
-        errorMessage = message;
-    }
+	public SessionTimeoutException(String message) {
+		super(message);
+		errorMessage = message;
+	}
 
-    public SessionTimeoutException(String message, Throwable cause) {
-        super(message, cause);
-        errorMessage = message;
-    }
+	public SessionTimeoutException(String message, Throwable cause) {
+		super(message, cause);
+		errorMessage = message;
+	}
 
-    public SessionTimeoutException(Throwable cause) {
-        super(cause);
-    }
+	public SessionTimeoutException(Throwable cause) {
+		super(cause);
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

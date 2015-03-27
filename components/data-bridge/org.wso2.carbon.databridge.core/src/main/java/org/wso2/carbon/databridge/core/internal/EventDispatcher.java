@@ -18,10 +18,8 @@
 
 package org.wso2.carbon.databridge.core.internal;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.databridge.commons.Attribute;
 import org.wso2.carbon.databridge.commons.StreamDefinition;
 import org.wso2.carbon.databridge.commons.exception.DifferentStreamDefinitionAlreadyDefinedException;
@@ -46,339 +44,380 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class EventDispatcher {
 
-    private List<AgentCallback> subscribers = new ArrayList<AgentCallback>();
-    private List<RawDataAgentCallback> rawDataSubscribers = new ArrayList<RawDataAgentCallback>();
-    private AbstractStreamDefinitionStore streamDefinitionStore;
-    private Map<Integer, StreamTypeHolder> domainNameStreamTypeHolderCache = new ConcurrentHashMap<Integer, StreamTypeHolder>();
-    private EventQueue eventQueue;
-    private AuthenticationHandler authenticationHandler;
+	private List<AgentCallback> subscribers = new ArrayList<AgentCallback>();
+	private List<RawDataAgentCallback> rawDataSubscribers = new ArrayList<RawDataAgentCallback>();
+	private AbstractStreamDefinitionStore streamDefinitionStore;
+	private Map<Integer, StreamTypeHolder> domainNameStreamTypeHolderCache =
+			new ConcurrentHashMap<Integer, StreamTypeHolder>();
+	private EventQueue eventQueue;
+	private AuthenticationHandler authenticationHandler;
 
-    private static final Log log = LogFactory.getLog(EventDispatcher.class);
+	private static final Log log = LogFactory.getLog(EventDispatcher.class);
 
+	public EventDispatcher(AbstractStreamDefinitionStore streamDefinitionStore,
+	                       DataBridgeConfiguration dataBridgeConfiguration,
+	                       AuthenticationHandler authenticationHandler) {
+		this.eventQueue = new EventQueue(subscribers, rawDataSubscribers, dataBridgeConfiguration);
+		this.streamDefinitionStore = streamDefinitionStore;
+		this.authenticationHandler = authenticationHandler;
+		streamDefinitionStore.subscribe(new StreamAddRemoveListener() {
+			@Override public void streamAdded(int tenantId, String streamId) {
 
-    public EventDispatcher(AbstractStreamDefinitionStore streamDefinitionStore,
-                           DataBridgeConfiguration dataBridgeConfiguration, AuthenticationHandler authenticationHandler) {
-        this.eventQueue = new EventQueue(subscribers, rawDataSubscribers, dataBridgeConfiguration);
-        this.streamDefinitionStore = streamDefinitionStore;
-        this.authenticationHandler = authenticationHandler;
-        streamDefinitionStore.subscribe(new StreamAddRemoveListener() {
-            @Override
-            public void streamAdded(int tenantId, String streamId) {
+			}
 
-            }
+			@Override public void streamRemoved(int tenantId, String streamId) {
+				removeStreamDefinitionFromStreamTypeHolder(tenantId, streamId);
 
-            @Override
-            public void streamRemoved(int tenantId, String streamId) {
-                removeStreamDefinitionFromStreamTypeHolder(tenantId, streamId);
+			}
+		});
+	}
 
-            }
-        });
-    }
+	public void addCallback(AgentCallback agentCallback) {
+		subscribers.add(agentCallback);
+	}
 
-    public void addCallback(AgentCallback agentCallback) {
-        subscribers.add(agentCallback);
-    }
+	/**
+	 * Add thrift subscribers
+	 *
+	 * @param agentCallback
+	 */
+	public void addCallback(RawDataAgentCallback agentCallback) {
+		rawDataSubscribers.add(agentCallback);
+	}
 
-    /**
-     * Add thrift subscribers
-     *
-     * @param agentCallback
-     */
-    public void addCallback(RawDataAgentCallback agentCallback) {
-        rawDataSubscribers.add(agentCallback);
-    }
+	public synchronized String defineStream(String streamDefinition, AgentSession agentSession)
+			throws MalformedStreamDefinitionException,
+			       DifferentStreamDefinitionAlreadyDefinedException,
+			       StreamDefinitionStoreException {
 
-    public synchronized String defineStream(String streamDefinition, AgentSession agentSession)
-            throws MalformedStreamDefinitionException,
-            DifferentStreamDefinitionAlreadyDefinedException,
-            StreamDefinitionStoreException {
+		int tenantId = agentSession.getCredentials().getTenantId();
 
-        int tenantId = agentSession.getCredentials().getTenantId();
+		StreamDefinition newStreamDefinition =
+				EventDefinitionConverterUtils.convertFromJson(streamDefinition);
 
-        StreamDefinition newStreamDefinition = EventDefinitionConverterUtils.convertFromJson(streamDefinition);
+		StreamTypeHolder streamTypeHolder = getStreamDefinitionHolder(tenantId);
+		StreamAttributeComposite attributeComposite =
+				streamTypeHolder.getAttributeComposite(newStreamDefinition.getStreamId());
+		if (attributeComposite != null) {
 
-        StreamTypeHolder streamTypeHolder = getStreamDefinitionHolder(tenantId);
-        StreamAttributeComposite attributeComposite = streamTypeHolder.getAttributeComposite(newStreamDefinition.getStreamId());
-        if (attributeComposite != null) {
+			StreamDefinition existingStreamDefinition = attributeComposite.getStreamDefinition();
+			if (!existingStreamDefinition.equals(newStreamDefinition)) {
+				throw new DifferentStreamDefinitionAlreadyDefinedException(
+						"Similar event stream for " + newStreamDefinition +
+						" with the same name and version already exist: " + streamDefinitionStore
+								.getStreamDefinition(newStreamDefinition.getName(),
+								                     newStreamDefinition.getVersion(), tenantId));
+			}
+			newStreamDefinition = existingStreamDefinition;
 
-            StreamDefinition existingStreamDefinition = attributeComposite.getStreamDefinition();
-            if (!existingStreamDefinition.equals(newStreamDefinition)) {
-                throw new DifferentStreamDefinitionAlreadyDefinedException("Similar event stream for " + newStreamDefinition + " with the same name and version already exist: " + streamDefinitionStore.getStreamDefinition(newStreamDefinition.getName(), newStreamDefinition.getVersion(), tenantId));
-            }
-            newStreamDefinition = existingStreamDefinition;
+		} else {
+			for (StreamAttributeComposite aAttributeComposite : streamTypeHolder
+					.getAttributeCompositeMap().values()) {
+				validateStreamDefinition(newStreamDefinition,
+				                         aAttributeComposite.getStreamDefinition());
+			}
 
-        } else {
-            for (StreamAttributeComposite aAttributeComposite : streamTypeHolder.getAttributeCompositeMap().values()) {
-                validateStreamDefinition(newStreamDefinition, aAttributeComposite.getStreamDefinition());
-            }
+			updateDomainNameStreamTypeHolderCache(newStreamDefinition, tenantId);
+			streamDefinitionStore.saveStreamDefinition(newStreamDefinition, tenantId);
 
-            updateDomainNameStreamTypeHolderCache(newStreamDefinition, tenantId);
-            streamDefinitionStore.saveStreamDefinition(newStreamDefinition, tenantId);
+		}
 
-        }
+		for (AgentCallback agentCallback : subscribers) {
+			agentCallback.definedStream(newStreamDefinition, tenantId);
+		}
+		for (RawDataAgentCallback agentCallback : rawDataSubscribers) {
+			agentCallback.definedStream(newStreamDefinition, tenantId);
+		}
+		return newStreamDefinition.getStreamId();
+	}
 
-        for (AgentCallback agentCallback : subscribers) {
-            agentCallback.definedStream(newStreamDefinition, tenantId);
-        }
-        for (RawDataAgentCallback agentCallback : rawDataSubscribers) {
-            agentCallback.definedStream(newStreamDefinition, tenantId);
-        }
-        return newStreamDefinition.getStreamId();
-    }
+	public synchronized String defineStream(String streamDefinition, AgentSession agentSession,
+	                                        String indexDefinition)
+			throws MalformedStreamDefinitionException,
+			       DifferentStreamDefinitionAlreadyDefinedException,
+			       StreamDefinitionStoreException {
 
-    public synchronized String defineStream(String streamDefinition, AgentSession agentSession,
-                                            String indexDefinition)
-            throws MalformedStreamDefinitionException,
-            DifferentStreamDefinitionAlreadyDefinedException,
-            StreamDefinitionStoreException {
+		int tenantId = agentSession.getCredentials().getTenantId();
 
-        int tenantId = agentSession.getCredentials().getTenantId();
+		StreamDefinition newStreamDefinition =
+				EventDefinitionConverterUtils.convertFromJson(streamDefinition);
+		StreamTypeHolder streamTypeHolder = getStreamDefinitionHolder(tenantId);
+		StreamAttributeComposite attributeComposite =
+				streamTypeHolder.getAttributeComposite(newStreamDefinition.getStreamId());
+		if (attributeComposite != null) {
 
-        StreamDefinition newStreamDefinition = EventDefinitionConverterUtils.convertFromJson(streamDefinition);
-        StreamTypeHolder streamTypeHolder = getStreamDefinitionHolder(tenantId);
-        StreamAttributeComposite attributeComposite = streamTypeHolder.getAttributeComposite(newStreamDefinition.getStreamId());
-        if (attributeComposite != null) {
+			StreamDefinition existingStreamDefinition = attributeComposite.getStreamDefinition();
+			if (!existingStreamDefinition.equals(newStreamDefinition)) {
+				throw new DifferentStreamDefinitionAlreadyDefinedException(
+						"Similar event stream for " + newStreamDefinition +
+						" with the same name and version already exist: " + streamDefinitionStore
+								.getStreamDefinition(newStreamDefinition.getName(),
+								                     newStreamDefinition.getVersion(), tenantId));
+			}
+			newStreamDefinition = existingStreamDefinition;
 
-            StreamDefinition existingStreamDefinition = attributeComposite.getStreamDefinition();
-            if (!existingStreamDefinition.equals(newStreamDefinition)) {
-                throw new DifferentStreamDefinitionAlreadyDefinedException("Similar event stream for " + newStreamDefinition + " with the same name and version already exist: " + streamDefinitionStore.getStreamDefinition(newStreamDefinition.getName(), newStreamDefinition.getVersion(), tenantId));
-            }
-            newStreamDefinition = existingStreamDefinition;
+		} else {
+			for (StreamAttributeComposite aAttributeComposite : streamTypeHolder
+					.getAttributeCompositeMap().values()) {
+				validateStreamDefinition(newStreamDefinition,
+				                         aAttributeComposite.getStreamDefinition());
+			}
 
-        } else {
-            for (StreamAttributeComposite aAttributeComposite : streamTypeHolder.getAttributeCompositeMap().values()) {
-                validateStreamDefinition(newStreamDefinition, aAttributeComposite.getStreamDefinition());
-            }
+			updateDomainNameStreamTypeHolderCache(newStreamDefinition, tenantId);
+			streamDefinitionStore.saveStreamDefinition(newStreamDefinition, tenantId);
+		}
+		newStreamDefinition.createIndexDefinition(indexDefinition);
 
-            updateDomainNameStreamTypeHolderCache(newStreamDefinition, tenantId);
-            streamDefinitionStore.saveStreamDefinition(newStreamDefinition, tenantId);
-        }
-        newStreamDefinition.createIndexDefinition(indexDefinition);
+		for (AgentCallback agentCallback : subscribers) {
+			agentCallback.definedStream(newStreamDefinition, tenantId);
+		}
+		for (RawDataAgentCallback agentCallback : rawDataSubscribers) {
+			agentCallback.definedStream(newStreamDefinition, tenantId);
+		}
+		return newStreamDefinition.getStreamId();
+	}
 
-        for (AgentCallback agentCallback : subscribers) {
-            agentCallback.definedStream(newStreamDefinition, tenantId);
-        }
-        for (RawDataAgentCallback agentCallback : rawDataSubscribers) {
-            agentCallback.definedStream(newStreamDefinition, tenantId);
-        }
-        return newStreamDefinition.getStreamId();
-    }
+	private void validateStreamDefinition(StreamDefinition newStreamDefinition,
+	                                      StreamDefinition existingStreamDefinition)
+			throws DifferentStreamDefinitionAlreadyDefinedException {
+		if (newStreamDefinition.getName().equals(existingStreamDefinition.getName())) {
+			validateAttributes(newStreamDefinition.getMetaData(),
+			                   existingStreamDefinition.getMetaData(), "meta", newStreamDefinition,
+			                   existingStreamDefinition);
+			validateAttributes(newStreamDefinition.getCorrelationData(),
+			                   existingStreamDefinition.getCorrelationData(), "correlation",
+			                   newStreamDefinition, existingStreamDefinition);
+			validateAttributes(newStreamDefinition.getPayloadData(),
+			                   existingStreamDefinition.getPayloadData(), "payload",
+			                   newStreamDefinition, existingStreamDefinition);
+		}
+	}
 
-    private void validateStreamDefinition(StreamDefinition newStreamDefinition,
-                                          StreamDefinition existingStreamDefinition)
-            throws DifferentStreamDefinitionAlreadyDefinedException {
-        if (newStreamDefinition.getName().equals(existingStreamDefinition.getName())) {
-            validateAttributes(newStreamDefinition.getMetaData(), existingStreamDefinition.getMetaData(), "meta", newStreamDefinition, existingStreamDefinition);
-            validateAttributes(newStreamDefinition.getCorrelationData(), existingStreamDefinition.getCorrelationData(), "correlation", newStreamDefinition, existingStreamDefinition);
-            validateAttributes(newStreamDefinition.getPayloadData(), existingStreamDefinition.getPayloadData(), "payload", newStreamDefinition, existingStreamDefinition);
-        }
-    }
+	private void validateAttributes(List<Attribute> newAttributes,
+	                                List<Attribute> existingAttributes, String type,
+	                                StreamDefinition newStreamDefinition,
+	                                StreamDefinition existingStreamDefinition)
+			throws DifferentStreamDefinitionAlreadyDefinedException {
+		if (newAttributes != null && existingAttributes != null) {
+			for (Attribute attribute : newAttributes) {
+				for (Attribute existingAttribute : existingAttributes) {
+					if (attribute.getName().equals(existingAttribute.getName())) {
+						if (attribute.getType() != existingAttribute.getType()) {
+							throw new DifferentStreamDefinitionAlreadyDefinedException(
+									"Attribute type mismatch " + type + " " +
+									attribute.getName() + " type:" + attribute.getType() +
+									" was already defined with type:" +
+									existingAttribute.getType() +
+									" in " + existingStreamDefinition + ", hence " +
+									newStreamDefinition +
+									" cannot be defined");
+						}
+					}
+				}
+			}
+		}
+	}
 
-    private void validateAttributes(List<Attribute> newAttributes,
-                                    List<Attribute> existingAttributes, String type,
-                                    StreamDefinition newStreamDefinition,
-                                    StreamDefinition existingStreamDefinition)
-            throws DifferentStreamDefinitionAlreadyDefinedException {
-        if (newAttributes != null && existingAttributes != null) {
-            for (Attribute attribute : newAttributes) {
-                for (Attribute existingAttribute : existingAttributes) {
-                    if (attribute.getName().equals(existingAttribute.getName())) {
-                        if (attribute.getType() != existingAttribute.getType()) {
-                            throw new DifferentStreamDefinitionAlreadyDefinedException("Attribute type mismatch " + type + " " +
-                                    attribute.getName() + " type:" + attribute.getType() +
-                                    " was already defined with type:" + existingAttribute.getType() +
-                                    " in " + existingStreamDefinition + ", hence " + newStreamDefinition +
-                                    " cannot be defined");
-                        }
-                    }
-                }
-            }
-        }
-    }
+	public void publish(Object eventBundle, AgentSession agentSession,
+	                    EventConverter eventConverter) {
+		eventQueue.publish(new EventComposite(eventBundle, getStreamDefinitionHolder(
+				agentSession.getCredentials().getTenantId()), agentSession, eventConverter));
+	}
 
+	private StreamTypeHolder getStreamDefinitionHolder(int tenantId) {
+		// this will occur only outside of carbon (ex: Siddhi)
 
-    public void publish(Object eventBundle, AgentSession agentSession,
-                        EventConverter eventConverter) {
-        eventQueue.publish(new EventComposite(eventBundle, getStreamDefinitionHolder(agentSession.getCredentials().getTenantId()), agentSession, eventConverter));
-    }
+		StreamTypeHolder streamTypeHolder = domainNameStreamTypeHolderCache.get(tenantId);
 
-    private StreamTypeHolder getStreamDefinitionHolder(int tenantId) {
-        // this will occur only outside of carbon (ex: Siddhi)
+		if (streamTypeHolder != null) {
+			if (log.isDebugEnabled()) {
+				String logMsg = "Event stream holder for tenant : " + tenantId + " : \n ";
+				logMsg += "Meta, Correlation & Payload Data Type Map : ";
+				for (Map.Entry entry : streamTypeHolder.getAttributeCompositeMap().entrySet()) {
+					logMsg += "StreamID=" + entry.getKey() + " :  ";
+					logMsg += "Meta= " + Arrays.deepToString(
+							((StreamAttributeComposite) entry.getValue()).getAttributeTypes()[0]) +
+					          " :  ";
+					logMsg += "Correlation= " + Arrays.deepToString(
+							((StreamAttributeComposite) entry.getValue()).getAttributeTypes()[1]) +
+					          " :  ";
+					logMsg += "Payload= " + Arrays.deepToString(
+							((StreamAttributeComposite) entry.getValue()).getAttributeTypes()[2]) +
+					          "\n";
+				}
+				log.debug(logMsg);
+			}
+			return streamTypeHolder;
+		} else {
+			return initDomainNameStreamTypeHolderCache(tenantId);
+		}
+	}
 
-        StreamTypeHolder streamTypeHolder = domainNameStreamTypeHolderCache.get(tenantId);
+	public synchronized void updateStreamDefinitionHolder(AgentSession agentSession) {
+		int tenantId = agentSession.getCredentials().getTenantId();
+		StreamTypeHolder streamTypeHolder = domainNameStreamTypeHolderCache.get(tenantId);
 
-        if (streamTypeHolder != null) {
-            if (log.isDebugEnabled()) {
-                String logMsg = "Event stream holder for tenant : " + tenantId + " : \n ";
-                logMsg += "Meta, Correlation & Payload Data Type Map : ";
-                for (Map.Entry entry : streamTypeHolder.getAttributeCompositeMap().entrySet()) {
-                    logMsg += "StreamID=" + entry.getKey() + " :  ";
-                    logMsg += "Meta= " + Arrays.deepToString(((StreamAttributeComposite) entry.getValue()).getAttributeTypes()[0]) + " :  ";
-                    logMsg += "Correlation= " + Arrays.deepToString(((StreamAttributeComposite) entry.getValue()).getAttributeTypes()[1]) + " :  ";
-                    logMsg += "Payload= " + Arrays.deepToString(((StreamAttributeComposite) entry.getValue()).getAttributeTypes()[2]) + "\n";
-                }
-                log.debug(logMsg);
-            }
-            return streamTypeHolder;
-        } else {
-            return initDomainNameStreamTypeHolderCache(tenantId);
-        }
-    }
+		if (streamTypeHolder != null) {
+			if (log.isDebugEnabled()) {
+				String logMsg = "Event stream holder for tenant : " + tenantId + " : \n ";
+				logMsg += "Meta, Correlation & Payload Data Type Map : ";
+				for (Map.Entry entry : streamTypeHolder.getAttributeCompositeMap().entrySet()) {
+					logMsg += "StreamID=" + entry.getKey() + " :  ";
+					logMsg += "Meta= " + Arrays.deepToString(
+							((StreamAttributeComposite) entry.getValue()).getAttributeTypes()[0]) +
+					          " :  ";
+					logMsg += "Correlation= " + Arrays.deepToString(
+							((StreamAttributeComposite) entry.getValue()).getAttributeTypes()[1]) +
+					          " :  ";
+					logMsg += "Payload= " + Arrays.deepToString(
+							((StreamAttributeComposite) entry.getValue()).getAttributeTypes()[2]) +
+					          "\n";
+				}
+				log.debug(logMsg);
+			}
+			updateDomainNameStreamTypeHolderCache(tenantId);
+		}
+	}
 
-    public synchronized void updateStreamDefinitionHolder(AgentSession agentSession) {
-        int tenantId = agentSession.getCredentials().getTenantId();
-        StreamTypeHolder streamTypeHolder = domainNameStreamTypeHolderCache.get(tenantId);
+	private synchronized void updateDomainNameStreamTypeHolderCache(
+			StreamDefinition streamDefinition, int tenantId) {
+		StreamTypeHolder streamTypeHolder = getStreamDefinitionHolder(tenantId);
+		streamTypeHolder.putStreamDefinition(streamDefinition);
+	}
 
-        if (streamTypeHolder != null) {
-            if (log.isDebugEnabled()) {
-                String logMsg = "Event stream holder for tenant : " + tenantId + " : \n ";
-                logMsg += "Meta, Correlation & Payload Data Type Map : ";
-                for (Map.Entry entry : streamTypeHolder.getAttributeCompositeMap().entrySet()) {
-                    logMsg += "StreamID=" + entry.getKey() + " :  ";
-                    logMsg += "Meta= " + Arrays.deepToString(((StreamAttributeComposite) entry.getValue()).getAttributeTypes()[0]) + " :  ";
-                    logMsg += "Correlation= " + Arrays.deepToString(((StreamAttributeComposite) entry.getValue()).getAttributeTypes()[1]) + " :  ";
-                    logMsg += "Payload= " + Arrays.deepToString(((StreamAttributeComposite) entry.getValue()).getAttributeTypes()[2]) + "\n";
-                }
-                log.debug(logMsg);
-            }
-            updateDomainNameStreamTypeHolderCache(tenantId);
-        }
-    }
+	public synchronized void reloadDomainNameStreamTypeHolderCache(int tenantId) {
+		StreamTypeHolder streamTypeHolder = getStreamDefinitionHolder(tenantId);
+		Collection<StreamDefinition> allStreamDefinitions =
+				streamDefinitionStore.getAllStreamDefinitions(tenantId);
+		for (StreamDefinition streamDefinition : allStreamDefinitions) {
+			if (!streamTypeHolder.getAttributeCompositeMap()
+			                     .containsKey(streamDefinition.getStreamId())) {
+				streamTypeHolder.putStreamDefinition(streamDefinition);
+				for (AgentCallback agentCallback : subscribers) {
+					agentCallback.definedStream(streamDefinition, tenantId);
+				}
+				for (RawDataAgentCallback agentCallback : rawDataSubscribers) {
+					agentCallback.definedStream(streamDefinition, tenantId);
+				}
+			}
+		}
+	}
 
-    private synchronized void updateDomainNameStreamTypeHolderCache(
-            StreamDefinition streamDefinition, int tenantId) {
-        StreamTypeHolder streamTypeHolder = getStreamDefinitionHolder(tenantId);
-        streamTypeHolder.putStreamDefinition(streamDefinition);
-    }
+	private synchronized StreamTypeHolder initDomainNameStreamTypeHolderCache(int tenantId) {
+		StreamTypeHolder streamTypeHolder = domainNameStreamTypeHolderCache.get(tenantId);
+		if (null == streamTypeHolder) {
+			streamTypeHolder = new StreamTypeHolder(tenantId);
+			streamTypeHolder.setEventDispatcherCallback(this);
+			Collection<StreamDefinition> allStreamDefinitions =
+					streamDefinitionStore.getAllStreamDefinitions(tenantId);
+			if (null != allStreamDefinitions) {
+				for (StreamDefinition aStreamDefinition : allStreamDefinitions) {
+					streamTypeHolder.putStreamDefinition(aStreamDefinition);
+					for (AgentCallback agentCallback : subscribers) {
+						agentCallback.definedStream(aStreamDefinition, tenantId);
+					}
+					for (RawDataAgentCallback agentCallback : rawDataSubscribers) {
+						agentCallback.definedStream(aStreamDefinition, tenantId);
+					}
+				}
+			}
+			domainNameStreamTypeHolderCache.put(tenantId, streamTypeHolder);
+		}
+		return streamTypeHolder;
+	}
 
-    public synchronized void reloadDomainNameStreamTypeHolderCache(int tenantId){
-        StreamTypeHolder streamTypeHolder = getStreamDefinitionHolder(tenantId);
-        Collection<StreamDefinition> allStreamDefinitions =
-                streamDefinitionStore.getAllStreamDefinitions(tenantId);
-        for (StreamDefinition streamDefinition: allStreamDefinitions){
-            if (!streamTypeHolder.getAttributeCompositeMap().containsKey(streamDefinition.getStreamId())){
-                streamTypeHolder.putStreamDefinition(streamDefinition);
-                for (AgentCallback agentCallback : subscribers) {
-                    agentCallback.definedStream(streamDefinition, tenantId);
-                }
-                for (RawDataAgentCallback agentCallback : rawDataSubscribers) {
-                    agentCallback.definedStream(streamDefinition, tenantId);
-                }
-            }
-        }
-    }
+	private synchronized StreamTypeHolder updateDomainNameStreamTypeHolderCache(int tenantId) {
+		StreamTypeHolder streamTypeHolder = domainNameStreamTypeHolderCache.get(tenantId);
+		if (null != streamTypeHolder) {
+			Collection<StreamDefinition> allStreamDefinitions =
+					streamDefinitionStore.getAllStreamDefinitions(tenantId);
+			if (null != allStreamDefinitions) {
+				for (StreamDefinition aStreamDefinition : allStreamDefinitions) {
+					if (streamTypeHolder.getAttributeComposite(aStreamDefinition.getStreamId()) ==
+					    null) {
+						streamTypeHolder.putStreamDefinition(aStreamDefinition);
+						for (AgentCallback agentCallback : subscribers) {
+							agentCallback.definedStream(aStreamDefinition, tenantId);
+						}
+						for (RawDataAgentCallback agentCallback : rawDataSubscribers) {
+							agentCallback.definedStream(aStreamDefinition, tenantId);
+						}
+					}
+				}
 
-    private synchronized StreamTypeHolder initDomainNameStreamTypeHolderCache(int tenantId) {
-        StreamTypeHolder streamTypeHolder = domainNameStreamTypeHolderCache.get(tenantId);
-        if (null == streamTypeHolder) {
-            streamTypeHolder = new StreamTypeHolder(tenantId);
-            streamTypeHolder.setEventDispatcherCallback(this);
-            Collection<StreamDefinition> allStreamDefinitions =
-                    streamDefinitionStore.getAllStreamDefinitions(tenantId);
-            if (null != allStreamDefinitions) {
-                for (StreamDefinition aStreamDefinition : allStreamDefinitions) {
-                    streamTypeHolder.putStreamDefinition(aStreamDefinition);
-                    for (AgentCallback agentCallback : subscribers) {
-                        agentCallback.definedStream(aStreamDefinition, tenantId);
-                    }
-                    for (RawDataAgentCallback agentCallback : rawDataSubscribers) {
-                        agentCallback.definedStream(aStreamDefinition, tenantId);
-                    }
-                }
-            }
-            domainNameStreamTypeHolderCache.put(tenantId, streamTypeHolder);
-        }
-        return streamTypeHolder;
-    }
+				List<String> streamIdList = new ArrayList<String>();
+				for (StreamDefinition streamDefinition : allStreamDefinitions) {
+					streamIdList.add(streamDefinition.getStreamId());
+				}
 
-    private synchronized StreamTypeHolder updateDomainNameStreamTypeHolderCache(int tenantId) {
-        StreamTypeHolder streamTypeHolder = domainNameStreamTypeHolderCache.get(tenantId);
-        if (null != streamTypeHolder) {
-            Collection<StreamDefinition> allStreamDefinitions =
-                    streamDefinitionStore.getAllStreamDefinitions(tenantId);
-            if (null != allStreamDefinitions) {
-                for (StreamDefinition aStreamDefinition : allStreamDefinitions) {
-                    if (streamTypeHolder.getAttributeComposite(aStreamDefinition.getStreamId()) == null) {
-                        streamTypeHolder.putStreamDefinition(aStreamDefinition);
-                        for (AgentCallback agentCallback : subscribers) {
-                            agentCallback.definedStream(aStreamDefinition, tenantId);
-                        }
-                        for (RawDataAgentCallback agentCallback : rawDataSubscribers) {
-                            agentCallback.definedStream(aStreamDefinition, tenantId);
-                        }
-                    }
-                }
+				Iterator<String> streamIdIterator =
+						streamTypeHolder.getAttributeCompositeMap().keySet().iterator();
+				while (streamIdIterator.hasNext()) {
+					if (!streamIdList.contains(streamIdIterator.next())) {
+						streamIdIterator.remove();
+					}
+				}
 
-                List<String> streamIdList = new ArrayList<String>();
-                for (StreamDefinition streamDefinition : allStreamDefinitions) {
-                    streamIdList.add(streamDefinition.getStreamId());
-                }
+			}
+			domainNameStreamTypeHolderCache.put(tenantId, streamTypeHolder);
+		}
+		return streamTypeHolder;
+	}
 
-                Iterator<String> streamIdIterator = streamTypeHolder.getAttributeCompositeMap().keySet().iterator();
-                while (streamIdIterator.hasNext()) {
-                    if (!streamIdList.contains(streamIdIterator.next())) {
-                        streamIdIterator.remove();
-                    }
-                }
+	public List<AgentCallback> getSubscribers() {
+		return subscribers;
+	}
 
-            }
-            domainNameStreamTypeHolderCache.put(tenantId, streamTypeHolder);
-        }
-        return streamTypeHolder;
-    }
+	public List<RawDataAgentCallback> getRawDataSubscribers() {
+		return rawDataSubscribers;
+	}
 
+	public String findStreamId(String streamName, String streamVersion, AgentSession agentSession)
+			throws StreamDefinitionStoreException {
 
-    public List<AgentCallback> getSubscribers() {
-        return subscribers;
-    }
+		int tenantId = agentSession.getCredentials().getTenantId();
 
-    public List<RawDataAgentCallback> getRawDataSubscribers() {
-        return rawDataSubscribers;
-    }
+		//Updating the cache when calling the findStreamId to keep the sync between the stream manager and register with data publisher
+		//for CEP - need to review and fix
+		updateDomainNameStreamTypeHolderCache(tenantId);
+		StreamTypeHolder streamTypeHolder = getStreamDefinitionHolder(tenantId);
+		StreamAttributeComposite attributeComposite = streamTypeHolder.getAttributeComposite(
+				DataBridgeCommonsUtils.generateStreamId(streamName, streamVersion));
+		if (attributeComposite != null) {
+			return attributeComposite.getStreamDefinition().getStreamId();
+		}
+		return null;
+	}
 
-    public String findStreamId(String streamName, String streamVersion, AgentSession agentSession)
-            throws StreamDefinitionStoreException {
+	public boolean deleteStream(String streamName, String streamVersion,
+	                            AgentSession agentSession) {
 
-        int tenantId = agentSession.getCredentials().getTenantId();
+		int tenantId = agentSession.getCredentials().getTenantId();
 
-        //Updating the cache when calling the findStreamId to keep the sync between the stream manager and register with data publisher
-        //for CEP - need to review and fix
-        updateDomainNameStreamTypeHolderCache(tenantId);
-        StreamTypeHolder streamTypeHolder = getStreamDefinitionHolder(tenantId);
-        StreamAttributeComposite attributeComposite = streamTypeHolder.getAttributeComposite(DataBridgeCommonsUtils.generateStreamId(streamName, streamVersion));
-        if (attributeComposite != null) {
-            return attributeComposite.getStreamDefinition().getStreamId();
-        }
-        return null;
-    }
+		String streamId = DataBridgeCommonsUtils.generateStreamId(streamName, streamVersion);
+		StreamDefinition streamDefinition =
+				removeStreamDefinitionFromStreamTypeHolder(tenantId, streamId);
+		if (streamDefinition != null) {
+			for (AgentCallback agentCallback : subscribers) {
+				agentCallback.removeStream(streamDefinition, tenantId);
+			}
+			for (RawDataAgentCallback agentCallback : rawDataSubscribers) {
+				agentCallback.removeStream(streamDefinition, tenantId);
+			}
+		}
+		return streamDefinitionStore.deleteStreamDefinition(streamName, streamVersion, tenantId);
+	}
 
-    public boolean deleteStream(String streamName, String streamVersion,
-                                AgentSession agentSession) {
-
-        int tenantId = agentSession.getCredentials().getTenantId();
-
-        String streamId = DataBridgeCommonsUtils.generateStreamId(streamName, streamVersion);
-        StreamDefinition streamDefinition = removeStreamDefinitionFromStreamTypeHolder(tenantId, streamId);
-        if (streamDefinition != null) {
-            for (AgentCallback agentCallback : subscribers) {
-                agentCallback.removeStream(streamDefinition, tenantId);
-            }
-            for (RawDataAgentCallback agentCallback : rawDataSubscribers) {
-                agentCallback.removeStream(streamDefinition, tenantId);
-            }
-        }
-        return streamDefinitionStore.deleteStreamDefinition(streamName, streamVersion, tenantId);
-    }
-
-    private synchronized StreamDefinition removeStreamDefinitionFromStreamTypeHolder(int tenantId,
-                                                                                     String streamId) {
-        StreamTypeHolder streamTypeHolder = domainNameStreamTypeHolderCache.get(tenantId);
-        if (streamTypeHolder != null) {
-            StreamAttributeComposite attributeComposite = streamTypeHolder.getAttributeCompositeMap().remove(streamId);
-            if (attributeComposite != null) {
-                return attributeComposite.getStreamDefinition();
-            }
-        }
-        return null;
-    }
+	private synchronized StreamDefinition removeStreamDefinitionFromStreamTypeHolder(int tenantId,
+	                                                                                 String streamId) {
+		StreamTypeHolder streamTypeHolder = domainNameStreamTypeHolderCache.get(tenantId);
+		if (streamTypeHolder != null) {
+			StreamAttributeComposite attributeComposite =
+					streamTypeHolder.getAttributeCompositeMap().remove(streamId);
+			if (attributeComposite != null) {
+				return attributeComposite.getStreamDefinition();
+			}
+		}
+		return null;
+	}
 }

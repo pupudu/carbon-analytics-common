@@ -24,24 +24,22 @@ import java.util.Collection;
  */
 public interface StreamDefinitionStore {
 
-    public StreamDefinition getStreamDefinition(String streamName,
-                                                String streamVersion, int tenantId)
-            throws StreamDefinitionNotFoundException, StreamDefinitionStoreException;
+	public StreamDefinition getStreamDefinition(String streamName, String streamVersion,
+	                                            int tenantId)
+			throws StreamDefinitionNotFoundException, StreamDefinitionStoreException;
 
-    public StreamDefinition getStreamDefinition(String streamId, int tenantId)
-            throws StreamDefinitionNotFoundException, StreamDefinitionStoreException;
+	public StreamDefinition getStreamDefinition(String streamId, int tenantId)
+			throws StreamDefinitionNotFoundException, StreamDefinitionStoreException;
 
+	public Collection<StreamDefinition> getAllStreamDefinitions(int tenantId);
 
-    public Collection<StreamDefinition> getAllStreamDefinitions(int tenantId);
+	public void saveStreamDefinition(StreamDefinition streamDefinition, int tenantId)
+			throws DifferentStreamDefinitionAlreadyDefinedException, StreamDefinitionStoreException;
 
-    public void saveStreamDefinition(StreamDefinition streamDefinition, int tenantId)
-            throws DifferentStreamDefinitionAlreadyDefinedException, StreamDefinitionStoreException;
+	public boolean deleteStreamDefinition(String streamName, String streamVersion, int tenantId);
 
-    public boolean deleteStreamDefinition(String streamName, String streamVersion, int tenantId);
+	public void subscribe(StreamAddRemoveListener streamAddRemoveListener);
 
-    public void subscribe(StreamAddRemoveListener streamAddRemoveListener);
-
-    public void unsubscribe(StreamAddRemoveListener streamAddRemoveListener);
-
+	public void unsubscribe(StreamAddRemoveListener streamAddRemoveListener);
 
 }

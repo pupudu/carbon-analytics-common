@@ -39,119 +39,147 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * The in memory implementation of the Event Stream definition Store
  */
-public class RegistryStreamDefinitionStore extends
-        AbstractStreamDefinitionStore {
-    private Log log = LogFactory.getLog(RegistryStreamDefinitionStore.class);
+public class RegistryStreamDefinitionStore extends AbstractStreamDefinitionStore {
+	private Log log = LogFactory.getLog(RegistryStreamDefinitionStore.class);
 
+	public StreamDefinition getStreamDefinitionFromStore(String name, String version, int tenantId)
+			throws StreamDefinitionStoreException {
 
-    public StreamDefinition getStreamDefinitionFromStore(String name, String version, int tenantId)
-            throws StreamDefinitionStoreException {
+		try {
+			UserRegistry registry =
+					ServiceHolder.getRegistryService().getGovernanceSystemRegistry(tenantId);
+			if (registry.resourceExists(
+					RegistryStreamDefinitionStoreUtil.getStreamDefinitionPath(name, version))) {
+				Resource resource = registry.get(
+						RegistryStreamDefinitionStoreUtil.getStreamDefinitionPath(name, version));
+				Object content = resource.getContent();
+				if (content != null) {
+					StreamDefinition streamDefinition = EventDefinitionConverterUtils.
+							                                                                 convertFromJson(
+									                                                                 RegistryUtils
+											                                                                 .decodeBytes(
+													                                                                 (byte[]) resource
+															                                                                 .getContent()));
 
-        try {
-            UserRegistry registry = ServiceHolder.getRegistryService().getGovernanceSystemRegistry(tenantId);
-            if (registry.resourceExists(RegistryStreamDefinitionStoreUtil.getStreamDefinitionPath(name, version))) {
-                Resource resource = registry.get(RegistryStreamDefinitionStoreUtil.getStreamDefinitionPath(name, version));
-                Object content = resource.getContent();
-                if (content != null) {
-                    StreamDefinition streamDefinition = EventDefinitionConverterUtils.
-                            convertFromJson(RegistryUtils.decodeBytes((byte[]) resource.getContent()));
+					if (registry.resourceExists(RegistryStreamDefinitionStoreUtil
+							                            .getStreamIndexDefinitionPath(name,
+							                                                          version))) {
+						Resource indexResource = registry.get(RegistryStreamDefinitionStoreUtil
+								                                      .getStreamIndexDefinitionPath(
+										                                      name, version));
+						streamDefinition.setIndexDefinition(IndexDefinitionConverterUtils.
+								                                                                 getIndexDefinition(
+										                                                                 RegistryUtils
+												                                                                 .decodeBytes(
+														                                                                 (byte[]) indexResource
+																                                                                 .getContent())));
+					}
+					return streamDefinition;
+				}
+			}
+			return null;
+		} catch (Exception e) {
+			log.error("Error in getting Stream Definition " + name + ":" + version, e);
+			throw new StreamDefinitionStoreException(
+					"Error in getting Stream Definition " + name + ":" + version, e);
+		}
+	}
 
-                    if (registry.resourceExists(RegistryStreamDefinitionStoreUtil.getStreamIndexDefinitionPath(name, version))) {
-                        Resource indexResource = registry.get(RegistryStreamDefinitionStoreUtil.getStreamIndexDefinitionPath(name, version));
-                        streamDefinition.setIndexDefinition(IndexDefinitionConverterUtils.
-                                getIndexDefinition(RegistryUtils.decodeBytes((byte[]) indexResource.getContent())));
-                    }
-                    return streamDefinition;
-                }
-            }
-            return null;
-        } catch (Exception e) {
-            log.error("Error in getting Stream Definition " + name + ":" + version, e);
-            throw new StreamDefinitionStoreException("Error in getting Stream Definition " + name + ":" + version, e);
-        }
-    }
+	@Override public StreamDefinition getStreamDefinitionFromStore(String streamId, int tenantId)
+			throws StreamDefinitionStoreException {
 
-    @Override
-    public StreamDefinition getStreamDefinitionFromStore(String streamId, int tenantId)
-            throws StreamDefinitionStoreException {
+		return getStreamDefinitionFromStore(
+				DataBridgeCommonsUtils.getStreamNameFromStreamId(streamId),
+				DataBridgeCommonsUtils.getStreamVersionFromStreamId(streamId), tenantId);
 
-        return getStreamDefinitionFromStore(DataBridgeCommonsUtils.getStreamNameFromStreamId(streamId),
-                DataBridgeCommonsUtils.getStreamVersionFromStreamId(streamId), tenantId);
+	}
 
-    }
+	@Override public boolean removeStreamDefinition(String name, String version, int tenantId) {
 
-    @Override
-    public boolean removeStreamDefinition(String name, String version, int tenantId) {
+		try {
+			UserRegistry registry =
+					ServiceHolder.getRegistryService().getGovernanceSystemRegistry(tenantId);
+			registry.delete(
+					RegistryStreamDefinitionStoreUtil.getStreamDefinitionPath(name, version));
+			return !registry.resourceExists(
+					RegistryStreamDefinitionStoreUtil.getStreamDefinitionPath(name, version));
+		} catch (RegistryException e) {
+			log.error("Error in deleting Stream Definition " + name + ":" + version);
+		}
 
-        try {
-            UserRegistry registry = ServiceHolder.getRegistryService().getGovernanceSystemRegistry(tenantId);
-            registry.delete(RegistryStreamDefinitionStoreUtil.getStreamDefinitionPath(name, version));
-            return !registry.resourceExists(RegistryStreamDefinitionStoreUtil.getStreamDefinitionPath(name, version));
-        } catch (RegistryException e) {
-            log.error("Error in deleting Stream Definition " + name + ":" + version);
-        }
+		return false;
+	}
 
+	@Override public void saveStreamDefinitionToStore(StreamDefinition streamDefinition,
+	                                                  int tenantId)
+			throws StreamDefinitionStoreException {
+		PrivilegedCarbonContext privilegedCarbonContext =
+				PrivilegedCarbonContext.getThreadLocalCarbonContext();
 
-        return false;
-    }
+		try {
+			UserRegistry registry =
+					ServiceHolder.getRegistryService().getGovernanceSystemRegistry(tenantId);
+			Resource resource = registry.newResource();
+			resource.setContent(EventDefinitionConverterUtils.convertToJson(streamDefinition));
+			resource.setMediaType("application/json");
+			registry.put(RegistryStreamDefinitionStoreUtil.getStreamDefinitionPath(streamDefinition.
+					                                                                                       getName(),
+			                                                                       streamDefinition
+					                                                                       .getVersion()),
+			             resource);
+			log.info("Stream definition added to registry successfully : " +
+			         streamDefinition.getStreamId());
+		} catch (RegistryException e) {
+			log.error("Error in saving Stream Definition " + streamDefinition, e);
+			throw new StreamDefinitionStoreException(
+					"Error in saving Stream Definition " + streamDefinition, e);
+		}
 
-    @Override
-    public void saveStreamDefinitionToStore(StreamDefinition streamDefinition, int tenantId)
-            throws StreamDefinitionStoreException {
-        PrivilegedCarbonContext privilegedCarbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+	}
 
-        try {
-            UserRegistry registry = ServiceHolder.getRegistryService().getGovernanceSystemRegistry(tenantId);
-            Resource resource = registry.newResource();
-            resource.setContent(EventDefinitionConverterUtils.convertToJson(streamDefinition));
-            resource.setMediaType("application/json");
-            registry.put(RegistryStreamDefinitionStoreUtil.getStreamDefinitionPath(streamDefinition.
-                    getName(), streamDefinition.getVersion()), resource);
-            log.info("Stream definition added to registry successfully : " + streamDefinition.getStreamId());
-        } catch (RegistryException e) {
-            log.error("Error in saving Stream Definition " + streamDefinition, e);
-            throw new StreamDefinitionStoreException("Error in saving Stream Definition " + streamDefinition, e);
-        }
+	public Collection<StreamDefinition> getAllStreamDefinitionsFromStore(int tenantId) {
+		ConcurrentHashMap<String, StreamDefinition> map =
+				new ConcurrentHashMap<String, StreamDefinition>();
 
-    }
+		try {
+			UserRegistry registry =
+					ServiceHolder.getRegistryService().getGovernanceSystemRegistry(tenantId);
 
-    public Collection<StreamDefinition> getAllStreamDefinitionsFromStore(int tenantId) {
-        ConcurrentHashMap<String, StreamDefinition> map = new ConcurrentHashMap<String, StreamDefinition>();
+			if (!registry.resourceExists(
+					RegistryStreamDefinitionStoreUtil.getStreamDefinitionStorePath())) {
+				registry.put(RegistryStreamDefinitionStoreUtil.getStreamDefinitionStorePath(),
+				             registry.newCollection());
+			} else {
+				org.wso2.carbon.registry.core.Collection collection =
+						(org.wso2.carbon.registry.core.Collection) registry
+								.get(RegistryStreamDefinitionStoreUtil.
+										                                      getStreamDefinitionStorePath());
+				for (String streamNameCollection : collection.getChildren()) {
 
-        try {
-            UserRegistry registry = ServiceHolder.getRegistryService().getGovernanceSystemRegistry(tenantId);
+					org.wso2.carbon.registry.core.Collection innerCollection =
+							(org.wso2.carbon.registry.core.Collection) registry
+									.get(streamNameCollection);
+					for (String streamVersionCollection : innerCollection.getChildren()) {
 
-            if (!registry.resourceExists(RegistryStreamDefinitionStoreUtil.getStreamDefinitionStorePath())) {
-                registry.put(RegistryStreamDefinitionStoreUtil.getStreamDefinitionStorePath(), registry.newCollection());
-            } else {
-                org.wso2.carbon.registry.core.Collection collection =
-                        (org.wso2.carbon.registry.core.Collection) registry.get(RegistryStreamDefinitionStoreUtil.
-                                getStreamDefinitionStorePath());
-                for (String streamNameCollection : collection.getChildren()) {
+						Resource resource = (Resource) registry.get(streamVersionCollection);
+						try {
+							StreamDefinition streamDefinition = EventDefinitionConverterUtils
+									.convertFromJson(RegistryUtils.decodeBytes(
+											(byte[]) resource.getContent()));
+							map.put(streamDefinition.getStreamId(), streamDefinition);
+						} catch (Throwable e) {
+							log.error("Error in retrieving streamDefinition from the resource at " +
+							          resource.getPath(), e);
+						}
+					}
+				}
+			}
 
-                    org.wso2.carbon.registry.core.Collection innerCollection =
-                            (org.wso2.carbon.registry.core.Collection) registry.get(streamNameCollection);
-                    for (String streamVersionCollection : innerCollection.getChildren()) {
+		} catch (RegistryException e) {
+			log.error("Error in retrieving streamDefinitions from the registry", e);
+		}
 
-                        Resource resource = (Resource) registry.get(streamVersionCollection);
-                        try {
-                            StreamDefinition streamDefinition = EventDefinitionConverterUtils
-                                    .convertFromJson(RegistryUtils.decodeBytes((byte[]) resource.getContent()));
-                            map.put(streamDefinition.getStreamId(), streamDefinition);
-                        } catch (Throwable e) {
-                            log.error("Error in retrieving streamDefinition from the resource at "
-                                    + resource.getPath(), e);
-                        }
-                    }
-                }
-            }
-
-        } catch (RegistryException e) {
-            log.error("Error in retrieving streamDefinitions from the registry", e);
-        }
-
-        return map.values();
-    }
-
+		return map.values();
+	}
 
 }

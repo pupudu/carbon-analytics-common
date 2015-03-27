@@ -15,13 +15,12 @@
 package org.wso2.carbon.event.stream.admin.internal.util;
 
 public class EventStreamConstants {
-    public static final String META = "meta";
-    public static final String CORRELATION = "correlation";
+	public static final String META = "meta";
+	public static final String CORRELATION = "correlation";
 
-    public static final String STREAM_SEPARATOR = ":";
-    public static final String ATTRIBUTE_SEPARATOR = "_";
+	public static final String STREAM_SEPARATOR = ":";
+	public static final String ATTRIBUTE_SEPARATOR = "_";
 
-
-    public static final String DEPLOYMENT_DIR = "eventstreams";
-    public static final String DEPLOYMENT_FILE_TYPE = "json";
+	public static final String DEPLOYMENT_DIR = "eventstreams";
+	public static final String DEPLOYMENT_FILE_TYPE = "json";
 }

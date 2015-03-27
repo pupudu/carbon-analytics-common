@@ -24,49 +24,51 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EventStreamServiceValueHolder {
 
-    private static CarbonEventStreamService carbonEventStreamService;
-    private static ConfigurationContextService configurationContextService;
-    private static List<EventStreamListener> eventStreamListenerList =  new CopyOnWriteArrayList<EventStreamListener>();
-    private static EventStreamRuntime eventStreamRuntime;
+	private static CarbonEventStreamService carbonEventStreamService;
+	private static ConfigurationContextService configurationContextService;
+	private static List<EventStreamListener> eventStreamListenerList =
+			new CopyOnWriteArrayList<EventStreamListener>();
+	private static EventStreamRuntime eventStreamRuntime;
 
-    private EventStreamServiceValueHolder() {
+	private EventStreamServiceValueHolder() {
 
-    }
+	}
 
-    public static CarbonEventStreamService getCarbonEventStreamService() {
-        return EventStreamServiceValueHolder.carbonEventStreamService;
-    }
+	public static CarbonEventStreamService getCarbonEventStreamService() {
+		return EventStreamServiceValueHolder.carbonEventStreamService;
+	}
 
-    public static void setCarbonEventStreamService(
-            CarbonEventStreamService carbonEventStreamService) {
-        EventStreamServiceValueHolder.carbonEventStreamService = carbonEventStreamService;
-    }
+	public static void setCarbonEventStreamService(
+			CarbonEventStreamService carbonEventStreamService) {
+		EventStreamServiceValueHolder.carbonEventStreamService = carbonEventStreamService;
+	}
 
-    public static void registerConfigurationContextService(ConfigurationContextService configurationContextService) {
-        EventStreamServiceValueHolder.configurationContextService = configurationContextService;
-    }
+	public static void registerConfigurationContextService(
+			ConfigurationContextService configurationContextService) {
+		EventStreamServiceValueHolder.configurationContextService = configurationContextService;
+	}
 
-    public static ConfigurationContextService getConfigurationContextService() {
-        return configurationContextService;
-    }
+	public static ConfigurationContextService getConfigurationContextService() {
+		return configurationContextService;
+	}
 
-    public static List<EventStreamListener> getEventStreamListenerList() {
-        return eventStreamListenerList;
-    }
+	public static List<EventStreamListener> getEventStreamListenerList() {
+		return eventStreamListenerList;
+	}
 
-    public static void registerEventStreamListener(EventStreamListener eventStreamListener) {
-        eventStreamListenerList.add(eventStreamListener);
-    }
+	public static void registerEventStreamListener(EventStreamListener eventStreamListener) {
+		eventStreamListenerList.add(eventStreamListener);
+	}
 
-    public static void unregisterEventStreamListener(EventStreamListener eventStreamListener) {
-        eventStreamListenerList.remove(eventStreamListener);
-    }
+	public static void unregisterEventStreamListener(EventStreamListener eventStreamListener) {
+		eventStreamListenerList.remove(eventStreamListener);
+	}
 
-    public static EventStreamRuntime getEventStreamRuntime() {
-        return eventStreamRuntime;
-    }
+	public static EventStreamRuntime getEventStreamRuntime() {
+		return eventStreamRuntime;
+	}
 
-    public static void registerEventStreamRuntime(EventStreamRuntime eventStreamRuntime) {
-        EventStreamServiceValueHolder.eventStreamRuntime = eventStreamRuntime;
-    }
+	public static void registerEventStreamRuntime(EventStreamRuntime eventStreamRuntime) {
+		EventStreamServiceValueHolder.eventStreamRuntime = eventStreamRuntime;
+	}
 }

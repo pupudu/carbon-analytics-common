@@ -46,158 +46,165 @@ import java.net.UnknownHostException;
  * Carbon based implementation of the agent server
  */
 public class ThriftDataReceiver {
-    private static final Log log = LogFactory.getLog(ThriftDataReceiver.class);
-    private DataBridgeReceiverService dataBridgeReceiverService;
-    private ThriftDataReceiverConfiguration thriftDataReceiverConfiguration;
-    private TServer authenticationServer;
-    private TServer dataReceiverServer;
+	private static final Log log = LogFactory.getLog(ThriftDataReceiver.class);
+	private DataBridgeReceiverService dataBridgeReceiverService;
+	private ThriftDataReceiverConfiguration thriftDataReceiverConfiguration;
+	private TServer authenticationServer;
+	private TServer dataReceiverServer;
 
-    /**
-     * Initialize Carbon Agent Server
-     *
-     * @param secureReceiverPort
-     * @param receiverPort
-     * @param dataBridgeReceiverService
-     */
-    public ThriftDataReceiver(int secureReceiverPort, int receiverPort,
-                              DataBridgeReceiverService dataBridgeReceiverService) {
-        this.dataBridgeReceiverService = dataBridgeReceiverService;
-        this.thriftDataReceiverConfiguration = new ThriftDataReceiverConfiguration(secureReceiverPort, receiverPort);
-    }
+	/**
+	 * Initialize Carbon Agent Server
+	 *
+	 * @param secureReceiverPort
+	 * @param receiverPort
+	 * @param dataBridgeReceiverService
+	 */
+	public ThriftDataReceiver(int secureReceiverPort, int receiverPort,
+	                          DataBridgeReceiverService dataBridgeReceiverService) {
+		this.dataBridgeReceiverService = dataBridgeReceiverService;
+		this.thriftDataReceiverConfiguration =
+				new ThriftDataReceiverConfiguration(secureReceiverPort, receiverPort);
+	}
 
-    /**
-     * Initialize Carbon Agent Server
-     *
-     * @param receiverPort
-     * @param dataBridgeReceiverService
-     */
-    public ThriftDataReceiver(int receiverPort,
-                              DataBridgeReceiverService dataBridgeReceiverService) {
-        this.dataBridgeReceiverService = dataBridgeReceiverService;
-        this.thriftDataReceiverConfiguration = new ThriftDataReceiverConfiguration(receiverPort + CommonThriftConstants.SECURE_EVENT_RECEIVER_PORT_OFFSET, receiverPort);
-    }
+	/**
+	 * Initialize Carbon Agent Server
+	 *
+	 * @param receiverPort
+	 * @param dataBridgeReceiverService
+	 */
+	public ThriftDataReceiver(int receiverPort,
+	                          DataBridgeReceiverService dataBridgeReceiverService) {
+		this.dataBridgeReceiverService = dataBridgeReceiverService;
+		this.thriftDataReceiverConfiguration = new ThriftDataReceiverConfiguration(
+				receiverPort + CommonThriftConstants.SECURE_EVENT_RECEIVER_PORT_OFFSET,
+				receiverPort);
+	}
 
-    /**
-     * Initialize Carbon Agent Server
-     *
-     * @param thriftDataReceiverConfiguration
-     *
-     * @param dataBridgeReceiverService
-     */
-    public ThriftDataReceiver(ThriftDataReceiverConfiguration thriftDataReceiverConfiguration,
-                              DataBridgeReceiverService dataBridgeReceiverService) {
-        this.dataBridgeReceiverService = dataBridgeReceiverService;
-        this.thriftDataReceiverConfiguration = thriftDataReceiverConfiguration;
-    }
+	/**
+	 * Initialize Carbon Agent Server
+	 *
+	 * @param thriftDataReceiverConfiguration
+	 * @param dataBridgeReceiverService
+	 */
+	public ThriftDataReceiver(ThriftDataReceiverConfiguration thriftDataReceiverConfiguration,
+	                          DataBridgeReceiverService dataBridgeReceiverService) {
+		this.dataBridgeReceiverService = dataBridgeReceiverService;
+		this.thriftDataReceiverConfiguration = thriftDataReceiverConfiguration;
+	}
 
-    /**
-     * To start the Agent server
-     *
-     * @throws org.wso2.carbon.databridge.core.exception.DataBridgeException
-     *          if the agent server cannot be started
-     */
-    public void start(String hostName)
-            throws DataBridgeException {
-        startSecureEventTransmission(hostName, thriftDataReceiverConfiguration.getSecureDataReceiverPort(), dataBridgeReceiverService);
-        startEventTransmission(hostName, thriftDataReceiverConfiguration.getDataReceiverPort(), dataBridgeReceiverService);
-    }
+	/**
+	 * To start the Agent server
+	 *
+	 * @throws org.wso2.carbon.databridge.core.exception.DataBridgeException if the agent server cannot be started
+	 */
+	public void start(String hostName) throws DataBridgeException {
+		startSecureEventTransmission(hostName,
+		                             thriftDataReceiverConfiguration.getSecureDataReceiverPort(),
+		                             dataBridgeReceiverService);
+		startEventTransmission(hostName, thriftDataReceiverConfiguration.getDataReceiverPort(),
+		                       dataBridgeReceiverService);
+	}
 
+	private void startSecureEventTransmission(String hostName, int port,
+	                                          DataBridgeReceiverService dataBridgeReceiverService)
+			throws DataBridgeException {
+		try {
 
-    private void startSecureEventTransmission(String hostName, int port,
-                                              DataBridgeReceiverService dataBridgeReceiverService)
-            throws DataBridgeException {
-        try {
+			ServerConfiguration serverConfig = ServerConfiguration.getInstance();
+			String keyStore = serverConfig.getFirstProperty("Security.KeyStore.Location");
+			if (keyStore == null) {
+				keyStore = System.getProperty("Security.KeyStore.Location");
+				if (keyStore == null) {
+					throw new DataBridgeException(
+							"Cannot start agent server, not valid Security.KeyStore.Location is null");
+				}
+			}
+			String keyStorePassword = serverConfig.getFirstProperty("Security.KeyStore.Password");
+			if (keyStorePassword == null) {
+				keyStorePassword = System.getProperty("Security.KeyStore.Password");
+				if (keyStorePassword == null) {
+					throw new DataBridgeException(
+							"Cannot start agent server, not valid Security.KeyStore.Password is null ");
+				}
+			}
 
-            ServerConfiguration serverConfig = ServerConfiguration.getInstance();
-            String keyStore = serverConfig.getFirstProperty("Security.KeyStore.Location");
-            if (keyStore == null) {
-                keyStore = System.getProperty("Security.KeyStore.Location");
-                if (keyStore == null) {
-                    throw new DataBridgeException("Cannot start agent server, not valid Security.KeyStore.Location is null");
-                }
-            }
-            String keyStorePassword = serverConfig.getFirstProperty("Security.KeyStore.Password");
-            if (keyStorePassword == null) {
-                keyStorePassword = System.getProperty("Security.KeyStore.Password");
-                if (keyStorePassword == null) {
-                    throw new DataBridgeException("Cannot start agent server, not valid Security.KeyStore.Password is null ");
-                }
-            }
+			startSecureEventTransmission(hostName, port, keyStore, keyStorePassword,
+			                             dataBridgeReceiverService);
+		} catch (TransportException e) {
+			throw new DataBridgeException("Cannot start agent server on port " + port, e);
+		} catch (UnknownHostException e) {
+			//ignore since localhost
+		}
+	}
 
-            startSecureEventTransmission(hostName, port, keyStore, keyStorePassword, dataBridgeReceiverService);
-        } catch (TransportException e) {
-            throw new DataBridgeException("Cannot start agent server on port " + port, e);
-        } catch (UnknownHostException e) {
-            //ignore since localhost
-        }
-    }
+	protected void startSecureEventTransmission(String hostName, int port, String keyStore,
+	                                            String keyStorePassword,
+	                                            DataBridgeReceiverService dataBridgeReceiverService)
+			throws TransportException, UnknownHostException {
+		TSSLTransportFactory.TSSLTransportParameters params =
+				new TSSLTransportFactory.TSSLTransportParameters();
+		params.setKeyStore(keyStore, keyStorePassword);
 
-    protected void startSecureEventTransmission(String hostName, int port, String keyStore,
-                                                String keyStorePassword,
-                                                DataBridgeReceiverService dataBridgeReceiverService)
-            throws TransportException, UnknownHostException {
-        TSSLTransportFactory.TSSLTransportParameters params =
-                new TSSLTransportFactory.TSSLTransportParameters();
-        params.setKeyStore(keyStore, keyStorePassword);
+		TServerSocket serverTransport;
+		try {
+			InetAddress inetAddress = InetAddress.getByName(hostName);
+			serverTransport = TSSLTransportFactory
+					.getServerSocket(port, DataBridgeConstants.CLIENT_TIMEOUT_MS, inetAddress,
+					                 params);
+			log.info("Thrift Server started at " + hostName);
+		} catch (TTransportException e) {
+			throw new TransportException("Thrift transport exception occurred ", e);
+		}
 
-        TServerSocket serverTransport;
-        try {
-            InetAddress inetAddress = InetAddress.getByName(hostName);
-            serverTransport = TSSLTransportFactory.getServerSocket(
-                    port, DataBridgeConstants.CLIENT_TIMEOUT_MS, inetAddress, params);
-            log.info("Thrift Server started at " + hostName);
-        } catch (TTransportException e) {
-            throw new TransportException("Thrift transport exception occurred ", e);
-        }
+		ThriftSecureEventTransmissionService.Processor<ThriftSecureEventTransmissionServiceImpl>
+				processor =
+				new ThriftSecureEventTransmissionService.Processor<ThriftSecureEventTransmissionServiceImpl>(
+						new ThriftSecureEventTransmissionServiceImpl(dataBridgeReceiverService));
+		authenticationServer = new TThreadPoolServer(
+				new TThreadPoolServer.Args(serverTransport).processor(processor));
+		Thread thread = new Thread(new ServerThread(authenticationServer));
+		log.info("Thrift SSL port : " + port);
+		thread.start();
+	}
 
-        ThriftSecureEventTransmissionService.Processor<ThriftSecureEventTransmissionServiceImpl> processor =
-                new ThriftSecureEventTransmissionService.Processor<ThriftSecureEventTransmissionServiceImpl>(
-                        new ThriftSecureEventTransmissionServiceImpl(dataBridgeReceiverService));
-        authenticationServer = new TThreadPoolServer(
-                new TThreadPoolServer.Args(serverTransport).processor(processor));
-        Thread thread = new Thread(new ServerThread(authenticationServer));
-        log.info("Thrift SSL port : " + port);
-        thread.start();
-    }
+	protected void startEventTransmission(String hostName, int port,
+	                                      DataBridgeReceiverService dataBridgeReceiverService)
+			throws DataBridgeException {
+		try {
+			TServerSocket serverTransport =
+					new TServerSocket(new InetSocketAddress(hostName, port));
+			ThriftEventTransmissionService.Processor<ThriftEventTransmissionServiceImpl> processor =
+					new ThriftEventTransmissionService.Processor<ThriftEventTransmissionServiceImpl>(
+							new ThriftEventTransmissionServiceImpl(dataBridgeReceiverService));
+			dataReceiverServer = new TThreadPoolServer(
+					new TThreadPoolServer.Args(serverTransport).processor(processor));
+			Thread thread = new Thread(new ServerThread(dataReceiverServer));
+			log.info("Thrift port : " + port);
+			thread.start();
+		} catch (TTransportException e) {
+			throw new DataBridgeException("Cannot start Thrift server on port " + port +
+			                              " on host " + hostName, e);
+		}
+	}
 
-    protected void startEventTransmission(String hostName, int port,
-                                          DataBridgeReceiverService dataBridgeReceiverService)
-            throws DataBridgeException {
-        try {
-            TServerSocket serverTransport = new TServerSocket(
-                    new InetSocketAddress(hostName, port));
-            ThriftEventTransmissionService.Processor<ThriftEventTransmissionServiceImpl> processor =
-                    new ThriftEventTransmissionService.Processor<ThriftEventTransmissionServiceImpl>(
-                            new ThriftEventTransmissionServiceImpl(dataBridgeReceiverService));
-            dataReceiverServer = new TThreadPoolServer(
-                    new TThreadPoolServer.Args(serverTransport).processor(processor));
-            Thread thread = new Thread(new ServerThread(dataReceiverServer));
-            log.info("Thrift port : " + port);
-            thread.start();
-        } catch (TTransportException e) {
-            throw new DataBridgeException("Cannot start Thrift server on port " + port +
-                                          " on host " + hostName, e);
-        }
-    }
+	/**
+	 * To stop the server
+	 */
+	public void stop() {
+		authenticationServer.stop();
+		dataReceiverServer.stop();
+	}
 
-    /**
-     * To stop the server
-     */
-    public void stop() {
-        authenticationServer.stop();
-        dataReceiverServer.stop();
-    }
+	static class ServerThread implements Runnable {
+		private TServer server;
 
-    static class ServerThread implements Runnable {
-        private TServer server;
+		ServerThread(TServer server) {
+			this.server = server;
+		}
 
-        ServerThread(TServer server) {
-            this.server = server;
-        }
-
-        public void run() {
-            this.server.serve();
-        }
-    }
+		public void run() {
+			this.server.serve();
+		}
+	}
 }
 

@@ -19,11 +19,11 @@ import org.wso2.carbon.databridge.commons.Event;
 
 import java.util.List;
 
-public interface WSO2EventListConsumer extends WSO2EventConsumer{
-    /**
-     * This method will be triggered for all listeners whenever an event list is received
-     *
-     * @param event the event object which will be an instance of {@link org.wso2.carbon.databridge.commons.Event}
-     */
-    public void onEventList(List<Event> event);
+public interface WSO2EventListConsumer extends WSO2EventConsumer {
+	/**
+	 * This method will be triggered for all listeners whenever an event list is received
+	 *
+	 * @param event the event object which will be an instance of {@link org.wso2.carbon.databridge.commons.Event}
+	 */
+	public void onEventList(List<Event> event);
 }

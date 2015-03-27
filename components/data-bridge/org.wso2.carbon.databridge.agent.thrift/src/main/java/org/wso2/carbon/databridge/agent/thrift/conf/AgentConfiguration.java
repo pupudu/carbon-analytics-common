@@ -18,7 +18,6 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.databridge.agent.thrift.conf;
 
 import org.wso2.carbon.databridge.agent.thrift.internal.utils.AgentConstants;
@@ -28,161 +27,166 @@ import org.wso2.carbon.databridge.agent.thrift.internal.utils.AgentConstants;
  */
 public class AgentConfiguration {
 
-    private int bufferedEventsSize = AgentConstants.DEFAULT_BUFFERED_EVENTS_SIZE;
-    private int poolSize = AgentConstants.DEFAULT_POOL_SIZE;
-    private int maxPoolSize = AgentConstants.MAX_DEFAULT_POOL_SIZE;
-    private int asyncDataPublisherBufferedEventSize = AgentConstants.DEFAULT_ASYNC_CLIENT_BUFFERED_EVENTS_SIZE;
-    private int loadBalancingDataPublisherBufferedEventSize = AgentConstants.DEFAULT_LB_CLIENT_BUFFERED_EVENTS_SIZE;
+	private int bufferedEventsSize = AgentConstants.DEFAULT_BUFFERED_EVENTS_SIZE;
+	private int poolSize = AgentConstants.DEFAULT_POOL_SIZE;
+	private int maxPoolSize = AgentConstants.MAX_DEFAULT_POOL_SIZE;
+	private int asyncDataPublisherBufferedEventSize =
+			AgentConstants.DEFAULT_ASYNC_CLIENT_BUFFERED_EVENTS_SIZE;
+	private int loadBalancingDataPublisherBufferedEventSize =
+			AgentConstants.DEFAULT_LB_CLIENT_BUFFERED_EVENTS_SIZE;
 
-    private int maxTransportPoolSize = AgentConstants.DEFAULT_MAX_TRANSPORT_POOL_SIZE;
-    private int maxIdleConnections = AgentConstants.DEFAULT_MAX_IDLE_CONNECTIONS;
-    private long evictionTimePeriod = AgentConstants.DEFAULT_EVICTION_IDLE_TIME_IN_POOL;
-    private long minIdleTimeInPool = AgentConstants.DEFAULT_MIN_IDLE_TIME_IN_POOL;
+	private int maxTransportPoolSize = AgentConstants.DEFAULT_MAX_TRANSPORT_POOL_SIZE;
+	private int maxIdleConnections = AgentConstants.DEFAULT_MAX_IDLE_CONNECTIONS;
+	private long evictionTimePeriod = AgentConstants.DEFAULT_EVICTION_IDLE_TIME_IN_POOL;
+	private long minIdleTimeInPool = AgentConstants.DEFAULT_MIN_IDLE_TIME_IN_POOL;
 
-    private int maxMessageBundleSize = AgentConstants.DEFAULT_MAX_MESSAGE_BUNDLE_SIZE;
+	private int maxMessageBundleSize = AgentConstants.DEFAULT_MAX_MESSAGE_BUNDLE_SIZE;
 
-    private int secureMaxTransportPoolSize = AgentConstants.DEFAULT_SECURE_MAX_TRANSPORT_POOL_SIZE;
-    private int secureMaxIdleConnections = AgentConstants.DEFAULT_SECURE_MAX_IDLE_CONNECTIONS;
-    private long secureEvictionTimePeriod = AgentConstants.DEFAULT_SECURE_EVICTION_IDLE_TIME_IN_POOL;
-    private long secureMinIdleTimeInPool = AgentConstants.DEFAULT_SECURE_MIN_IDLE_TIME_IN_POOL;
-    private long reconnectionInterval = AgentConstants.DEFAULT_RECONNECTION_INTERVAL;
+	private int secureMaxTransportPoolSize = AgentConstants.DEFAULT_SECURE_MAX_TRANSPORT_POOL_SIZE;
+	private int secureMaxIdleConnections = AgentConstants.DEFAULT_SECURE_MAX_IDLE_CONNECTIONS;
+	private long secureEvictionTimePeriod =
+			AgentConstants.DEFAULT_SECURE_EVICTION_IDLE_TIME_IN_POOL;
+	private long secureMinIdleTimeInPool = AgentConstants.DEFAULT_SECURE_MIN_IDLE_TIME_IN_POOL;
+	private long reconnectionInterval = AgentConstants.DEFAULT_RECONNECTION_INTERVAL;
 
-    private String trustStore = null;
-    private String trustStorePassword = null;
+	private String trustStore = null;
+	private String trustStorePassword = null;
 
-    public void setSecureMaxTransportPoolSize(int secureMaxTransportPoolSize) {
-        this.secureMaxTransportPoolSize = secureMaxTransportPoolSize;
-    }
+	public void setSecureMaxTransportPoolSize(int secureMaxTransportPoolSize) {
+		this.secureMaxTransportPoolSize = secureMaxTransportPoolSize;
+	}
 
-    public void setSecureMaxIdleConnections(int secureMaxIdleConnections) {
-        this.secureMaxIdleConnections = secureMaxIdleConnections;
-    }
+	public void setSecureMaxIdleConnections(int secureMaxIdleConnections) {
+		this.secureMaxIdleConnections = secureMaxIdleConnections;
+	}
 
-    public void setSecureEvictionTimePeriod(long secureEvictionTimePeriod) {
-        this.secureEvictionTimePeriod = secureEvictionTimePeriod;
-    }
+	public void setSecureEvictionTimePeriod(long secureEvictionTimePeriod) {
+		this.secureEvictionTimePeriod = secureEvictionTimePeriod;
+	}
 
-    public void setSecureMinIdleTimeInPool(long secureMinIdleTimeInPool) {
-        this.secureMinIdleTimeInPool = secureMinIdleTimeInPool;
-    }
+	public void setSecureMinIdleTimeInPool(long secureMinIdleTimeInPool) {
+		this.secureMinIdleTimeInPool = secureMinIdleTimeInPool;
+	}
 
-    public int getMaxMessageBundleSize() {
-        return maxMessageBundleSize;
-    }
+	public int getMaxMessageBundleSize() {
+		return maxMessageBundleSize;
+	}
 
-    public void setMaxMessageBundleSize(int maxMessageBundleSize) {
-        this.maxMessageBundleSize = maxMessageBundleSize;
-    }
+	public void setMaxMessageBundleSize(int maxMessageBundleSize) {
+		this.maxMessageBundleSize = maxMessageBundleSize;
+	}
 
-    public int getMaxIdleConnections() {
-        return maxIdleConnections;
-    }
+	public int getMaxIdleConnections() {
+		return maxIdleConnections;
+	}
 
-    public void setMaxIdleConnections(int maxIdleConnections) {
-        this.maxIdleConnections = maxIdleConnections;
-    }
+	public void setMaxIdleConnections(int maxIdleConnections) {
+		this.maxIdleConnections = maxIdleConnections;
+	}
 
-    public long getEvictionTimePeriod() {
-        return evictionTimePeriod;
-    }
+	public long getEvictionTimePeriod() {
+		return evictionTimePeriod;
+	}
 
-    public void setEvictionTimePeriod(long evictionTimePeriod) {
-        this.evictionTimePeriod = evictionTimePeriod;
-    }
+	public void setEvictionTimePeriod(long evictionTimePeriod) {
+		this.evictionTimePeriod = evictionTimePeriod;
+	}
 
-    public long getMinIdleTimeInPool() {
-        return minIdleTimeInPool;
-    }
+	public long getMinIdleTimeInPool() {
+		return minIdleTimeInPool;
+	}
 
-    public void setMinIdleTimeInPool(long minIdleTimeInPool) {
-        this.minIdleTimeInPool = minIdleTimeInPool;
-    }
+	public void setMinIdleTimeInPool(long minIdleTimeInPool) {
+		this.minIdleTimeInPool = minIdleTimeInPool;
+	}
 
-    public int getBufferedEventsSize() {
-        return bufferedEventsSize;
-    }
+	public int getBufferedEventsSize() {
+		return bufferedEventsSize;
+	}
 
-    public void setBufferedEventsSize(int bufferedEventsSize) {
-        this.bufferedEventsSize = bufferedEventsSize;
-    }
+	public void setBufferedEventsSize(int bufferedEventsSize) {
+		this.bufferedEventsSize = bufferedEventsSize;
+	}
 
-    public int getMaxTransportPoolSize() {
-        return maxTransportPoolSize;
-    }
+	public int getMaxTransportPoolSize() {
+		return maxTransportPoolSize;
+	}
 
-    public void setMaxTransportPoolSize(int maxTransportPoolSize) {
-        this.maxTransportPoolSize = maxTransportPoolSize;
-    }
+	public void setMaxTransportPoolSize(int maxTransportPoolSize) {
+		this.maxTransportPoolSize = maxTransportPoolSize;
+	}
 
-    public int getPoolSize() {
-        return poolSize;
-    }
+	public int getPoolSize() {
+		return poolSize;
+	}
 
-    public void setPoolSize(int poolSize) {
-        this.poolSize = poolSize;
-    }
+	public void setPoolSize(int poolSize) {
+		this.poolSize = poolSize;
+	}
 
-    public String getTrustStore() {
-        return trustStore;
-    }
+	public String getTrustStore() {
+		return trustStore;
+	}
 
-    public void setTrustStore(String trustStore) {
-        this.trustStore = trustStore;
-    }
+	public void setTrustStore(String trustStore) {
+		this.trustStore = trustStore;
+	}
 
-    public String getTrustStorePassword() {
-        return trustStorePassword;
-    }
+	public String getTrustStorePassword() {
+		return trustStorePassword;
+	}
 
-    public void setTrustStorePassword(String trustStorePassword) {
-        this.trustStorePassword = trustStorePassword;
-    }
+	public void setTrustStorePassword(String trustStorePassword) {
+		this.trustStorePassword = trustStorePassword;
+	}
 
-    public int getSecureMaxTransportPoolSize() {
-        return secureMaxTransportPoolSize;
-    }
+	public int getSecureMaxTransportPoolSize() {
+		return secureMaxTransportPoolSize;
+	}
 
-    public int getSecureMaxIdleConnections() {
-        return secureMaxIdleConnections;
-    }
+	public int getSecureMaxIdleConnections() {
+		return secureMaxIdleConnections;
+	}
 
-    public long getSecureEvictionTimePeriod() {
-        return secureEvictionTimePeriod;
-    }
+	public long getSecureEvictionTimePeriod() {
+		return secureEvictionTimePeriod;
+	}
 
-    public long getSecureMinIdleTimeInPool() {
-        return secureMinIdleTimeInPool;
-    }
+	public long getSecureMinIdleTimeInPool() {
+		return secureMinIdleTimeInPool;
+	}
 
-    public int getAsyncDataPublisherBufferedEventSize() {
-        return asyncDataPublisherBufferedEventSize;
-    }
+	public int getAsyncDataPublisherBufferedEventSize() {
+		return asyncDataPublisherBufferedEventSize;
+	}
 
-    public void setAsyncDataPublisherBufferedEventSize(int asyncDataPublisherBufferedEventSize) {
-        this.asyncDataPublisherBufferedEventSize = asyncDataPublisherBufferedEventSize;
-    }
+	public void setAsyncDataPublisherBufferedEventSize(int asyncDataPublisherBufferedEventSize) {
+		this.asyncDataPublisherBufferedEventSize = asyncDataPublisherBufferedEventSize;
+	}
 
-    public long getReconnectionInterval() {
-        return reconnectionInterval;
-    }
+	public long getReconnectionInterval() {
+		return reconnectionInterval;
+	}
 
-    public void setReconnectionInterval(long reconnectionInterval) {
-        this.reconnectionInterval = reconnectionInterval;
-    }
+	public void setReconnectionInterval(long reconnectionInterval) {
+		this.reconnectionInterval = reconnectionInterval;
+	}
 
-    public int getLoadBalancingDataPublisherBufferedEventSize() {
-        return loadBalancingDataPublisherBufferedEventSize;
-    }
+	public int getLoadBalancingDataPublisherBufferedEventSize() {
+		return loadBalancingDataPublisherBufferedEventSize;
+	}
 
-    public void setLoadBalancingDataPublisherBufferedEventSize(int loadBalancingDataPublisherBufferedEventSize) {
-        this.loadBalancingDataPublisherBufferedEventSize = loadBalancingDataPublisherBufferedEventSize;
-    }
+	public void setLoadBalancingDataPublisherBufferedEventSize(
+			int loadBalancingDataPublisherBufferedEventSize) {
+		this.loadBalancingDataPublisherBufferedEventSize =
+				loadBalancingDataPublisherBufferedEventSize;
+	}
 
-    public int getMaxPoolSize() {
-        return maxPoolSize;
-    }
+	public int getMaxPoolSize() {
+		return maxPoolSize;
+	}
 
-    public void setMaxPoolSize(int maxPoolSize) {
-        this.maxPoolSize = maxPoolSize;
-    }
+	public void setMaxPoolSize(int maxPoolSize) {
+		this.maxPoolSize = maxPoolSize;
+	}
 }

@@ -18,22 +18,20 @@ import org.wso2.carbon.registry.core.RegistryConstants;
  * limitations under the License.
  */
 public class RegistryStreamDefinitionStoreUtil {
-    private static final String STREAM_DEFINITION_STORE = "/StreamDefinitions";
-    private static final String STREAM_INDEX_DEFINITION_STORE = "/StreamIndexDefinitions";
+	private static final String STREAM_DEFINITION_STORE = "/StreamDefinitions";
+	private static final String STREAM_INDEX_DEFINITION_STORE = "/StreamIndexDefinitions";
 
-    public static String getStreamDefinitionPath(String streamName, String streamVersion) {
-        return STREAM_DEFINITION_STORE + RegistryConstants.PATH_SEPARATOR +
-                streamName + RegistryConstants.PATH_SEPARATOR + streamVersion;
-    }
+	public static String getStreamDefinitionPath(String streamName, String streamVersion) {
+		return STREAM_DEFINITION_STORE + RegistryConstants.PATH_SEPARATOR +
+		       streamName + RegistryConstants.PATH_SEPARATOR + streamVersion;
+	}
 
-    public static String getStreamIndexDefinitionPath(String streamName, String streamVersion) {
-        return STREAM_INDEX_DEFINITION_STORE + RegistryConstants.PATH_SEPARATOR +
-                streamName + RegistryConstants.PATH_SEPARATOR + streamVersion;
-    }
+	public static String getStreamIndexDefinitionPath(String streamName, String streamVersion) {
+		return STREAM_INDEX_DEFINITION_STORE + RegistryConstants.PATH_SEPARATOR +
+		       streamName + RegistryConstants.PATH_SEPARATOR + streamVersion;
+	}
 
-
-
-    public static String getStreamDefinitionStorePath() {
-        return STREAM_DEFINITION_STORE;
-    }
+	public static String getStreamDefinitionStorePath() {
+		return STREAM_DEFINITION_STORE;
+	}
 }

@@ -20,26 +20,26 @@
 package org.wso2.carbon.databridge.core.exception;
 
 public class EventConversionException extends RuntimeException {
-    private String errorMessage;
+	private String errorMessage;
 
-    public EventConversionException() {
-    }
+	public EventConversionException() {
+	}
 
-    public EventConversionException(String message) {
-        super(message);
-        errorMessage = message;
-    }
+	public EventConversionException(String message) {
+		super(message);
+		errorMessage = message;
+	}
 
-    public EventConversionException(String message, Throwable cause) {
-        super(message, cause);
-        errorMessage = message;
-    }
+	public EventConversionException(String message, Throwable cause) {
+		super(message, cause);
+		errorMessage = message;
+	}
 
-    public EventConversionException(Throwable cause) {
-        super(cause);
-    }
+	public EventConversionException(Throwable cause) {
+		super(cause);
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

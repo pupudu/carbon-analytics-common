@@ -18,30 +18,29 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.databridge.core.exception;
 
 public class StreamDefinitionStoreException extends Exception {
-    private String errorMessage;
+	private String errorMessage;
 
-    public StreamDefinitionStoreException() {
-    }
+	public StreamDefinitionStoreException() {
+	}
 
-    public StreamDefinitionStoreException(String message) {
-        super(message);
-        errorMessage = message;
-    }
+	public StreamDefinitionStoreException(String message) {
+		super(message);
+		errorMessage = message;
+	}
 
-    public StreamDefinitionStoreException(String message, Throwable cause) {
-        super(message, cause);
-        errorMessage = message;
-    }
+	public StreamDefinitionStoreException(String message, Throwable cause) {
+		super(message, cause);
+		errorMessage = message;
+	}
 
-    public StreamDefinitionStoreException(Throwable cause) {
-        super(cause);
-    }
+	public StreamDefinitionStoreException(Throwable cause) {
+		super(cause);
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

@@ -24,33 +24,32 @@ import org.wso2.carbon.databridge.core.StreamTypeHolder;
  * Event composite that's passed to the Queue Worker
  */
 public class EventComposite {
-    private StreamTypeHolder streamTypeHolder;
-    private Object eventBundle;
-    private AgentSession agentSession;
-    private EventConverter eventConverter;
+	private StreamTypeHolder streamTypeHolder;
+	private Object eventBundle;
+	private AgentSession agentSession;
+	private EventConverter eventConverter;
 
-    public EventComposite(Object eventBundle,
-                          StreamTypeHolder streamTypeHolder, AgentSession agentSession,
-                          EventConverter eventConverter) {
-        this.streamTypeHolder = streamTypeHolder;
-        this.eventBundle = eventBundle;
-        this.agentSession = agentSession;
-        this.eventConverter = eventConverter;
-    }
+	public EventComposite(Object eventBundle, StreamTypeHolder streamTypeHolder,
+	                      AgentSession agentSession, EventConverter eventConverter) {
+		this.streamTypeHolder = streamTypeHolder;
+		this.eventBundle = eventBundle;
+		this.agentSession = agentSession;
+		this.eventConverter = eventConverter;
+	}
 
-    public StreamTypeHolder getStreamTypeHolder() {
-        return streamTypeHolder;
-    }
+	public StreamTypeHolder getStreamTypeHolder() {
+		return streamTypeHolder;
+	}
 
-    public Object getEventBundle() {
-        return eventBundle;
-    }
+	public Object getEventBundle() {
+		return eventBundle;
+	}
 
-    public AgentSession getAgentSession() {
-        return agentSession;
-    }
+	public AgentSession getAgentSession() {
+		return agentSession;
+	}
 
-    public EventConverter getEventConverter() {
-        return eventConverter;
-    }
+	public EventConverter getEventConverter() {
+		return eventConverter;
+	}
 }

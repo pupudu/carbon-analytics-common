@@ -34,91 +34,93 @@ import java.util.Map;
  * Util class used to convert Events to thrift format
  */
 public final class ThriftEventConverter {
-    private static Log log = LogFactory.getLog(ThriftEventConverter.class);
+	private static Log log = LogFactory.getLog(ThriftEventConverter.class);
 
-    private ThriftEventConverter() {
-    }
+	private ThriftEventConverter() {
+	}
 
-    public static ThriftEventBundle toThriftEventBundle(Event event,
-                                                        ThriftEventBundle eventBundle,
-                                                        String sessionId) {
-        ThriftEventBundle thriftEventBundle = eventBundle;
-        if (thriftEventBundle == null) {
-            thriftEventBundle = new ThriftEventBundle();
-            thriftEventBundle.setStringAttributeList(new LinkedList<String>());//adding string list
-            thriftEventBundle.setLongAttributeList(new LinkedList<Long>());//adding long list
-            thriftEventBundle.setSessionId(sessionId);
-            thriftEventBundle.setEventNum(0);
-        }
-        thriftEventBundle.addToStringAttributeList(event.getStreamId());
-        thriftEventBundle.addToLongAttributeList(event.getTimeStamp());
+	public static ThriftEventBundle toThriftEventBundle(Event event, ThriftEventBundle eventBundle,
+	                                                    String sessionId) {
+		ThriftEventBundle thriftEventBundle = eventBundle;
+		if (thriftEventBundle == null) {
+			thriftEventBundle = new ThriftEventBundle();
+			thriftEventBundle.setStringAttributeList(new LinkedList<String>());//adding string list
+			thriftEventBundle.setLongAttributeList(new LinkedList<Long>());//adding long list
+			thriftEventBundle.setSessionId(sessionId);
+			thriftEventBundle.setEventNum(0);
+		}
+		thriftEventBundle.addToStringAttributeList(event.getStreamId());
+		thriftEventBundle.addToLongAttributeList(event.getTimeStamp());
 
-        thriftEventBundle = assignAttributes(thriftEventBundle, event.getMetaData());
-        thriftEventBundle = assignAttributes(thriftEventBundle, event.getCorrelationData());
-        thriftEventBundle = assignAttributes(thriftEventBundle, event.getPayloadData());
-        thriftEventBundle = assignMap(thriftEventBundle, event.getArbitraryDataMap());
-        thriftEventBundle.setEventNum(thriftEventBundle.getEventNum() + 1);
+		thriftEventBundle = assignAttributes(thriftEventBundle, event.getMetaData());
+		thriftEventBundle = assignAttributes(thriftEventBundle, event.getCorrelationData());
+		thriftEventBundle = assignAttributes(thriftEventBundle, event.getPayloadData());
+		thriftEventBundle = assignMap(thriftEventBundle, event.getArbitraryDataMap());
+		thriftEventBundle.setEventNum(thriftEventBundle.getEventNum() + 1);
 
-        return thriftEventBundle;
-    }
+		return thriftEventBundle;
+	}
 
-    private static ThriftEventBundle assignAttributes(ThriftEventBundle thriftEventBundle,
-                                                      Object[] attributes) {
-        if (attributes != null) {
-            for (Object object : attributes) {
+	private static ThriftEventBundle assignAttributes(ThriftEventBundle thriftEventBundle,
+	                                                  Object[] attributes) {
+		if (attributes != null) {
+			for (Object object : attributes) {
 
-                if (object instanceof Integer) {
-                    if (!thriftEventBundle.isSetIntAttributeList()) {
-                        thriftEventBundle.setIntAttributeList(new LinkedList<Integer>());
-                    }
-                    thriftEventBundle.addToIntAttributeList((Integer) object);
-                } else if (object instanceof Float) {
-                    if (!thriftEventBundle.isSetDoubleAttributeList()) {
-                        thriftEventBundle.setDoubleAttributeList(new LinkedList<Double>());
-                    }
-                    thriftEventBundle.addToDoubleAttributeList(((Float) object).doubleValue());
-                } else if (object instanceof Long) {
-                    if (!thriftEventBundle.isSetLongAttributeList()) {
-                        thriftEventBundle.setLongAttributeList(new LinkedList<Long>());
-                    }
-                    thriftEventBundle.addToLongAttributeList((Long) object);
-                } else if (object instanceof String) {
-                    if (!thriftEventBundle.isSetStringAttributeList()) {
-                        thriftEventBundle.setStringAttributeList(new LinkedList<String>());
-                    }
-                    thriftEventBundle.addToStringAttributeList((String) object);
-                } else if (object instanceof Boolean) {
-                    if (!thriftEventBundle.isSetBoolAttributeList()) {
-                        thriftEventBundle.setBoolAttributeList(new LinkedList<Boolean>());
-                    }
-                    thriftEventBundle.addToBoolAttributeList((Boolean) object);
-                } else if (object instanceof Double) {
-                    if (!thriftEventBundle.isSetDoubleAttributeList()) {
-                        thriftEventBundle.setDoubleAttributeList(new LinkedList<Double>());
-                    }
-                    thriftEventBundle.addToDoubleAttributeList((Double) object);
-                } else if (object == null) {
-                    if (!thriftEventBundle.isSetStringAttributeList()) {
-                        thriftEventBundle.setStringAttributeList(new LinkedList<String>());
-                    }
-                    thriftEventBundle.addToStringAttributeList(EventDefinitionConverterUtils.nullString);
-                } else {
-                    log.error("Undefined attribute type : " + object);
-                }
-            }
-        }
-        return thriftEventBundle;
-    }
+				if (object instanceof Integer) {
+					if (!thriftEventBundle.isSetIntAttributeList()) {
+						thriftEventBundle.setIntAttributeList(new LinkedList<Integer>());
+					}
+					thriftEventBundle.addToIntAttributeList((Integer) object);
+				} else if (object instanceof Float) {
+					if (!thriftEventBundle.isSetDoubleAttributeList()) {
+						thriftEventBundle.setDoubleAttributeList(new LinkedList<Double>());
+					}
+					thriftEventBundle.addToDoubleAttributeList(((Float) object).doubleValue());
+				} else if (object instanceof Long) {
+					if (!thriftEventBundle.isSetLongAttributeList()) {
+						thriftEventBundle.setLongAttributeList(new LinkedList<Long>());
+					}
+					thriftEventBundle.addToLongAttributeList((Long) object);
+				} else if (object instanceof String) {
+					if (!thriftEventBundle.isSetStringAttributeList()) {
+						thriftEventBundle.setStringAttributeList(new LinkedList<String>());
+					}
+					thriftEventBundle.addToStringAttributeList((String) object);
+				} else if (object instanceof Boolean) {
+					if (!thriftEventBundle.isSetBoolAttributeList()) {
+						thriftEventBundle.setBoolAttributeList(new LinkedList<Boolean>());
+					}
+					thriftEventBundle.addToBoolAttributeList((Boolean) object);
+				} else if (object instanceof Double) {
+					if (!thriftEventBundle.isSetDoubleAttributeList()) {
+						thriftEventBundle.setDoubleAttributeList(new LinkedList<Double>());
+					}
+					thriftEventBundle.addToDoubleAttributeList((Double) object);
+				} else if (object == null) {
+					if (!thriftEventBundle.isSetStringAttributeList()) {
+						thriftEventBundle.setStringAttributeList(new LinkedList<String>());
+					}
+					thriftEventBundle
+							.addToStringAttributeList(EventDefinitionConverterUtils.nullString);
+				} else {
+					log.error("Undefined attribute type : " + object);
+				}
+			}
+		}
+		return thriftEventBundle;
+	}
 
-    private static ThriftEventBundle assignMap(ThriftEventBundle thriftEventBundle, Map<String, String> arbitraryDataMap) {
-        if (null != arbitraryDataMap) {
-            if (!thriftEventBundle.isSetArbitraryDataMapMap()) {
-                thriftEventBundle.setArbitraryDataMapMap(new HashMap<Integer, Map<String, String>>());
-            }
-            thriftEventBundle.putToArbitraryDataMapMap(thriftEventBundle.getEventNum(), arbitraryDataMap);
-        }
-        return thriftEventBundle;
-    }
-
+	private static ThriftEventBundle assignMap(ThriftEventBundle thriftEventBundle,
+	                                           Map<String, String> arbitraryDataMap) {
+		if (null != arbitraryDataMap) {
+			if (!thriftEventBundle.isSetArbitraryDataMapMap()) {
+				thriftEventBundle
+						.setArbitraryDataMapMap(new HashMap<Integer, Map<String, String>>());
+			}
+			thriftEventBundle
+					.putToArbitraryDataMapMap(thriftEventBundle.getEventNum(), arbitraryDataMap);
+		}
+		return thriftEventBundle;
+	}
 
 }

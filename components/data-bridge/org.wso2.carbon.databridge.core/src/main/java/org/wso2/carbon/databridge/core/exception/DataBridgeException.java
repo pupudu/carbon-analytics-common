@@ -20,26 +20,26 @@
 package org.wso2.carbon.databridge.core.exception;
 
 public class DataBridgeException extends Exception {
-    private String errorMessage;
+	private String errorMessage;
 
-    public DataBridgeException() {
-    }
+	public DataBridgeException() {
+	}
 
-    public DataBridgeException(String message) {
-        super(message);
-        errorMessage = message;
-    }
+	public DataBridgeException(String message) {
+		super(message);
+		errorMessage = message;
+	}
 
-    public DataBridgeException(String message, Throwable cause) {
-        super(message, cause);
-        errorMessage = message;
-    }
+	public DataBridgeException(String message, Throwable cause) {
+		super(message, cause);
+		errorMessage = message;
+	}
 
-    public DataBridgeException(Throwable cause) {
-        super(cause);
-    }
+	public DataBridgeException(Throwable cause) {
+		super(cause);
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

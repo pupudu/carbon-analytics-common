@@ -19,18 +19,18 @@ package org.wso2.carbon.event.stream.core.exception;
  */
 public class EventStreamConfigurationException extends Exception {
 
-    public EventStreamConfigurationException() {
-    }
+	public EventStreamConfigurationException() {
+	}
 
-    public EventStreamConfigurationException(String message) {
-        super(message);
-    }
+	public EventStreamConfigurationException(String message) {
+		super(message);
+	}
 
-    public EventStreamConfigurationException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public EventStreamConfigurationException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public EventStreamConfigurationException(Throwable cause) {
-        super(cause);
-    }
+	public EventStreamConfigurationException(Throwable cause) {
+		super(cause);
+	}
 }

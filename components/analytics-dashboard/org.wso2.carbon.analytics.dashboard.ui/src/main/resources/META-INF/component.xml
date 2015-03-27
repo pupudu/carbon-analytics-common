@@ -17,8 +17,8 @@
   -->
 
 <component xmlns="http://products.wso2.org/carbon">
-	
-	<menus>
+
+    <menus>
         <menu>
             <id>dashboard_menu_1</id>
             <i18n-key>Analytics Dashboard</i18n-key>
@@ -30,5 +30,5 @@
             <style-class>tools</style-class>
             <icon>../analytics-dashboard/images/dashboard.gif</icon>
         </menu>
-	</menus>
+    </menus>
 </component>

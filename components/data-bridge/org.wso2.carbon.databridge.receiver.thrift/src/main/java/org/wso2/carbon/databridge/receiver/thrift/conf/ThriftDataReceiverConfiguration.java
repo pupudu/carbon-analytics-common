@@ -29,61 +29,67 @@ import org.wso2.carbon.utils.CarbonUtils;
  * configuration details related to DataReceiver
  */
 public class ThriftDataReceiverConfiguration {
-    private int secureDataReceiverPort;
-    private int dataReceiverPort;
-    private String receiverHostName;
+	private int secureDataReceiverPort;
+	private int dataReceiverPort;
+	private String receiverHostName;
 
-    public ThriftDataReceiverConfiguration(int defaultSslPort, int defaultPort) {
-        secureDataReceiverPort = defaultSslPort;
-        dataReceiverPort = defaultPort;
-    }
+	public ThriftDataReceiverConfiguration(int defaultSslPort, int defaultPort) {
+		secureDataReceiverPort = defaultSslPort;
+		dataReceiverPort = defaultPort;
+	}
 
-    public ThriftDataReceiverConfiguration(DataBridgeConfiguration dataBridgeConfiguration) {
-        DataReceiver dataReceiver = dataBridgeConfiguration.getDataReceiver(ThriftDataReceiverConstants.
-                DATA_BRIDGE_RECEIVER_NAME);
-        int portOffset = getPortOffset();
-        secureDataReceiverPort = Integer.parseInt(dataReceiver.getConfiguration(ThriftDataReceiverConstants.SECURE_PORT_ELEMENT,
-                CommonThriftConstants.DEFAULT_RECEIVER_PORT+CommonThriftConstants.SECURE_EVENT_RECEIVER_PORT_OFFSET).toString()) + portOffset;
-        dataReceiverPort = Integer.parseInt(dataReceiver.getConfiguration(ThriftDataReceiverConstants.PORT_ELEMENT,
-                CommonThriftConstants.DEFAULT_RECEIVER_PORT).toString()) + portOffset;
-        receiverHostName = dataReceiver.getConfiguration(ThriftDataReceiverConstants.RECEIVER_HOST_NAME,
-                ThriftDataReceiverConstants.DEFAULT_HOSTNAME).toString();
-    }
+	public ThriftDataReceiverConfiguration(DataBridgeConfiguration dataBridgeConfiguration) {
+		DataReceiver dataReceiver =
+				dataBridgeConfiguration.getDataReceiver(ThriftDataReceiverConstants.
+						                                        DATA_BRIDGE_RECEIVER_NAME);
+		int portOffset = getPortOffset();
+		secureDataReceiverPort = Integer.parseInt(dataReceiver.getConfiguration(
+				ThriftDataReceiverConstants.SECURE_PORT_ELEMENT,
+				CommonThriftConstants.DEFAULT_RECEIVER_PORT +
+				CommonThriftConstants.SECURE_EVENT_RECEIVER_PORT_OFFSET).toString()) + portOffset;
+		dataReceiverPort = Integer.parseInt(dataReceiver.getConfiguration(
+				ThriftDataReceiverConstants.PORT_ELEMENT,
+				CommonThriftConstants.DEFAULT_RECEIVER_PORT).toString()) + portOffset;
+		receiverHostName = dataReceiver
+				.getConfiguration(ThriftDataReceiverConstants.RECEIVER_HOST_NAME,
+				                  ThriftDataReceiverConstants.DEFAULT_HOSTNAME).toString();
+	}
 
-    public ThriftDataReceiverConfiguration(int defaultSslPort, int defaultPort,
-                                           String confHostName) {
-        secureDataReceiverPort = defaultSslPort;
-        dataReceiverPort = defaultPort;
-        receiverHostName = confHostName;
-    }
+	public ThriftDataReceiverConfiguration(int defaultSslPort, int defaultPort,
+	                                       String confHostName) {
+		secureDataReceiverPort = defaultSslPort;
+		dataReceiverPort = defaultPort;
+		receiverHostName = confHostName;
+	}
 
+	public int getDataReceiverPort() {
+		return dataReceiverPort;
+	}
 
-    public int getDataReceiverPort() {
-        return dataReceiverPort;
-    }
+	public void setDataReceiverPort(int dataReceiverPort) {
+		this.dataReceiverPort = dataReceiverPort;
+	}
 
-    public void setDataReceiverPort(int dataReceiverPort) {
-        this.dataReceiverPort = dataReceiverPort;
-    }
+	public int getSecureDataReceiverPort() {
+		return secureDataReceiverPort;
+	}
 
-    public int getSecureDataReceiverPort() {
-        return secureDataReceiverPort;
-    }
+	public void setSecureDataReceiverPort(int secureDataReceiverPort) {
+		this.secureDataReceiverPort = secureDataReceiverPort;
+	}
 
-    public void setSecureDataReceiverPort(int secureDataReceiverPort) {
-        this.secureDataReceiverPort = secureDataReceiverPort;
-    }
+	public String getReceiverHostName() {
+		return receiverHostName;
+	}
 
-    public String getReceiverHostName() {
-        return receiverHostName;
-    }
+	public void setReceiverHostName(String receiverHostName) {
+		this.receiverHostName = receiverHostName;
+	}
 
-    public void setReceiverHostName(String receiverHostName) {
-        this.receiverHostName = receiverHostName;
-    }
-
-    public int getPortOffset() {
-        return CarbonUtils.
-                getPortFromServerConfig(ThriftDataReceiverConstants.CARBON_CONFIG_PORT_OFFSET_NODE) + 1;
-    }
+	public int getPortOffset() {
+		return CarbonUtils.
+				                  getPortFromServerConfig(
+						                  ThriftDataReceiverConstants.CARBON_CONFIG_PORT_OFFSET_NODE) +
+		       1;
+	}
 }

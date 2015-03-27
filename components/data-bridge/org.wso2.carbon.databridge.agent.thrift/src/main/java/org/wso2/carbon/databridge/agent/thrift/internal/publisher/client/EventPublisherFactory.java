@@ -24,14 +24,13 @@ import org.wso2.carbon.databridge.agent.thrift.internal.EventQueue;
 import org.wso2.carbon.databridge.commons.Event;
 
 public class EventPublisherFactory {
-    public static EventPublisher getEventPublisher(
-            DataPublisherConfiguration dataPublisherConfiguration,
-            EventQueue<Event> eventQueue, Agent agent, GenericKeyedObjectPool transportPool) {
-        return new ThriftEventPublisher(eventQueue, transportPool,
-                                        agent.getQueueSemaphore(),
-                                        agent.getAgentConfiguration().getMaxMessageBundleSize(),
-                                        dataPublisherConfiguration, agent.getAgentAuthenticator(),
-                                        agent.getThreadPool());
-    }
+	public static EventPublisher getEventPublisher(
+			DataPublisherConfiguration dataPublisherConfiguration, EventQueue<Event> eventQueue,
+			Agent agent, GenericKeyedObjectPool transportPool) {
+		return new ThriftEventPublisher(eventQueue, transportPool, agent.getQueueSemaphore(),
+		                                agent.getAgentConfiguration().getMaxMessageBundleSize(),
+		                                dataPublisherConfiguration, agent.getAgentAuthenticator(),
+		                                agent.getThreadPool());
+	}
 
 }

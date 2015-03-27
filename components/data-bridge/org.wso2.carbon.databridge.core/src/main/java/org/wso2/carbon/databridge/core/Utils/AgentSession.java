@@ -26,69 +26,68 @@ import org.wso2.carbon.user.api.UserStoreException;
  * Agent Client's session
  */
 public class AgentSession {
-    private String sessionId;
-    private Credentials credentials;
-    private long createdAt;
+	private String sessionId;
+	private Credentials credentials;
+	private long createdAt;
 
-//    public AgentSession(String sessionId) {
-//        this.sessionId = sessionId;
-//    }
+	//    public AgentSession(String sessionId) {
+	//        this.sessionId = sessionId;
+	//    }
 
+	public AgentSession(String sessionId, Credentials credentials) {
+		this.sessionId = sessionId;
+		this.credentials = credentials;
+		this.createdAt = System.currentTimeMillis();
+	}
 
-    public AgentSession(String sessionId, Credentials credentials) {
-        this.sessionId = sessionId;
-        this.credentials = credentials;
-        this.createdAt = System.currentTimeMillis();
-    }
+	public AgentSession(String sessionId, Credentials credentials, long createdAt) {
+		this.sessionId = sessionId;
+		this.credentials = credentials;
+		this.createdAt = createdAt;
+	}
 
-    public AgentSession(String sessionId, Credentials credentials, long createdAt) {
-        this.sessionId = sessionId;
-        this.credentials = credentials;
-        this.createdAt = createdAt;
-    }
+	public String getSessionId() {
+		return sessionId;
+	}
 
-    public String getSessionId() {
-        return sessionId;
-    }
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
+	public String getDomainName() {
+		return credentials.getDomainName();
+	}
 
-    public String getDomainName() {
-        return credentials.getDomainName();
-    }
+	public String getUsername() {
+		return credentials.getUsername();
+	}
 
-    public String getUsername() {
-        return credentials.getUsername();
-    }
+	public long getCreatedAt() {
+		return createdAt;
+	}
 
-    public long getCreatedAt() {
-        return createdAt;
-    }
+	public void setCreatedAt(long createdAt) {
+		this.createdAt = createdAt;
+	}
 
-    public void setCreatedAt(long createdAt) {
-        this.createdAt = createdAt;
-    }
+	@Override public String toString() {
+		return "AgentSession{" +
+		       "sessionId='" + sessionId + '\'' +
+		       ", username='" + credentials.getUsername() + '\'' +
+		       ", domainName='" + credentials.getDomainName() + '\'' +
+		       ", createdAt=" + createdAt +
+		       '}';
+	}
 
-    @Override
-    public String toString() {
-        return "AgentSession{" +
-               "sessionId='" + sessionId + '\'' +
-               ", username='" + credentials.getUsername() + '\'' +
-               ", domainName='" + credentials.getDomainName() + '\'' +
-               ", createdAt=" + createdAt +
-               '}';
-    }
+	public void setCredentials(String userName, String password, String domainName)
+			throws UserStoreException {
+		int tenantId = DataBridgeServiceValueHolder.getRealmService().getTenantManager()
+		                                           .getTenantId(domainName);
+		this.credentials = new Credentials(userName, password, domainName, tenantId);
+	}
 
-    public void setCredentials(String userName, String password, String domainName)
-            throws UserStoreException {
-        int tenantId = DataBridgeServiceValueHolder.getRealmService().getTenantManager().getTenantId(domainName);
-        this.credentials = new Credentials(userName, password, domainName, tenantId);
-    }
-
-    public Credentials getCredentials() {
-        return credentials;
-    }
+	public Credentials getCredentials() {
+		return credentials;
+	}
 
 }

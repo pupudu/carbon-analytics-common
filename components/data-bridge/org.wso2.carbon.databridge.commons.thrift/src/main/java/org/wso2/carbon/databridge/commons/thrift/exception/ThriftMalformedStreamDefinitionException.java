@@ -7,303 +7,324 @@ package org.wso2.carbon.databridge.commons.thrift.exception;
 
 import java.util.*;
 
-public class ThriftMalformedStreamDefinitionException extends Exception implements org.apache.thrift.TBase<ThriftMalformedStreamDefinitionException, ThriftMalformedStreamDefinitionException._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("ThriftMalformedStreamDefinitionException");
+public class ThriftMalformedStreamDefinitionException extends Exception implements
+                                                                        org.apache.thrift.TBase<ThriftMalformedStreamDefinitionException, ThriftMalformedStreamDefinitionException._Fields>,
+                                                                        java.io.Serializable,
+                                                                        Cloneable {
+	private static final org.apache.thrift.protocol.TStruct STRUCT_DESC =
+			new org.apache.thrift.protocol.TStruct("ThriftMalformedStreamDefinitionException");
 
-  private static final org.apache.thrift.protocol.TField MESSAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("message", org.apache.thrift.protocol.TType.STRING, (short)1);
+	private static final org.apache.thrift.protocol.TField MESSAGE_FIELD_DESC =
+			new org.apache.thrift.protocol.TField("message",
+			                                      org.apache.thrift.protocol.TType.STRING,
+			                                      (short) 1);
 
-  public String message; // required
+	public String message; // required
 
-  /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-  public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    MESSAGE((short)1, "message");
+	/**
+	 * The set of fields this struct contains, along with convenience methods for finding and manipulating them.
+	 */
+	public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+		MESSAGE((short) 1, "message");
 
-    private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+		private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
-    static {
-      for (_Fields field : EnumSet.allOf(_Fields.class)) {
-        byName.put(field.getFieldName(), field);
-      }
-    }
+		static {
+			for (_Fields field : EnumSet.allOf(_Fields.class)) {
+				byName.put(field.getFieldName(), field);
+			}
+		}
 
-    /**
-     * Find the _Fields constant that matches fieldId, or null if its not found.
-     */
-    public static _Fields findByThriftId(int fieldId) {
-      switch(fieldId) {
-        case 1: // MESSAGE
-          return MESSAGE;
-        default:
-          return null;
-      }
-    }
+		/**
+		 * Find the _Fields constant that matches fieldId, or null if its not found.
+		 */
+		public static _Fields findByThriftId(int fieldId) {
+			switch (fieldId) {
+				case 1: // MESSAGE
+					return MESSAGE;
+				default:
+					return null;
+			}
+		}
 
-    /**
-     * Find the _Fields constant that matches fieldId, throwing an exception
-     * if it is not found.
-     */
-    public static _Fields findByThriftIdOrThrow(int fieldId) {
-      _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-      return fields;
-    }
+		/**
+		 * Find the _Fields constant that matches fieldId, throwing an exception
+		 * if it is not found.
+		 */
+		public static _Fields findByThriftIdOrThrow(int fieldId) {
+			_Fields fields = findByThriftId(fieldId);
+			if (fields == null)
+				throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+			return fields;
+		}
 
-    /**
-     * Find the _Fields constant that matches name, or null if its not found.
-     */
-    public static _Fields findByName(String name) {
-      return byName.get(name);
-    }
+		/**
+		 * Find the _Fields constant that matches name, or null if its not found.
+		 */
+		public static _Fields findByName(String name) {
+			return byName.get(name);
+		}
 
-    private final short _thriftId;
-    private final String _fieldName;
+		private final short _thriftId;
+		private final String _fieldName;
 
-    _Fields(short thriftId, String fieldName) {
-      _thriftId = thriftId;
-      _fieldName = fieldName;
-    }
+		_Fields(short thriftId, String fieldName) {
+			_thriftId = thriftId;
+			_fieldName = fieldName;
+		}
 
-    public short getThriftFieldId() {
-      return _thriftId;
-    }
+		public short getThriftFieldId() {
+			return _thriftId;
+		}
 
-    public String getFieldName() {
-      return _fieldName;
-    }
-  }
+		public String getFieldName() {
+			return _fieldName;
+		}
+	}
 
-  // isset id assignments
+	// isset id assignments
 
-  public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-  static {
-    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.MESSAGE, new org.apache.thrift.meta_data.FieldMetaData("message", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(ThriftMalformedStreamDefinitionException.class, metaDataMap);
-  }
+	public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
 
-  public ThriftMalformedStreamDefinitionException() {
-  }
+	static {
+		Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap =
+				new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+		tmpMap.put(_Fields.MESSAGE, new org.apache.thrift.meta_data.FieldMetaData("message",
+		                                                                          org.apache.thrift.TFieldRequirementType.REQUIRED,
+		                                                                          new org.apache.thrift.meta_data.FieldValueMetaData(
+				                                                                          org.apache.thrift.protocol.TType.STRING)));
+		metaDataMap = Collections.unmodifiableMap(tmpMap);
+		org.apache.thrift.meta_data.FieldMetaData
+				.addStructMetaDataMap(ThriftMalformedStreamDefinitionException.class, metaDataMap);
+	}
 
-  public ThriftMalformedStreamDefinitionException(
-    String message)
-  {
-    this();
-    this.message = message;
-  }
+	public ThriftMalformedStreamDefinitionException() {
+	}
 
-  /**
-   * Performs a deep copy on <i>other</i>.
-   */
-  public ThriftMalformedStreamDefinitionException(ThriftMalformedStreamDefinitionException other) {
-    if (other.isSetMessage()) {
-      this.message = other.message;
-    }
-  }
+	public ThriftMalformedStreamDefinitionException(String message) {
+		this();
+		this.message = message;
+	}
 
-  public ThriftMalformedStreamDefinitionException deepCopy() {
-    return new ThriftMalformedStreamDefinitionException(this);
-  }
+	/**
+	 * Performs a deep copy on <i>other</i>.
+	 */
+	public ThriftMalformedStreamDefinitionException(
+			ThriftMalformedStreamDefinitionException other) {
+		if (other.isSetMessage()) {
+			this.message = other.message;
+		}
+	}
 
-  @Override
-  public void clear() {
-    this.message = null;
-  }
+	public ThriftMalformedStreamDefinitionException deepCopy() {
+		return new ThriftMalformedStreamDefinitionException(this);
+	}
 
-  public String getMessage() {
-    return this.message;
-  }
+	@Override public void clear() {
+		this.message = null;
+	}
 
-  public ThriftMalformedStreamDefinitionException setMessage(String message) {
-    this.message = message;
-    return this;
-  }
+	public String getMessage() {
+		return this.message;
+	}
 
-  public void unsetMessage() {
-    this.message = null;
-  }
+	public ThriftMalformedStreamDefinitionException setMessage(String message) {
+		this.message = message;
+		return this;
+	}
 
-  /** Returns true if field message is set (has been assigned a value) and false otherwise */
-  public boolean isSetMessage() {
-    return this.message != null;
-  }
+	public void unsetMessage() {
+		this.message = null;
+	}
 
-  public void setMessageIsSet(boolean value) {
-    if (!value) {
-      this.message = null;
-    }
-  }
+	/**
+	 * Returns true if field message is set (has been assigned a value) and false otherwise
+	 */
+	public boolean isSetMessage() {
+		return this.message != null;
+	}
 
-  public void setFieldValue(_Fields field, Object value) {
-    switch (field) {
-    case MESSAGE:
-      if (value == null) {
-        unsetMessage();
-      } else {
-        setMessage((String)value);
-      }
-      break;
+	public void setMessageIsSet(boolean value) {
+		if (!value) {
+			this.message = null;
+		}
+	}
 
-    }
-  }
+	public void setFieldValue(_Fields field, Object value) {
+		switch (field) {
+			case MESSAGE:
+				if (value == null) {
+					unsetMessage();
+				} else {
+					setMessage((String) value);
+				}
+				break;
 
-  public Object getFieldValue(_Fields field) {
-    switch (field) {
-    case MESSAGE:
-      return getMessage();
+		}
+	}
 
-    }
-    throw new IllegalStateException();
-  }
+	public Object getFieldValue(_Fields field) {
+		switch (field) {
+			case MESSAGE:
+				return getMessage();
 
-  /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-  public boolean isSet(_Fields field) {
-    if (field == null) {
-      throw new IllegalArgumentException();
-    }
+		}
+		throw new IllegalStateException();
+	}
 
-    switch (field) {
-    case MESSAGE:
-      return isSetMessage();
-    }
-    throw new IllegalStateException();
-  }
+	/**
+	 * Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise
+	 */
+	public boolean isSet(_Fields field) {
+		if (field == null) {
+			throw new IllegalArgumentException();
+		}
 
-  @Override
-  public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof ThriftMalformedStreamDefinitionException)
-      return this.equals((ThriftMalformedStreamDefinitionException)that);
-    return false;
-  }
+		switch (field) {
+			case MESSAGE:
+				return isSetMessage();
+		}
+		throw new IllegalStateException();
+	}
 
-  public boolean equals(ThriftMalformedStreamDefinitionException that) {
-    if (that == null)
-      return false;
+	@Override public boolean equals(Object that) {
+		if (that == null)
+			return false;
+		if (that instanceof ThriftMalformedStreamDefinitionException)
+			return this.equals((ThriftMalformedStreamDefinitionException) that);
+		return false;
+	}
 
-    boolean this_present_message = true && this.isSetMessage();
-    boolean that_present_message = true && that.isSetMessage();
-    if (this_present_message || that_present_message) {
-      if (!(this_present_message && that_present_message))
-        return false;
-      if (!this.message.equals(that.message))
-        return false;
-    }
+	public boolean equals(ThriftMalformedStreamDefinitionException that) {
+		if (that == null)
+			return false;
 
-    return true;
-  }
+		boolean this_present_message = true && this.isSetMessage();
+		boolean that_present_message = true && that.isSetMessage();
+		if (this_present_message || that_present_message) {
+			if (!(this_present_message && that_present_message))
+				return false;
+			if (!this.message.equals(that.message))
+				return false;
+		}
 
-  @Override
-  public int hashCode() {
-    return 0;
-  }
+		return true;
+	}
 
-  public int compareTo(ThriftMalformedStreamDefinitionException other) {
-    if (!getClass().equals(other.getClass())) {
-      return getClass().getName().compareTo(other.getClass().getName());
-    }
+	@Override public int hashCode() {
+		return 0;
+	}
 
-    int lastComparison = 0;
-    ThriftMalformedStreamDefinitionException typedOther = (ThriftMalformedStreamDefinitionException)other;
+	public int compareTo(ThriftMalformedStreamDefinitionException other) {
+		if (!getClass().equals(other.getClass())) {
+			return getClass().getName().compareTo(other.getClass().getName());
+		}
 
-    lastComparison = Boolean.valueOf(isSetMessage()).compareTo(typedOther.isSetMessage());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetMessage()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.message, typedOther.message);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    return 0;
-  }
+		int lastComparison = 0;
+		ThriftMalformedStreamDefinitionException typedOther =
+				(ThriftMalformedStreamDefinitionException) other;
 
-  public _Fields fieldForId(int fieldId) {
-    return _Fields.findByThriftId(fieldId);
-  }
+		lastComparison = Boolean.valueOf(isSetMessage()).compareTo(typedOther.isSetMessage());
+		if (lastComparison != 0) {
+			return lastComparison;
+		}
+		if (isSetMessage()) {
+			lastComparison =
+					org.apache.thrift.TBaseHelper.compareTo(this.message, typedOther.message);
+			if (lastComparison != 0) {
+				return lastComparison;
+			}
+		}
+		return 0;
+	}
 
-  public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-    org.apache.thrift.protocol.TField field;
-    iprot.readStructBegin();
-    while (true)
-    {
-      field = iprot.readFieldBegin();
-      if (field.type == org.apache.thrift.protocol.TType.STOP) { 
-        break;
-      }
-      switch (field.id) {
-        case 1: // MESSAGE
-          if (field.type == org.apache.thrift.protocol.TType.STRING) {
-            this.message = iprot.readString();
-          } else { 
-            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, field.type);
-          }
-          break;
-        default:
-          org.apache.thrift.protocol.TProtocolUtil.skip(iprot, field.type);
-      }
-      iprot.readFieldEnd();
-    }
-    iprot.readStructEnd();
+	public _Fields fieldForId(int fieldId) {
+		return _Fields.findByThriftId(fieldId);
+	}
 
-    // check for required fields of primitive type, which can't be checked in the validate method
-    validate();
-  }
+	public void read(org.apache.thrift.protocol.TProtocol iprot)
+			throws org.apache.thrift.TException {
+		org.apache.thrift.protocol.TField field;
+		iprot.readStructBegin();
+		while (true) {
+			field = iprot.readFieldBegin();
+			if (field.type == org.apache.thrift.protocol.TType.STOP) {
+				break;
+			}
+			switch (field.id) {
+				case 1: // MESSAGE
+					if (field.type == org.apache.thrift.protocol.TType.STRING) {
+						this.message = iprot.readString();
+					} else {
+						org.apache.thrift.protocol.TProtocolUtil.skip(iprot, field.type);
+					}
+					break;
+				default:
+					org.apache.thrift.protocol.TProtocolUtil.skip(iprot, field.type);
+			}
+			iprot.readFieldEnd();
+		}
+		iprot.readStructEnd();
 
-  public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-    validate();
+		// check for required fields of primitive type, which can't be checked in the validate method
+		validate();
+	}
 
-    oprot.writeStructBegin(STRUCT_DESC);
-    if (this.message != null) {
-      oprot.writeFieldBegin(MESSAGE_FIELD_DESC);
-      oprot.writeString(this.message);
-      oprot.writeFieldEnd();
-    }
-    oprot.writeFieldStop();
-    oprot.writeStructEnd();
-  }
+	public void write(org.apache.thrift.protocol.TProtocol oprot)
+			throws org.apache.thrift.TException {
+		validate();
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder("ThriftMalformedStreamDefinitionException(");
-    boolean first = true;
+		oprot.writeStructBegin(STRUCT_DESC);
+		if (this.message != null) {
+			oprot.writeFieldBegin(MESSAGE_FIELD_DESC);
+			oprot.writeString(this.message);
+			oprot.writeFieldEnd();
+		}
+		oprot.writeFieldStop();
+		oprot.writeStructEnd();
+	}
 
-    sb.append("message:");
-    if (this.message == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.message);
-    }
-    first = false;
-    sb.append(")");
-    return sb.toString();
-  }
+	@Override public String toString() {
+		StringBuilder sb = new StringBuilder("ThriftMalformedStreamDefinitionException(");
+		boolean first = true;
 
-  public void validate() throws org.apache.thrift.TException {
-    // check for required fields
-    if (message == null) {
-      throw new org.apache.thrift.protocol.TProtocolException("Required field 'message' was not present! Struct: " + toString());
-    }
-  }
+		sb.append("message:");
+		if (this.message == null) {
+			sb.append("null");
+		} else {
+			sb.append(this.message);
+		}
+		first = false;
+		sb.append(")");
+		return sb.toString();
+	}
 
-  private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-    try {
-      write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-    } catch (org.apache.thrift.TException te) {
-      throw new java.io.IOException(te);
-    }
-  }
+	public void validate() throws org.apache.thrift.TException {
+		// check for required fields
+		if (message == null) {
+			throw new org.apache.thrift.protocol.TProtocolException(
+					"Required field 'message' was not present! Struct: " + toString());
+		}
+	}
 
-  private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-    try {
-      read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-    } catch (org.apache.thrift.TException te) {
-      throw new java.io.IOException(te);
-    }
-  }
+	private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+		try {
+			write(new org.apache.thrift.protocol.TCompactProtocol(
+					new org.apache.thrift.transport.TIOStreamTransport(out)));
+		} catch (org.apache.thrift.TException te) {
+			throw new java.io.IOException(te);
+		}
+	}
+
+	private void readObject(java.io.ObjectInputStream in)
+			throws java.io.IOException, ClassNotFoundException {
+		try {
+			read(new org.apache.thrift.protocol.TCompactProtocol(
+					new org.apache.thrift.transport.TIOStreamTransport(in)));
+		} catch (org.apache.thrift.TException te) {
+			throw new java.io.IOException(te);
+		}
+	}
 
 }
 

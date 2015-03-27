@@ -22,23 +22,23 @@ package org.wso2.carbon.databridge.agent.exception;
  */
 
 public class DataEndpointAuthenticationException extends Exception {
-    private String errorMessage;
+	private String errorMessage;
 
-    public DataEndpointAuthenticationException(String message) {
-        super(message);
-        errorMessage = message;
-    }
+	public DataEndpointAuthenticationException(String message) {
+		super(message);
+		errorMessage = message;
+	}
 
-    public DataEndpointAuthenticationException(String message, Throwable cause) {
-        super(message, cause);
-        errorMessage = message;
-    }
+	public DataEndpointAuthenticationException(String message, Throwable cause) {
+		super(message, cause);
+		errorMessage = message;
+	}
 
-    public DataEndpointAuthenticationException(Throwable cause) {
-        super(cause);
-    }
+	public DataEndpointAuthenticationException(Throwable cause) {
+		super(cause);
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

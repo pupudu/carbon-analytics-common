@@ -33,35 +33,40 @@ import org.wso2.carbon.utils.ConfigurationContextService;
  * bind="setEventStreamListener" unbind="unsetEventStreamListener"
  */
 public class EventStreamServiceDS {
-    private static final Log log = LogFactory.getLog(EventStreamServiceDS.class);
+	private static final Log log = LogFactory.getLog(EventStreamServiceDS.class);
 
-    protected void activate(ComponentContext context) {
-        try {
-            EventStreamServiceValueHolder.registerEventStreamRuntime(new EventStreamRuntime());
-            CarbonEventStreamService carbonEventStreamService = new CarbonEventStreamService();
-            EventStreamServiceValueHolder.setCarbonEventStreamService(carbonEventStreamService);
-            context.getBundleContext().registerService(EventStreamService.class.getName(), carbonEventStreamService, null);
-            if (log.isDebugEnabled()) {
-                log.debug("Successfully deployed EventStreamService");
-            }
-        } catch (Throwable e) {
-            log.error("Could not create EventStreamService : " + e.getMessage(), e);
-        }
-    }
+	protected void activate(ComponentContext context) {
+		try {
+			EventStreamServiceValueHolder.registerEventStreamRuntime(new EventStreamRuntime());
+			CarbonEventStreamService carbonEventStreamService = new CarbonEventStreamService();
+			EventStreamServiceValueHolder.setCarbonEventStreamService(carbonEventStreamService);
+			context.getBundleContext()
+			       .registerService(EventStreamService.class.getName(), carbonEventStreamService,
+			                        null);
+			if (log.isDebugEnabled()) {
+				log.debug("Successfully deployed EventStreamService");
+			}
+		} catch (Throwable e) {
+			log.error("Could not create EventStreamService : " + e.getMessage(), e);
+		}
+	}
 
-    protected void setConfigurationContextService(ConfigurationContextService configurationContextService) {
-        EventStreamServiceValueHolder.registerConfigurationContextService(configurationContextService);
-    }
+	protected void setConfigurationContextService(
+			ConfigurationContextService configurationContextService) {
+		EventStreamServiceValueHolder
+				.registerConfigurationContextService(configurationContextService);
+	}
 
-    protected void unsetConfigurationContextService(ConfigurationContextService configurationContextService) {
-        EventStreamServiceValueHolder.registerConfigurationContextService(null);
-    }
+	protected void unsetConfigurationContextService(
+			ConfigurationContextService configurationContextService) {
+		EventStreamServiceValueHolder.registerConfigurationContextService(null);
+	}
 
-    protected void setEventStreamListener(EventStreamListener eventStreamListener) {
-        EventStreamServiceValueHolder.registerEventStreamListener(eventStreamListener);
-    }
+	protected void setEventStreamListener(EventStreamListener eventStreamListener) {
+		EventStreamServiceValueHolder.registerEventStreamListener(eventStreamListener);
+	}
 
-    protected void unsetEventStreamListener(EventStreamListener eventStreamListener) {
-        EventStreamServiceValueHolder.unregisterEventStreamListener(eventStreamListener);
-    }
+	protected void unsetEventStreamListener(EventStreamListener eventStreamListener) {
+		EventStreamServiceValueHolder.unregisterEventStreamListener(eventStreamListener);
+	}
 }

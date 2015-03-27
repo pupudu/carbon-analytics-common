@@ -18,31 +18,30 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.databridge.commons.exception;
 
 public class TransportException extends Exception {
 
-    private String errorMessage;
+	private String errorMessage;
 
-    public TransportException() {
-    }
+	public TransportException() {
+	}
 
-    public TransportException(String message) {
-        super(message);
-        errorMessage = message;
-    }
+	public TransportException(String message) {
+		super(message);
+		errorMessage = message;
+	}
 
-    public TransportException(String message, Throwable cause) {
-        super(message, cause);
-        errorMessage = message;
-    }
+	public TransportException(String message, Throwable cause) {
+		super(message, cause);
+		errorMessage = message;
+	}
 
-    public TransportException(Throwable cause) {
-        super(cause);
-    }
+	public TransportException(Throwable cause) {
+		super(cause);
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

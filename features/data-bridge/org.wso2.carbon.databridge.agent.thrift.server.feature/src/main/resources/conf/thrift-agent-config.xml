@@ -15,7 +15,6 @@
   -->
 
 
-
 <thriftAgentConfiguration xmlns="http://wso2.org/carbon/databridge/agent/thrift">
 
     <bufferedEventsSize>20000</bufferedEventsSize>

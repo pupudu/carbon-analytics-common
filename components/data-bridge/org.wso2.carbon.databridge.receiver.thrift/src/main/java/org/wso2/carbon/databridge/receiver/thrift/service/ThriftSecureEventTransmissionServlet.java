@@ -26,23 +26,22 @@ import java.io.IOException;
 
 public class ThriftSecureEventTransmissionServlet extends TServlet {
 
+	public ThriftSecureEventTransmissionServlet(TProcessor processor,
+	                                            TProtocolFactory inProtocolFactory,
+	                                            TProtocolFactory outProtocolFactory) {
+		super(processor, inProtocolFactory, outProtocolFactory);
+	}
 
-    public ThriftSecureEventTransmissionServlet(TProcessor processor,
-                                                TProtocolFactory inProtocolFactory,
-                                                TProtocolFactory outProtocolFactory) {
-        super(processor, inProtocolFactory, outProtocolFactory);
-    }
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
+		doPost(request, response);
+	}
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
-        doPost(request, response);
-    }
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		if (request.isSecure()) {
+			super.doPost(request, response);
+		}
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        if (request.isSecure()) {
-            super.doPost(request, response);
-        }
-
-    }
+	}
 }

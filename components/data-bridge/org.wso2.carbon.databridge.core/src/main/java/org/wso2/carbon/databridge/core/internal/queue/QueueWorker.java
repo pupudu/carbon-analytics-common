@@ -33,69 +33,73 @@ import java.util.concurrent.BlockingQueue;
  */
 public class QueueWorker implements Runnable {
 
-    private static final Log log = LogFactory.getLog(QueueWorker.class);
+	private static final Log log = LogFactory.getLog(QueueWorker.class);
 
-    private BlockingQueue<EventComposite> eventQueue;
-    private List<AgentCallback> subscribers;
-    private List<RawDataAgentCallback> rawDataSubscribers;
+	private BlockingQueue<EventComposite> eventQueue;
+	private List<AgentCallback> subscribers;
+	private List<RawDataAgentCallback> rawDataSubscribers;
 
-    public QueueWorker(BlockingQueue<EventComposite> queue,
-                       List<AgentCallback> subscribers,
-                       List<RawDataAgentCallback> rawDataSubscribers) {
-        this.eventQueue = queue;
-        this.subscribers = subscribers;
-        this.rawDataSubscribers = rawDataSubscribers;
-    }
+	public QueueWorker(BlockingQueue<EventComposite> queue, List<AgentCallback> subscribers,
+	                   List<RawDataAgentCallback> rawDataSubscribers) {
+		this.eventQueue = queue;
+		this.subscribers = subscribers;
+		this.rawDataSubscribers = rawDataSubscribers;
+	}
 
-    public void run() {
-        List<Event> eventList = null;
-        try {
-            if (log.isDebugEnabled()) {
-                // Useful log to determine if the server can handle the load
-                // If the numbers go above 1000+, then it probably will.
-                // Typically, for c = 300, n = 1000, the number stays < 100
-                log.debug(eventQueue.size() + " messages in queue before " +
-                        Thread.currentThread().getName() + " worker has polled queue");
-            }
-            EventComposite eventComposite = eventQueue.poll();
+	public void run() {
+		List<Event> eventList = null;
+		try {
+			if (log.isDebugEnabled()) {
+				// Useful log to determine if the server can handle the load
+				// If the numbers go above 1000+, then it probably will.
+				// Typically, for c = 300, n = 1000, the number stays < 100
+				log.debug(eventQueue.size() + " messages in queue before " +
+				          Thread.currentThread().getName() + " worker has polled queue");
+			}
+			EventComposite eventComposite = eventQueue.poll();
 
-            if (rawDataSubscribers.size() > 0) {
-                for (RawDataAgentCallback agentCallback : rawDataSubscribers) {
-                    try {
-                        agentCallback.receive(eventComposite);
-                    } catch (Throwable e) {
-                        log.error("Error in passing event composite " + eventComposite + " to subscriber " + agentCallback, e);
-                    }
-                }
-            }
-            if (subscribers.size() > 0) {
-                try {
-                    eventList = eventComposite.getEventConverter().toEventList(eventComposite.getEventBundle(),
-                            eventComposite.getStreamTypeHolder());
+			if (rawDataSubscribers.size() > 0) {
+				for (RawDataAgentCallback agentCallback : rawDataSubscribers) {
+					try {
+						agentCallback.receive(eventComposite);
+					} catch (Throwable e) {
+						log.error("Error in passing event composite " + eventComposite +
+						          " to subscriber " + agentCallback, e);
+					}
+				}
+			}
+			if (subscribers.size() > 0) {
+				try {
+					eventList = eventComposite.getEventConverter()
+					                          .toEventList(eventComposite.getEventBundle(),
+					                                       eventComposite.getStreamTypeHolder());
 
-                    if (log.isDebugEnabled()) {
-                        log.debug("Dispatching event to " + subscribers.size() + " subscriber(s)");
-                    }
-                    for (AgentCallback agentCallback : subscribers) {
-                        try {
-                            agentCallback.receive(eventList, eventComposite.getAgentSession().getCredentials());
-                        } catch (Throwable e) {
-                            log.error("Error in passing event eventList " + eventList + " to subscriber " + agentCallback, e);
-                        }
-                    }
-                    if (log.isDebugEnabled()) {
-                        log.debug(eventQueue.size() + " messages in queue after " +
-                                Thread.currentThread().getName() + " worker has finished work");
-                    }
+					if (log.isDebugEnabled()) {
+						log.debug("Dispatching event to " + subscribers.size() + " subscriber(s)");
+					}
+					for (AgentCallback agentCallback : subscribers) {
+						try {
+							agentCallback.receive(eventList, eventComposite.getAgentSession()
+							                                               .getCredentials());
+						} catch (Throwable e) {
+							log.error("Error in passing event eventList " + eventList +
+							          " to subscriber " + agentCallback, e);
+						}
+					}
+					if (log.isDebugEnabled()) {
+						log.debug(eventQueue.size() + " messages in queue after " +
+						          Thread.currentThread().getName() + " worker has finished work");
+					}
 
-                } catch (EventConversionException re) {
-                    log.error("Dropping wrongly formatted event sent for " + eventComposite.getStreamTypeHolder().getTenantId(), re);
-                }
-            }
-        } catch (Throwable e) {
-            log.error("Error in passing events " + eventList + " to subscribers " + subscribers + " " + rawDataSubscribers, e);
-        }
-    }
-
+				} catch (EventConversionException re) {
+					log.error("Dropping wrongly formatted event sent for " +
+					          eventComposite.getStreamTypeHolder().getTenantId(), re);
+				}
+			}
+		} catch (Throwable e) {
+			log.error("Error in passing events " + eventList + " to subscribers " + subscribers +
+			          " " + rawDataSubscribers, e);
+		}
+	}
 
 }

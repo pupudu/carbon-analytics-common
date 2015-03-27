@@ -21,63 +21,60 @@
 package org.wso2.carbon.databridge.commons;
 
 public class Attribute {
-    String name;
-    AttributeType type;
+	String name;
+	AttributeType type;
 
-    public Attribute(String name, AttributeType type) {
-        this.name = name;
-        this.type = type;
-    }
+	public Attribute(String name, AttributeType type) {
+		this.name = name;
+		this.type = type;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public AttributeType getType() {
-        return type;
-    }
+	public AttributeType getType() {
+		return type;
+	}
 
-    public void setType(AttributeType type) {
-        this.type = type;
-    }
+	public void setType(AttributeType type) {
+		this.type = type;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+	@Override public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
-        Attribute attribute = (Attribute) o;
+		Attribute attribute = (Attribute) o;
 
-        if (name != null ? !name.equals(attribute.name) : attribute.name != null) {
-            return false;
-        }
-        if (type != attribute.type) {
-            return false;
-        }
+		if (name != null ? !name.equals(attribute.name) : attribute.name != null) {
+			return false;
+		}
+		if (type != attribute.type) {
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        return result;
-    }
+	@Override public int hashCode() {
+		int result = name != null ? name.hashCode() : 0;
+		result = 31 * result + (type != null ? type.hashCode() : 0);
+		return result;
+	}
 
-    @Override
-    public String toString() {
-        return "Attribute{" +
-               "name='" + name + '\'' +
-               ", type=" + type +
-               '}';
-    }
+	@Override public String toString() {
+		return "Attribute{" +
+		       "name='" + name + '\'' +
+		       ", type=" + type +
+		       '}';
+	}
 }

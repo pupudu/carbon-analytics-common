@@ -22,26 +22,26 @@ package org.wso2.carbon.databridge.agent.thrift.exception;
 
 public class AgentException extends Exception {
 
-    private String errorMessage;
+	private String errorMessage;
 
-    public AgentException() {
-    }
+	public AgentException() {
+	}
 
-    public AgentException(String message) {
-        super(message);
-        errorMessage = message;
-    }
+	public AgentException(String message) {
+		super(message);
+		errorMessage = message;
+	}
 
-    public AgentException(String message, Throwable cause) {
-        super(message, cause);
-        errorMessage = message;
-    }
+	public AgentException(String message, Throwable cause) {
+		super(message, cause);
+		errorMessage = message;
+	}
 
-    public AgentException(Throwable cause) {
-        super(cause);
-    }
+	public AgentException(Throwable cause) {
+		super(cause);
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

@@ -27,28 +27,26 @@ import java.util.List;
  * Wrapper class for the Agent Configuration which are loaded from data-agent-config.xml.
  */
 
-@XmlRootElement (name = "DataAgentsConfiguration")
-public class DataAgentsConfiguration {
+@XmlRootElement(name = "DataAgentsConfiguration") public class DataAgentsConfiguration {
 
-    private List<AgentConfiguration> agentConfigurations;
+	private List<AgentConfiguration> agentConfigurations;
 
-    @XmlElement (name = "Agent")
-    public List<AgentConfiguration> getAgentConfigurations() {
-        return agentConfigurations;
-    }
+	@XmlElement(name = "Agent") public List<AgentConfiguration> getAgentConfigurations() {
+		return agentConfigurations;
+	}
 
-    public void setAgentConfigurations(List<AgentConfiguration> agentConfigurations) {
-        this.agentConfigurations = agentConfigurations;
-    }
+	public void setAgentConfigurations(List<AgentConfiguration> agentConfigurations) {
+		this.agentConfigurations = agentConfigurations;
+	}
 
-    /**
-     * Validates the all the agent configurations available.
-     *
-     * @throws DataEndpointAgentConfigurationException
-     */
-    public void validateConfigurations() throws DataEndpointAgentConfigurationException {
-        for (AgentConfiguration agentConfiguration : agentConfigurations){
-            agentConfiguration.validate();
-        }
-    }
+	/**
+	 * Validates the all the agent configurations available.
+	 *
+	 * @throws DataEndpointAgentConfigurationException
+	 */
+	public void validateConfigurations() throws DataEndpointAgentConfigurationException {
+		for (AgentConfiguration agentConfiguration : agentConfigurations) {
+			agentConfiguration.validate();
+		}
+	}
 }

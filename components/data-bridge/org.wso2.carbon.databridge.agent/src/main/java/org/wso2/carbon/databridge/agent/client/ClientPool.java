@@ -25,52 +25,50 @@ import org.apache.commons.pool.impl.GenericKeyedObjectPool;
  */
 
 public class ClientPool {
-    private GenericKeyedObjectPool socketPool;
-    private GenericKeyedObjectPool secureSocketPool;
+	private GenericKeyedObjectPool socketPool;
+	private GenericKeyedObjectPool secureSocketPool;
 
-    public GenericKeyedObjectPool getClientPool(AbstractClientPoolFactory factory,
-                                                int maxActive,
-                                                int maxIdle,
-                                                boolean testOnBorrow,
-                                                long timeBetweenEvictionRunsMillis,
-                                                long minEvictableIdleTimeMillis) {
-        if (socketPool == null) {
-            synchronized (this) {
-                if (socketPool == null) {
-                    socketPool = new GenericKeyedObjectPool();
-                    socketPool.setFactory(factory);
-                    socketPool.setMaxActive(maxActive);
-                    socketPool.setTestOnBorrow(testOnBorrow);
-                    socketPool.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
-                    socketPool.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
-                    socketPool.setMaxIdle(maxIdle);
-                    socketPool.setWhenExhaustedAction(GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW);
-                }
-            }
-        }
-        return socketPool;
-    }
+	public GenericKeyedObjectPool getClientPool(AbstractClientPoolFactory factory, int maxActive,
+	                                            int maxIdle, boolean testOnBorrow,
+	                                            long timeBetweenEvictionRunsMillis,
+	                                            long minEvictableIdleTimeMillis) {
+		if (socketPool == null) {
+			synchronized (this) {
+				if (socketPool == null) {
+					socketPool = new GenericKeyedObjectPool();
+					socketPool.setFactory(factory);
+					socketPool.setMaxActive(maxActive);
+					socketPool.setTestOnBorrow(testOnBorrow);
+					socketPool.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
+					socketPool.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
+					socketPool.setMaxIdle(maxIdle);
+					socketPool.setWhenExhaustedAction(GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW);
+				}
+			}
+		}
+		return socketPool;
+	}
 
-    public GenericKeyedObjectPool getClientPool(AbstractSecureClientPoolFactory factory,
-                                                int maxActive,
-                                                int maxIdle,
-                                                boolean testOnBorrow,
-                                                long timeBetweenEvictionRunsMillis,
-                                                long minEvictableIdleTimeMillis) {
-        if (secureSocketPool == null) {
-            synchronized (this) {
-                if (secureSocketPool == null) {
-                    secureSocketPool = new GenericKeyedObjectPool();
-                    secureSocketPool.setFactory(factory);
-                    secureSocketPool.setMaxActive(maxActive);
-                    secureSocketPool.setTestOnBorrow(testOnBorrow);
-                    secureSocketPool.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
-                    secureSocketPool.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
-                    secureSocketPool.setMaxIdle(maxIdle);
-                    secureSocketPool.setWhenExhaustedAction(GenericKeyedObjectPool.WHEN_EXHAUSTED_BLOCK);
-                }
-            }
-        }
-        return secureSocketPool;
-    }
+	public GenericKeyedObjectPool getClientPool(AbstractSecureClientPoolFactory factory,
+	                                            int maxActive, int maxIdle, boolean testOnBorrow,
+	                                            long timeBetweenEvictionRunsMillis,
+	                                            long minEvictableIdleTimeMillis) {
+		if (secureSocketPool == null) {
+			synchronized (this) {
+				if (secureSocketPool == null) {
+					secureSocketPool = new GenericKeyedObjectPool();
+					secureSocketPool.setFactory(factory);
+					secureSocketPool.setMaxActive(maxActive);
+					secureSocketPool.setTestOnBorrow(testOnBorrow);
+					secureSocketPool
+							.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
+					secureSocketPool.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
+					secureSocketPool.setMaxIdle(maxIdle);
+					secureSocketPool
+							.setWhenExhaustedAction(GenericKeyedObjectPool.WHEN_EXHAUSTED_BLOCK);
+				}
+			}
+		}
+		return secureSocketPool;
+	}
 }

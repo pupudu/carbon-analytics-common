@@ -18,30 +18,29 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.databridge.commons.exception;
 
 public class StreamDefinitionException extends Exception {
-    private String errorMessage;
+	private String errorMessage;
 
-    public StreamDefinitionException() {
-    }
+	public StreamDefinitionException() {
+	}
 
-    public StreamDefinitionException(String message) {
-        super(message);
-        errorMessage = message;
-    }
+	public StreamDefinitionException(String message) {
+		super(message);
+		errorMessage = message;
+	}
 
-    public StreamDefinitionException(String message, Throwable cause) {
-        super(message, cause);
-        errorMessage = message;
-    }
+	public StreamDefinitionException(String message, Throwable cause) {
+		super(message, cause);
+		errorMessage = message;
+	}
 
-    public StreamDefinitionException(Throwable cause) {
-        super(cause);
-    }
+	public StreamDefinitionException(Throwable cause) {
+		super(cause);
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

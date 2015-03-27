@@ -29,17 +29,19 @@ import org.wso2.carbon.event.stream.core.EventStreamService;
  * bind="setEventStreamService" unbind="unsetEventStreamService"
  */
 public class FileSystemStreamDefnStoreDS {
-    protected void activate(ComponentContext componentContext) {
-        AbstractStreamDefinitionStore abstractStreamDefinitionStore = new FileSystemStreamDefinitionStore();
-        componentContext.getBundleContext().registerService(AbstractStreamDefinitionStore.class.getName(),
-                abstractStreamDefinitionStore, null);
-    }
+	protected void activate(ComponentContext componentContext) {
+		AbstractStreamDefinitionStore abstractStreamDefinitionStore =
+				new FileSystemStreamDefinitionStore();
+		componentContext.getBundleContext()
+		                .registerService(AbstractStreamDefinitionStore.class.getName(),
+		                                 abstractStreamDefinitionStore, null);
+	}
 
-    protected void setEventStreamService(EventStreamService eventStreamService){
-        ServiceHolder.setEventStreamService(eventStreamService);
-    }
+	protected void setEventStreamService(EventStreamService eventStreamService) {
+		ServiceHolder.setEventStreamService(eventStreamService);
+	}
 
-    protected void unsetEventStreamService(EventStreamService eventStreamService){
-        ServiceHolder.setEventStreamService(null);
-    }
+	protected void unsetEventStreamService(EventStreamService eventStreamService) {
+		ServiceHolder.setEventStreamService(null);
+	}
 }

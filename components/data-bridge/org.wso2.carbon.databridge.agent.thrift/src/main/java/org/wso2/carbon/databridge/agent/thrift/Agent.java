@@ -46,126 +46,134 @@ import java.util.concurrent.TimeUnit;
  */
 public class Agent {
 
-    private static Log log = LogFactory.getLog(Agent.class);
+	private static Log log = LogFactory.getLog(Agent.class);
 
-    private AgentConfiguration agentConfiguration;
-    private GenericKeyedObjectPool transportPool;
-    private Semaphore queueSemaphore;
-    private AgentAuthenticator agentAuthenticator;
-    private List<DataPublisher> dataPublisherList;
-    private ThreadPoolExecutor threadPool;
-    private GenericKeyedObjectPool secureTransportPool;
+	private AgentConfiguration agentConfiguration;
+	private GenericKeyedObjectPool transportPool;
+	private Semaphore queueSemaphore;
+	private AgentAuthenticator agentAuthenticator;
+	private List<DataPublisher> dataPublisherList;
+	private ThreadPoolExecutor threadPool;
+	private GenericKeyedObjectPool secureTransportPool;
 
-    public Agent() {
-        this(new AgentConfiguration());
-    }
+	public Agent() {
+		this(new AgentConfiguration());
+	}
 
-    public Agent(AgentConfiguration agentConfiguration) {
-        this.agentConfiguration = agentConfiguration;
-        this.transportPool = new ClientPool().getClientPool(
-                new ClientPoolFactory(), agentConfiguration.getMaxTransportPoolSize(),
-                agentConfiguration.getMaxIdleConnections(), true, agentConfiguration.getEvictionTimePeriod(),
-                agentConfiguration.getMinIdleTimeInPool());
-        this.secureTransportPool = new SecureClientPool().getClientPool(
-                new SecureClientPoolFactory(agentConfiguration.getTrustStore(), agentConfiguration.getTrustStorePassword()), agentConfiguration.getSecureMaxTransportPoolSize(),
-                agentConfiguration.getSecureMaxIdleConnections(), true, agentConfiguration.getSecureEvictionTimePeriod(),
-                agentConfiguration.getSecureMinIdleTimeInPool());
-        this.agentAuthenticator = AgentAuthenticatorFactory.getAgentAuthenticator(secureTransportPool);
-        this.dataPublisherList = new LinkedList<DataPublisher>();
-        this.queueSemaphore = new Semaphore(agentConfiguration.getBufferedEventsSize());
-        //for the unbounded queue implementation the maximum pool size irrelevant and
-        // only the CorePoolSize number of threads will be created
-        this.threadPool = new ThreadPoolExecutor(agentConfiguration.getPoolSize(),
-                                                 agentConfiguration.getMaxPoolSize(),
-                                                 AgentConstants.DEFAULT_KEEP_ALIVE_TIME, TimeUnit.SECONDS,
-                                                 new LinkedBlockingQueue<Runnable>(),
-                                                 new DataBridgeThreadFactory("Agent")
-        );
-    }
+	public Agent(AgentConfiguration agentConfiguration) {
+		this.agentConfiguration = agentConfiguration;
+		this.transportPool = new ClientPool().getClientPool(new ClientPoolFactory(),
+		                                                    agentConfiguration
+				                                                    .getMaxTransportPoolSize(),
+		                                                    agentConfiguration
+				                                                    .getMaxIdleConnections(), true,
+		                                                    agentConfiguration
+				                                                    .getEvictionTimePeriod(),
+		                                                    agentConfiguration
+				                                                    .getMinIdleTimeInPool());
+		this.secureTransportPool = new SecureClientPool().getClientPool(
+				new SecureClientPoolFactory(agentConfiguration.getTrustStore(),
+				                            agentConfiguration.getTrustStorePassword()),
+				agentConfiguration.getSecureMaxTransportPoolSize(),
+				agentConfiguration.getSecureMaxIdleConnections(), true,
+				agentConfiguration.getSecureEvictionTimePeriod(),
+				agentConfiguration.getSecureMinIdleTimeInPool());
+		this.agentAuthenticator =
+				AgentAuthenticatorFactory.getAgentAuthenticator(secureTransportPool);
+		this.dataPublisherList = new LinkedList<DataPublisher>();
+		this.queueSemaphore = new Semaphore(agentConfiguration.getBufferedEventsSize());
+		//for the unbounded queue implementation the maximum pool size irrelevant and
+		// only the CorePoolSize number of threads will be created
+		this.threadPool = new ThreadPoolExecutor(agentConfiguration.getPoolSize(),
+		                                         agentConfiguration.getMaxPoolSize(),
+		                                         AgentConstants.DEFAULT_KEEP_ALIVE_TIME,
+		                                         TimeUnit.SECONDS,
+		                                         new LinkedBlockingQueue<Runnable>(),
+		                                         new DataBridgeThreadFactory("Agent"));
+	}
 
-    void addDataPublisher(DataPublisher dataPublisher) {
-        dataPublisherList.add(dataPublisher);
-    }
+	void addDataPublisher(DataPublisher dataPublisher) {
+		dataPublisherList.add(dataPublisher);
+	}
 
-    void removeDataPublisher(DataPublisher dataPublisher) {
-        dataPublisherList.remove(dataPublisher);
-    }
+	void removeDataPublisher(DataPublisher dataPublisher) {
+		dataPublisherList.remove(dataPublisher);
+	}
 
-    /**
-     * To shutdown Agent and DataPublishers
-     */
-    synchronized void shutdown(DataPublisher dataPublisher) {
-        removeDataPublisher(dataPublisher);
-        if (dataPublisherList.size() == 0) {
-            shutdown();
-        }
-    }
+	/**
+	 * To shutdown Agent and DataPublishers
+	 */
+	synchronized void shutdown(DataPublisher dataPublisher) {
+		removeDataPublisher(dataPublisher);
+		if (dataPublisherList.size() == 0) {
+			shutdown();
+		}
+	}
 
-    /**
-     * To shutdown Agent
-     */
-    public void shutdown() {
-        try {
-            while (threadPool.getActiveCount() > 0) {
-                Thread.sleep(500);
-            }
-            threadPool.shutdown();
-            transportPool.close();
-        } catch (Exception e) {
-            log.warn("Agent shutdown failed");
-        }
-        AgentHolder.setAgent(null);
-    }
+	/**
+	 * To shutdown Agent
+	 */
+	public void shutdown() {
+		try {
+			while (threadPool.getActiveCount() > 0) {
+				Thread.sleep(500);
+			}
+			threadPool.shutdown();
+			transportPool.close();
+		} catch (Exception e) {
+			log.warn("Agent shutdown failed");
+		}
+		AgentHolder.setAgent(null);
+	}
 
-    /**
-     * To shutdown Agent and DataPublishers immediately
-     */
-    synchronized void shutdownNow(DataPublisher dataPublisher) {
-        removeDataPublisher(dataPublisher);
-        if (dataPublisherList.size() == 0) {
-            shutdownNow();
-        }
-    }
+	/**
+	 * To shutdown Agent and DataPublishers immediately
+	 */
+	synchronized void shutdownNow(DataPublisher dataPublisher) {
+		removeDataPublisher(dataPublisher);
+		if (dataPublisherList.size() == 0) {
+			shutdownNow();
+		}
+	}
 
-    /**
-     * To shutdown Agent immediately
-     */
-    public void shutdownNow() {
-        try {
-            threadPool.shutdown();
-            transportPool.close();
-        } catch (Exception e) {
-            log.warn("Agent forceful shutdown failed",e);
-        }
-        AgentHolder.setAgent(null);
-    }
+	/**
+	 * To shutdown Agent immediately
+	 */
+	public void shutdownNow() {
+		try {
+			threadPool.shutdown();
+			transportPool.close();
+		} catch (Exception e) {
+			log.warn("Agent forceful shutdown failed", e);
+		}
+		AgentHolder.setAgent(null);
+	}
 
+	public AgentConfiguration getAgentConfiguration() {
+		return agentConfiguration;
+	}
 
-    public AgentConfiguration getAgentConfiguration() {
-        return agentConfiguration;
-    }
+	public GenericKeyedObjectPool getTransportPool() {
+		return transportPool;
+	}
 
-    public GenericKeyedObjectPool getTransportPool() {
-        return transportPool;
-    }
+	public Semaphore getQueueSemaphore() {
+		return queueSemaphore;
+	}
 
-    public Semaphore getQueueSemaphore() {
-        return queueSemaphore;
-    }
+	public AgentAuthenticator getAgentAuthenticator() {
+		return agentAuthenticator;
+	}
 
-    public AgentAuthenticator getAgentAuthenticator() {
-        return agentAuthenticator;
-    }
+	List<DataPublisher> getDataPublisherList() {
+		return dataPublisherList;
+	}
 
-    List<DataPublisher> getDataPublisherList() {
-        return dataPublisherList;
-    }
+	public ThreadPoolExecutor getThreadPool() {
+		return threadPool;
+	}
 
-    public ThreadPoolExecutor getThreadPool() {
-        return threadPool;
-    }
-
-    public GenericKeyedObjectPool getSecureTransportPool() {
-        return secureTransportPool;
-    }
+	public GenericKeyedObjectPool getSecureTransportPool() {
+		return secureTransportPool;
+	}
 }

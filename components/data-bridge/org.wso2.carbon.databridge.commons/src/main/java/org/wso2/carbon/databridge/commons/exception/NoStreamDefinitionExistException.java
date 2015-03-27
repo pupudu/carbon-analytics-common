@@ -18,30 +18,29 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.databridge.commons.exception;
 
 public class NoStreamDefinitionExistException extends Exception {
-    private String errorMessage;
+	private String errorMessage;
 
-    public NoStreamDefinitionExistException() {
-    }
+	public NoStreamDefinitionExistException() {
+	}
 
-    public NoStreamDefinitionExistException(String message) {
-        super(message);
-        errorMessage = message;
-    }
+	public NoStreamDefinitionExistException(String message) {
+		super(message);
+		errorMessage = message;
+	}
 
-    public NoStreamDefinitionExistException(String message, Throwable cause) {
-        super(message, cause);
-        errorMessage = message;
-    }
+	public NoStreamDefinitionExistException(String message, Throwable cause) {
+		super(message, cause);
+		errorMessage = message;
+	}
 
-    public NoStreamDefinitionExistException(Throwable cause) {
-        super(cause);
-    }
+	public NoStreamDefinitionExistException(Throwable cause) {
+		super(cause);
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

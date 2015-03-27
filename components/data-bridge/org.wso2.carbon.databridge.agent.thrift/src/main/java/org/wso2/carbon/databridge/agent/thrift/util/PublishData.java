@@ -17,57 +17,51 @@
 */
 package org.wso2.carbon.databridge.agent.thrift.util;
 
-
 import org.wso2.carbon.databridge.commons.Event;
 
 import java.util.Map;
 
 public class PublishData {
 
-    private Event event;
-    private String streamName;
-    private String streamVersion;
+	private Event event;
+	private String streamName;
+	private String streamVersion;
 
-    public PublishData(String streamName,
-                       String streamVersion,
-                       long timeStamp,
-                       Object[] metaDataArray,
-                       Object[] correlationDataArray,
-                       Object[] payloadDataArray, Map<String, String> arbitraryDataMap) {
-        this.streamName = streamName;
-        this.streamVersion = streamVersion;
-        this.event = new Event(null, timeStamp, metaDataArray,
-                               correlationDataArray, payloadDataArray, arbitraryDataMap);
-    }
+	public PublishData(String streamName, String streamVersion, long timeStamp,
+	                   Object[] metaDataArray, Object[] correlationDataArray,
+	                   Object[] payloadDataArray, Map<String, String> arbitraryDataMap) {
+		this.streamName = streamName;
+		this.streamVersion = streamVersion;
+		this.event =
+				new Event(null, timeStamp, metaDataArray, correlationDataArray, payloadDataArray,
+				          arbitraryDataMap);
+	}
 
-    public  PublishData(String streamName,
-                        String streamVersion,
-                        Object[] metaDataArray,
-                        Object[] correlationDataArray,
-                        Object[] payloadDataArray, Map<String, String> arbitraryDataMap) {
-        this.streamName = streamName;
-        this.streamVersion = streamVersion;
-        this.event = new Event(null, System.currentTimeMillis(),
-                               metaDataArray, correlationDataArray, payloadDataArray, arbitraryDataMap);
-    }
+	public PublishData(String streamName, String streamVersion, Object[] metaDataArray,
+	                   Object[] correlationDataArray, Object[] payloadDataArray,
+	                   Map<String, String> arbitraryDataMap) {
+		this.streamName = streamName;
+		this.streamVersion = streamVersion;
+		this.event =
+				new Event(null, System.currentTimeMillis(), metaDataArray, correlationDataArray,
+				          payloadDataArray, arbitraryDataMap);
+	}
 
-    public  PublishData(String streamName,
-                        String streamVersion,
-                        Event event) {
-        this.streamName = streamName;
-        this.streamVersion = streamVersion;
-        this.event = event;
-    }
+	public PublishData(String streamName, String streamVersion, Event event) {
+		this.streamName = streamName;
+		this.streamVersion = streamVersion;
+		this.event = event;
+	}
 
-    public Event getEvent() {
-        return event;
-    }
+	public Event getEvent() {
+		return event;
+	}
 
-    public String getStreamName() {
-        return streamName;
-    }
+	public String getStreamName() {
+		return streamName;
+	}
 
-    public String getStreamVersion() {
-        return streamVersion;
-    }
+	public String getStreamVersion() {
+		return streamVersion;
+	}
 }

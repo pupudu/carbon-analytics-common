@@ -17,13 +17,9 @@
 */
 package org.wso2.carbon.databridge.core;
 
-import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.databridge.commons.AttributeType;
 import org.wso2.carbon.databridge.commons.StreamDefinition;
 import org.wso2.carbon.databridge.core.internal.EventDispatcher;
-import org.wso2.carbon.utils.CarbonUtils;
-import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,49 +28,50 @@ import java.util.concurrent.ConcurrentHashMap;
  * Event stream data type holder
  */
 public class StreamTypeHolder {
-    private int tenantId;
-    private Map<String, StreamAttributeComposite> attributeCompositeMap = new ConcurrentHashMap<String, StreamAttributeComposite>();
-    private EventDispatcher eventDispatcherCallback;
+	private int tenantId;
+	private Map<String, StreamAttributeComposite> attributeCompositeMap =
+			new ConcurrentHashMap<String, StreamAttributeComposite>();
+	private EventDispatcher eventDispatcherCallback;
 
-    public StreamTypeHolder(int tenantId) {
-        this.tenantId = tenantId;
-    }
+	public StreamTypeHolder(int tenantId) {
+		this.tenantId = tenantId;
+	}
 
-    public int getTenantId() {
-        return tenantId;
-    }
+	public int getTenantId() {
+		return tenantId;
+	}
 
-    public void setTenantId(int tenantId) {
-        this.tenantId = tenantId;
-    }
+	public void setTenantId(int tenantId) {
+		this.tenantId = tenantId;
+	}
 
+	public Map<String, StreamAttributeComposite> getAttributeCompositeMap() {
+		return attributeCompositeMap;
+	}
 
-    public Map<String, StreamAttributeComposite> getAttributeCompositeMap() {
-        return attributeCompositeMap;
-    }
+	public AttributeType[][] getDataType(String streamId) {
+		StreamAttributeComposite type = attributeCompositeMap.get(streamId);
+		if (null != type) {
+			return type.getAttributeTypes();
+		}
+		return null;
+	}
 
-    public AttributeType[][] getDataType(String streamId) {
-        StreamAttributeComposite type = attributeCompositeMap.get(streamId);
-        if (null != type) {
-            return type.getAttributeTypes();
-        }
-        return null;
-    }
+	public void reloadStreamTypeHolder() {
+		eventDispatcherCallback.reloadDomainNameStreamTypeHolderCache(tenantId);
+	}
 
-    public void reloadStreamTypeHolder(){
-        eventDispatcherCallback.reloadDomainNameStreamTypeHolderCache(tenantId);
-    }
+	public StreamAttributeComposite getAttributeComposite(String streamId) {
+		return attributeCompositeMap.get(streamId);
+	}
 
-    public StreamAttributeComposite getAttributeComposite(String streamId) {
-        return attributeCompositeMap.get(streamId);
-    }
+	public void putStreamDefinition(StreamDefinition streamDefinition) {
+		this.attributeCompositeMap.put(streamDefinition.getStreamId(),
+		                               new StreamAttributeComposite(streamDefinition));
+	}
 
-    public void putStreamDefinition(StreamDefinition streamDefinition) {
-        this.attributeCompositeMap.put(streamDefinition.getStreamId(), new StreamAttributeComposite(streamDefinition));
-    }
-
-    public void setEventDispatcherCallback(EventDispatcher eventDispatcherCallback){
-        this.eventDispatcherCallback = eventDispatcherCallback;
-    }
+	public void setEventDispatcherCallback(EventDispatcher eventDispatcherCallback) {
+		this.eventDispatcherCallback = eventDispatcherCallback;
+	}
 
 }

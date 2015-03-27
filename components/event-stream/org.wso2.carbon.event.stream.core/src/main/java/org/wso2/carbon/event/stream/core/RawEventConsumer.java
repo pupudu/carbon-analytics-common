@@ -14,14 +14,13 @@
  */
 package org.wso2.carbon.event.stream.core;
 
-
 /**
  * Represents event sinks that fetch events from the junction.
  */
 public interface RawEventConsumer {
 
-    public String getStreamId();
+	public String getStreamId();
 
-    public void consumeEventData(Object[] eventData);
+	public void consumeEventData(Object[] eventData);
 
 }

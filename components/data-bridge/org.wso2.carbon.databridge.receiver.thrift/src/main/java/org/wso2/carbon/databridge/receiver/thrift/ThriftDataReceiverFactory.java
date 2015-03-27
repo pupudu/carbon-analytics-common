@@ -24,21 +24,20 @@ import org.wso2.carbon.databridge.receiver.thrift.conf.ThriftDataReceiverConfigu
  * The falconry method that is used to create Agent server
  */
 public class ThriftDataReceiverFactory {
-    public ThriftDataReceiver createAgentServer(
-            ThriftDataReceiverConfiguration thriftDataReceiverConfiguration,
-            DataBridgeReceiverService dataBridgeReceiverService) {
-        return new ThriftDataReceiver(thriftDataReceiverConfiguration, dataBridgeReceiverService);
-    }
+	public ThriftDataReceiver createAgentServer(
+			ThriftDataReceiverConfiguration thriftDataReceiverConfiguration,
+			DataBridgeReceiverService dataBridgeReceiverService) {
+		return new ThriftDataReceiver(thriftDataReceiverConfiguration, dataBridgeReceiverService);
+	}
 
-    public ThriftDataReceiver createAgentServer(int secureReceiverPort, int receiverPort,
-                                                DataBridgeReceiverService dataBridgeReceiverService) {
-        return new ThriftDataReceiver(secureReceiverPort, receiverPort, dataBridgeReceiverService);
-    }
+	public ThriftDataReceiver createAgentServer(int secureReceiverPort, int receiverPort,
+	                                            DataBridgeReceiverService dataBridgeReceiverService) {
+		return new ThriftDataReceiver(secureReceiverPort, receiverPort, dataBridgeReceiverService);
+	}
 
-
-    public ThriftDataReceiver createAgentServer(int receiverPort,
-                                                DataBridgeReceiverService dataBridgeReceiverService) {
-        return new ThriftDataReceiver(receiverPort, dataBridgeReceiverService);
-    }
+	public ThriftDataReceiver createAgentServer(int receiverPort,
+	                                            DataBridgeReceiverService dataBridgeReceiverService) {
+		return new ThriftDataReceiver(receiverPort, dataBridgeReceiverService);
+	}
 
 }

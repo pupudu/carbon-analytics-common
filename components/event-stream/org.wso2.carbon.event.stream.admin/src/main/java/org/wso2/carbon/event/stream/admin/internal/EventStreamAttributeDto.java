@@ -19,29 +19,29 @@ package org.wso2.carbon.event.stream.admin.internal;
  */
 public class EventStreamAttributeDto {
 
-    /**
-     * Name of the attribute
-     */
-    private String attributeName;
+	/**
+	 * Name of the attribute
+	 */
+	private String attributeName;
 
-    /**
-     * Type of the attribute
-     */
-    private String attributeType;
+	/**
+	 * Type of the attribute
+	 */
+	private String attributeType;
 
-    public String getAttributeName() {
-        return attributeName;
-    }
+	public String getAttributeName() {
+		return attributeName;
+	}
 
-    public void setAttributeName(String attributeName) {
-        this.attributeName = attributeName;
-    }
+	public void setAttributeName(String attributeName) {
+		this.attributeName = attributeName;
+	}
 
-    public String getAttributeType() {
-        return attributeType;
-    }
+	public String getAttributeType() {
+		return attributeType;
+	}
 
-    public void setAttributeType(String attributeType) {
-        this.attributeType = attributeType;
-    }
+	public void setAttributeType(String attributeType) {
+		this.attributeType = attributeType;
+	}
 }

@@ -32,30 +32,29 @@ import java.util.concurrent.TimeUnit;
  */
 public class SessionCache {
 
-    private LoadingCache<SessionBean, AgentSession> cache;
+	private LoadingCache<SessionBean, AgentSession> cache;
 
-    public SessionCache(int expirationTimeInMinutes) {
-        cache = CacheBuilder.newBuilder()
-                .expireAfterWrite(expirationTimeInMinutes, TimeUnit.MINUTES)
-                .build(CacheLoader.from(new SessionFunction()));
-    }
+	public SessionCache(int expirationTimeInMinutes) {
+		cache = CacheBuilder.newBuilder()
+		                    .expireAfterWrite(expirationTimeInMinutes, TimeUnit.MINUTES)
+		                    .build(CacheLoader.from(new SessionFunction()));
+	}
 
-    static class SessionFunction implements Function<SessionBean, AgentSession> {
-        @Override
-        public AgentSession apply(SessionBean sessionBean) {
-            return new AgentSession(sessionBean.getSessionId(), sessionBean.getCredentials());
-        }
-    }
+	static class SessionFunction implements Function<SessionBean, AgentSession> {
+		@Override public AgentSession apply(SessionBean sessionBean) {
+			return new AgentSession(sessionBean.getSessionId(), sessionBean.getCredentials());
+		}
+	}
 
-    public AgentSession getSession(SessionBean sessionBean) {
-        try {
-            return cache.get(sessionBean);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public AgentSession getSession(SessionBean sessionBean) {
+		try {
+			return cache.get(sessionBean);
+		} catch (ExecutionException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    public void removeSession(String sessionId) {
-        cache.invalidate(new SessionBean(sessionId));
-    }
+	public void removeSession(String sessionId) {
+		cache.invalidate(new SessionBean(sessionId));
+	}
 }

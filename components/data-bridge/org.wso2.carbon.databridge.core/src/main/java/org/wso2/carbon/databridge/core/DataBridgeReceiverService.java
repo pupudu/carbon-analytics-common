@@ -16,13 +16,8 @@
 
 package org.wso2.carbon.databridge.core;
 
-import org.apache.axiom.om.OMElement;
 import org.wso2.carbon.databridge.commons.StreamDefinition;
-import org.wso2.carbon.databridge.commons.exception.AuthenticationException;
-import org.wso2.carbon.databridge.commons.exception.DifferentStreamDefinitionAlreadyDefinedException;
-import org.wso2.carbon.databridge.commons.exception.MalformedStreamDefinitionException;
-import org.wso2.carbon.databridge.commons.exception.SessionTimeoutException;
-import org.wso2.carbon.databridge.commons.exception.UndefinedEventTypeException;
+import org.wso2.carbon.databridge.commons.exception.*;
 import org.wso2.carbon.databridge.core.conf.DataBridgeConfiguration;
 import org.wso2.carbon.databridge.core.definitionstore.StreamAddRemoveListener;
 import org.wso2.carbon.databridge.core.exception.StreamDefinitionNotFoundException;
@@ -36,49 +31,46 @@ import java.util.List;
  */
 public interface DataBridgeReceiverService {
 
+	public String defineStream(String sessionId, String streamDefinition)
+			throws DifferentStreamDefinitionAlreadyDefinedException,
+			       MalformedStreamDefinitionException, SessionTimeoutException;
 
-    public String defineStream(String sessionId, String streamDefinition)
-            throws DifferentStreamDefinitionAlreadyDefinedException,
-                   MalformedStreamDefinitionException, SessionTimeoutException;
+	public String defineStream(String sessionId, String streamDefinition, String indexDefinition)
+			throws DifferentStreamDefinitionAlreadyDefinedException,
+			       MalformedStreamDefinitionException, SessionTimeoutException;
 
-    public String defineStream(String sessionId, String streamDefinition, String indexDefinition)
-            throws DifferentStreamDefinitionAlreadyDefinedException,
-                   MalformedStreamDefinitionException, SessionTimeoutException;
+	public String findStreamId(String sessionId, String streamName, String streamVersion)
+			throws SessionTimeoutException;
 
-    public String findStreamId(String sessionId, String streamName, String streamVersion)
-            throws SessionTimeoutException;
+	public boolean deleteStream(String sessionId, String streamId) throws SessionTimeoutException;
 
-    public boolean deleteStream(String sessionId, String streamId)
-            throws SessionTimeoutException;
+	public boolean deleteStream(String sessionId, String streamName, String streamVersion)
+			throws SessionTimeoutException;
 
-    public boolean deleteStream(String sessionId, String streamName, String streamVersion)
-            throws SessionTimeoutException;
+	public void publish(Object eventBundle, String sessionId, EventConverter eventConverter)
+			throws UndefinedEventTypeException, SessionTimeoutException;
 
-    public void publish(Object eventBundle, String sessionId, EventConverter eventConverter)
-            throws UndefinedEventTypeException, SessionTimeoutException;
+	public StreamDefinition getStreamDefinition(String sessionId, String streamName,
+	                                            String streamVersion)
+			throws SessionTimeoutException, StreamDefinitionNotFoundException,
+			       StreamDefinitionStoreException;
 
-    public StreamDefinition getStreamDefinition(String sessionId, String streamName,
-                                                String streamVersion)
-            throws SessionTimeoutException, StreamDefinitionNotFoundException,
-                   StreamDefinitionStoreException;
+	public List<StreamDefinition> getAllStreamDefinitions(String sessionId)
+			throws SessionTimeoutException;
 
-    public List<StreamDefinition> getAllStreamDefinitions(String sessionId)
-            throws SessionTimeoutException;
+	public void saveStreamDefinition(String sessionId, StreamDefinition streamDefinition)
+			throws SessionTimeoutException, StreamDefinitionStoreException,
+			       DifferentStreamDefinitionAlreadyDefinedException;
 
-    public void saveStreamDefinition(String sessionId, StreamDefinition streamDefinition)
-            throws SessionTimeoutException, StreamDefinitionStoreException,
-                   DifferentStreamDefinitionAlreadyDefinedException;
+	public String login(String username, String password) throws AuthenticationException;
 
+	public void logout(String sessionId) throws Exception;
 
-    public String login(String username, String password) throws AuthenticationException;
+	public DataBridgeConfiguration getInitialConfig();
 
-    public void logout(String sessionId) throws Exception;
+	public void subscribe(StreamAddRemoveListener streamAddRemoveListener);
 
-    public DataBridgeConfiguration getInitialConfig();
-
-    public void subscribe(StreamAddRemoveListener streamAddRemoveListener);
-
-    public void unsubscribe(StreamAddRemoveListener streamAddRemoveListener);
+	public void unsubscribe(StreamAddRemoveListener streamAddRemoveListener);
 }
 
 

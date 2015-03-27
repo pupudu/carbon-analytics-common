@@ -26,50 +26,57 @@ import org.wso2.carbon.utils.CarbonUtils;
  * The receiver configuration for Binary Transport Receiver
  */
 public class BinaryDataReceiverConfiguration {
-    private int sslPort;
-    private int tcpPort;
-    private int sizeOfSSLThreadPool;
-    private int sizeOfTCPThreadPool;
+	private int sslPort;
+	private int tcpPort;
+	private int sizeOfSSLThreadPool;
+	private int sizeOfTCPThreadPool;
 
-    public BinaryDataReceiverConfiguration(int sslPort, int tcpPort) {
-        this.sslPort = sslPort;
-        this.tcpPort = tcpPort;
-        this.sizeOfSSLThreadPool = BinaryDataReceiverConstants.DEFAULT_SSL_RECEIVER_THREAD_POOL_SIZE;
-        this.sizeOfTCPThreadPool = BinaryDataReceiverConstants.DEFAULT_TCP_RECEIVER_THREAD_POOL_SIZE;
-    }
+	public BinaryDataReceiverConfiguration(int sslPort, int tcpPort) {
+		this.sslPort = sslPort;
+		this.tcpPort = tcpPort;
+		this.sizeOfSSLThreadPool =
+				BinaryDataReceiverConstants.DEFAULT_SSL_RECEIVER_THREAD_POOL_SIZE;
+		this.sizeOfTCPThreadPool =
+				BinaryDataReceiverConstants.DEFAULT_TCP_RECEIVER_THREAD_POOL_SIZE;
+	}
 
-    public BinaryDataReceiverConfiguration(DataBridgeConfiguration dataBridgeConfiguration) {
-        DataReceiver dataReceiver = dataBridgeConfiguration.
-                getDataReceiver(BinaryDataReceiverConstants.DATA_BRIDGE_RECEIVER_CONFIG_NAME);
-        this.sslPort = Integer.parseInt(dataReceiver.getConfiguration(BinaryDataReceiverConstants.SSL_RECEIVER_PORT_CONFIG_NAME,
-                BinaryDataReceiverConstants.DEFAULT_SSL_RECEIVER_PORT).toString())+getPortOffset();
-        this.tcpPort = Integer.parseInt(dataReceiver.getConfiguration(BinaryDataReceiverConstants.TCP_RECEIVER_PORT_CONFIG_NAME,
-                BinaryDataReceiverConstants.DEFAULT_TCP_RECEIVER_PORT).toString())+getPortOffset();
-        this.sizeOfSSLThreadPool = Integer.parseInt(dataReceiver.getConfiguration(
-                BinaryDataReceiverConstants.SSL_RECEIVER_THREAD_POOL_SIZE,
-                BinaryDataReceiverConstants.DEFAULT_SSL_RECEIVER_THREAD_POOL_SIZE).toString());
-        this.sizeOfTCPThreadPool = Integer.parseInt(dataReceiver.getConfiguration(
-                BinaryDataReceiverConstants.TCP_RECEIVER_THREAD_POOL_SIZE,
-                BinaryDataReceiverConstants.DEFAULT_TCP_RECEIVER_THREAD_POOL_SIZE).toString());
-    }
+	public BinaryDataReceiverConfiguration(DataBridgeConfiguration dataBridgeConfiguration) {
+		DataReceiver dataReceiver = dataBridgeConfiguration.
+				                                                   getDataReceiver(
+						                                                   BinaryDataReceiverConstants.DATA_BRIDGE_RECEIVER_CONFIG_NAME);
+		this.sslPort = Integer.parseInt(dataReceiver.getConfiguration(
+				BinaryDataReceiverConstants.SSL_RECEIVER_PORT_CONFIG_NAME,
+				BinaryDataReceiverConstants.DEFAULT_SSL_RECEIVER_PORT).toString()) + getPortOffset();
+		this.tcpPort = Integer.parseInt(dataReceiver.getConfiguration(
+				BinaryDataReceiverConstants.TCP_RECEIVER_PORT_CONFIG_NAME,
+				BinaryDataReceiverConstants.DEFAULT_TCP_RECEIVER_PORT).toString()) +
+		               getPortOffset();
+		this.sizeOfSSLThreadPool = Integer.parseInt(dataReceiver.getConfiguration(
+				BinaryDataReceiverConstants.SSL_RECEIVER_THREAD_POOL_SIZE,
+				BinaryDataReceiverConstants.DEFAULT_SSL_RECEIVER_THREAD_POOL_SIZE).toString());
+		this.sizeOfTCPThreadPool = Integer.parseInt(dataReceiver.getConfiguration(
+				BinaryDataReceiverConstants.TCP_RECEIVER_THREAD_POOL_SIZE,
+				BinaryDataReceiverConstants.DEFAULT_TCP_RECEIVER_THREAD_POOL_SIZE).toString());
+	}
 
-    public int getSSLPort() {
-        return sslPort;
-    }
+	public int getSSLPort() {
+		return sslPort;
+	}
 
-    public int getTCPPort() {
-        return tcpPort;
-    }
+	public int getTCPPort() {
+		return tcpPort;
+	}
 
-    public int getSizeOfTCPThreadPool() {
-        return sizeOfTCPThreadPool;
-    }
+	public int getSizeOfTCPThreadPool() {
+		return sizeOfTCPThreadPool;
+	}
 
-    public int getSizeOfSSLThreadPool() {
-        return sizeOfSSLThreadPool;
-    }
+	public int getSizeOfSSLThreadPool() {
+		return sizeOfSSLThreadPool;
+	}
 
-    private static int getPortOffset() {
-        return CarbonUtils.getPortFromServerConfig(BinaryDataReceiverConstants.CARBON_CONFIG_PORT_OFFSET_NODE)+1;
-    }
+	private static int getPortOffset() {
+		return CarbonUtils.getPortFromServerConfig(
+				BinaryDataReceiverConstants.CARBON_CONFIG_PORT_OFFSET_NODE) + 1;
+	}
 }

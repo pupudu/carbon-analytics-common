@@ -23,23 +23,23 @@ package org.wso2.carbon.databridge.agent.exception;
  */
 
 public class EventQueueFullException extends Exception {
-    private String errorMessage;
+	private String errorMessage;
 
-    public EventQueueFullException(String message) {
-        super(message);
-        errorMessage = message;
-    }
+	public EventQueueFullException(String message) {
+		super(message);
+		errorMessage = message;
+	}
 
-    public EventQueueFullException(String message, Throwable cause) {
-        super(message, cause);
-        errorMessage = message;
-    }
+	public EventQueueFullException(String message, Throwable cause) {
+		super(message, cause);
+		errorMessage = message;
+	}
 
-    public EventQueueFullException(Throwable cause) {
-        super(cause);
-    }
+	public EventQueueFullException(Throwable cause) {
+		super(cause);
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

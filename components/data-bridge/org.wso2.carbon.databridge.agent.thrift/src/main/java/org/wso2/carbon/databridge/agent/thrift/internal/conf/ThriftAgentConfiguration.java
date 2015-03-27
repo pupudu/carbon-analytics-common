@@ -24,160 +24,159 @@ import org.wso2.carbon.databridge.agent.thrift.internal.utils.AgentConstants;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE)
-public class ThriftAgentConfiguration {
+@XmlRootElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE) public class ThriftAgentConfiguration {
 
-    private int bufferedEventsSize;
+	private int bufferedEventsSize;
 
-    private int poolSize;
+	private int poolSize;
 
-    private int maxPoolSize;
+	private int maxPoolSize;
 
-    private int maxTransportPoolSize;
+	private int maxTransportPoolSize;
 
-    private int maxIdleConnections;
+	private int maxIdleConnections;
 
-    private int evictionTimePeriod;
+	private int evictionTimePeriod;
 
-    private int minIdleTimeInPool;
+	private int minIdleTimeInPool;
 
-    private int secureMaxTransportPoolSize;
+	private int secureMaxTransportPoolSize;
 
-    private int secureMaxIdleConnections;
+	private int secureMaxIdleConnections;
 
-    private int secureEvictionTimePeriod;
+	private int secureEvictionTimePeriod;
 
-    private int secureMinIdleTimeInPool;
+	private int secureMinIdleTimeInPool;
 
-    private int maxMessageBundleSize;
+	private int maxMessageBundleSize;
 
-    private int asyncDataPublisherBufferedEventSize;
+	private int asyncDataPublisherBufferedEventSize;
 
-    private int loadBalancingReconnectionInterval;
+	private int loadBalancingReconnectionInterval;
 
-    public int getBufferedEventsSize() {
-        return bufferedEventsSize;
-    }
+	public int getBufferedEventsSize() {
+		return bufferedEventsSize;
+	}
 
-    @XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE)
-    public void setBufferedEventsSize(int bufferedEventsSize) {
-        this.bufferedEventsSize = bufferedEventsSize;
-    }
+	@XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE) public void setBufferedEventsSize(
+			int bufferedEventsSize) {
+		this.bufferedEventsSize = bufferedEventsSize;
+	}
 
-    public int getPoolSize() {
-        return poolSize;
-    }
+	public int getPoolSize() {
+		return poolSize;
+	}
 
-    @XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE)
-    public void setPoolSize(int poolSize) {
-        this.poolSize = poolSize;
-    }
+	@XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE) public void setPoolSize(
+			int poolSize) {
+		this.poolSize = poolSize;
+	}
 
-    public int getMaxPoolSize() {
-        return maxPoolSize;
-    }
+	public int getMaxPoolSize() {
+		return maxPoolSize;
+	}
 
-    @XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE)
-    public void setMaxPoolSize(int maxPoolSize) {
-        this.maxPoolSize = maxPoolSize;
-    }
+	@XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE) public void setMaxPoolSize(
+			int maxPoolSize) {
+		this.maxPoolSize = maxPoolSize;
+	}
 
-    public int getMaxTransportPoolSize() {
-        return maxTransportPoolSize;
-    }
+	public int getMaxTransportPoolSize() {
+		return maxTransportPoolSize;
+	}
 
-    @XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE)
-    public void setMaxTransportPoolSize(int maxTransportPoolSize) {
-        this.maxTransportPoolSize = maxTransportPoolSize;
-    }
+	@XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE) public void setMaxTransportPoolSize(
+			int maxTransportPoolSize) {
+		this.maxTransportPoolSize = maxTransportPoolSize;
+	}
 
-    public int getMaxIdleConnections() {
-        return maxIdleConnections;
-    }
+	public int getMaxIdleConnections() {
+		return maxIdleConnections;
+	}
 
-    @XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE)
-    public void setMaxIdleConnections(int maxIdleConnections) {
-        this.maxIdleConnections = maxIdleConnections;
-    }
+	@XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE) public void setMaxIdleConnections(
+			int maxIdleConnections) {
+		this.maxIdleConnections = maxIdleConnections;
+	}
 
-    public int getEvictionTimePeriod() {
-        return evictionTimePeriod;
-    }
+	public int getEvictionTimePeriod() {
+		return evictionTimePeriod;
+	}
 
-    @XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE)
-    public void setEvictionTimePeriod(int evictionTimePeriod) {
-        this.evictionTimePeriod = evictionTimePeriod;
-    }
+	@XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE) public void setEvictionTimePeriod(
+			int evictionTimePeriod) {
+		this.evictionTimePeriod = evictionTimePeriod;
+	}
 
-    public int getMinIdleTimeInPool() {
-        return minIdleTimeInPool;
-    }
+	public int getMinIdleTimeInPool() {
+		return minIdleTimeInPool;
+	}
 
-    @XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE)
-    public void setMinIdleTimeInPool(int minIdleTimeInPool) {
-        this.minIdleTimeInPool = minIdleTimeInPool;
-    }
+	@XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE) public void setMinIdleTimeInPool(
+			int minIdleTimeInPool) {
+		this.minIdleTimeInPool = minIdleTimeInPool;
+	}
 
-    public int getSecureMaxTransportPoolSize() {
-        return secureMaxTransportPoolSize;
-    }
+	public int getSecureMaxTransportPoolSize() {
+		return secureMaxTransportPoolSize;
+	}
 
-    @XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE)
-    public void setSecureMaxTransportPoolSize(int secureMaxTransportPoolSize) {
-        this.secureMaxTransportPoolSize = secureMaxTransportPoolSize;
-    }
+	@XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE) public void setSecureMaxTransportPoolSize(
+			int secureMaxTransportPoolSize) {
+		this.secureMaxTransportPoolSize = secureMaxTransportPoolSize;
+	}
 
-    public int getSecureMaxIdleConnections() {
-        return secureMaxIdleConnections;
-    }
+	public int getSecureMaxIdleConnections() {
+		return secureMaxIdleConnections;
+	}
 
-    @XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE)
-    public void setSecureMaxIdleConnections(int secureMaxIdleConnections) {
-        this.secureMaxIdleConnections = secureMaxIdleConnections;
-    }
+	@XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE) public void setSecureMaxIdleConnections(
+			int secureMaxIdleConnections) {
+		this.secureMaxIdleConnections = secureMaxIdleConnections;
+	}
 
-    public int getSecureEvictionTimePeriod() {
-        return secureEvictionTimePeriod;
-    }
+	public int getSecureEvictionTimePeriod() {
+		return secureEvictionTimePeriod;
+	}
 
-    @XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE)
-    public void setSecureEvictionTimePeriod(int secureEvictionTimePeriod) {
-        this.secureEvictionTimePeriod = secureEvictionTimePeriod;
-    }
+	@XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE) public void setSecureEvictionTimePeriod(
+			int secureEvictionTimePeriod) {
+		this.secureEvictionTimePeriod = secureEvictionTimePeriod;
+	}
 
-    public int getSecureMinIdleTimeInPool() {
-        return secureMinIdleTimeInPool;
-    }
+	public int getSecureMinIdleTimeInPool() {
+		return secureMinIdleTimeInPool;
+	}
 
-    @XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE)
-    public void setSecureMinIdleTimeInPool(int secureMinIdleTimeInPool) {
-        this.secureMinIdleTimeInPool = secureMinIdleTimeInPool;
-    }
+	@XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE) public void setSecureMinIdleTimeInPool(
+			int secureMinIdleTimeInPool) {
+		this.secureMinIdleTimeInPool = secureMinIdleTimeInPool;
+	}
 
-    public int getMaxMessageBundleSize() {
-        return maxMessageBundleSize;
-    }
+	public int getMaxMessageBundleSize() {
+		return maxMessageBundleSize;
+	}
 
-    @XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE)
-    public void setMaxMessageBundleSize(int maxMessageBundleSize) {
-        this.maxMessageBundleSize = maxMessageBundleSize;
-    }
+	@XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE) public void setMaxMessageBundleSize(
+			int maxMessageBundleSize) {
+		this.maxMessageBundleSize = maxMessageBundleSize;
+	}
 
-    public int getAsyncDataPublisherBufferedEventSize() {
-        return asyncDataPublisherBufferedEventSize;
-    }
+	public int getAsyncDataPublisherBufferedEventSize() {
+		return asyncDataPublisherBufferedEventSize;
+	}
 
-    @XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE)
-    public void setAsyncDataPublisherBufferedEventSize(int asyncDataPublisherBufferedEventSize) {
-        this.asyncDataPublisherBufferedEventSize = asyncDataPublisherBufferedEventSize;
-    }
+	@XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE) public void setAsyncDataPublisherBufferedEventSize(
+			int asyncDataPublisherBufferedEventSize) {
+		this.asyncDataPublisherBufferedEventSize = asyncDataPublisherBufferedEventSize;
+	}
 
-    public int getLoadBalancingReconnectionInterval() {
-        return loadBalancingReconnectionInterval;
-    }
+	public int getLoadBalancingReconnectionInterval() {
+		return loadBalancingReconnectionInterval;
+	}
 
-    @XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE)
-    public void setLoadBalancingReconnectionInterval(int loadBalancingReconnectionInterval) {
-        this.loadBalancingReconnectionInterval = loadBalancingReconnectionInterval;
-    }
+	@XmlElement(namespace = AgentConstants.AGENT_CONF_NAMESPACE) public void setLoadBalancingReconnectionInterval(
+			int loadBalancingReconnectionInterval) {
+		this.loadBalancingReconnectionInterval = loadBalancingReconnectionInterval;
+	}
 }

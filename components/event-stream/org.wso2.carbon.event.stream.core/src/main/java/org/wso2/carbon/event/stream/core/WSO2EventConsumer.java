@@ -19,29 +19,29 @@ import org.wso2.carbon.databridge.commons.StreamDefinition;
 
 public interface WSO2EventConsumer {
 
-    public String getStreamId();
+	public String getStreamId();
 
-    /**
-     * This method will be triggered for all listeners whenever an event is received
-     *
-     * @param event the event object which will be an instance of {@link org.wso2.carbon.databridge.commons.Event}
-     */
-    public void onEvent(Event event);
+	/**
+	 * This method will be triggered for all listeners whenever an event is received
+	 *
+	 * @param event the event object which will be an instance of {@link org.wso2.carbon.databridge.commons.Event}
+	 */
+	public void onEvent(Event event);
 
-    /**
-     * This method will be triggered when a new stream definition is added.
-     * This method will be triggered only when the input events are of type WSO2Event
-     *
-     * @param definition the stream definition as an object.
-     */
-    public void onAddDefinition(StreamDefinition definition);
+	/**
+	 * This method will be triggered when a new stream definition is added.
+	 * This method will be triggered only when the input events are of type WSO2Event
+	 *
+	 * @param definition the stream definition as an object.
+	 */
+	public void onAddDefinition(StreamDefinition definition);
 
-    /**
-     * This method will be triggered when a new stream definition is removed.
-     * This method will be triggered only when the input events are of type WSO2Event
-     *
-     * @param definition the stream definition as an object.
-     */
-    public void onRemoveDefinition(StreamDefinition definition);
+	/**
+	 * This method will be triggered when a new stream definition is removed.
+	 * This method will be triggered only when the input events are of type WSO2Event
+	 *
+	 * @param definition the stream definition as an object.
+	 */
+	public void onRemoveDefinition(StreamDefinition definition);
 
 }

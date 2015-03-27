@@ -18,7 +18,6 @@
 
 package org.wso2.carbon.databridge.commons.utils;
 
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.json.JSONArray;
@@ -35,215 +34,237 @@ import java.util.List;
  * the util class that converts Events and its definitions in to various forms
  */
 public final class EventDefinitionConverterUtils {
-    public final static String nullString = "_null";
-    private static Gson gson =new GsonBuilder()
-            .setPrettyPrinting()
-            .disableHtmlEscaping()
-            .create();
+	public final static String nullString = "_null";
+	private static Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-    private EventDefinitionConverterUtils() {
+	private EventDefinitionConverterUtils() {
 
-    }
+	}
 
-    public static AttributeType[] generateAttributeTypeArray(List<Attribute> attributes) {
-        if (attributes != null) {
-            AttributeType[] attributeTypes = new AttributeType[attributes.size()];
-            for (int i = 0, metaDataSize = attributes.size(); i < metaDataSize; i++) {
-                Attribute attribute = attributes.get(i);
-                attributeTypes[i] = attribute.getType();
-            }
-            return attributeTypes;
-        } else {
-            return null;  //to improve performance
-        }
-    }
+	public static AttributeType[] generateAttributeTypeArray(List<Attribute> attributes) {
+		if (attributes != null) {
+			AttributeType[] attributeTypes = new AttributeType[attributes.size()];
+			for (int i = 0, metaDataSize = attributes.size(); i < metaDataSize; i++) {
+				Attribute attribute = attributes.get(i);
+				attributeTypes[i] = attribute.getType();
+			}
+			return attributeTypes;
+		} else {
+			return null;  //to improve performance
+		}
+	}
 
+	public static StreamDefinition convertFromJson(String streamDefinition)
+			throws MalformedStreamDefinitionException {
+		try {
+			StreamDefinition tempStreamDefinition = gson.fromJson(streamDefinition.
+					                                                                      replaceAll(
+							                                                                      "('|\")type('|\")\\W*:\\W*('|\")(?i)int('|\")",
+							                                                                      "'type':'INT'")
+			                                                                      .replaceAll(
+					                                                                      "('|\")type('|\")\\W*:\\W*('|\")(?i)long('|\")",
+					                                                                      "'type':'LONG'")
+			                                                                      .
+					                                                                      replaceAll(
+							                                                                      "('|\")type('|\")\\W*:\\W*('|\")(?i)float('|\")",
+							                                                                      "'type':'FLOAT'")
+			                                                                      .replaceAll(
+					                                                                      "('|\")type('|\")\\W*:\\W*('|\")(?i)double('|\")",
+					                                                                      "'type':'DOUBLE'")
+			                                                                      .
+					                                                                      replaceAll(
+							                                                                      "('|\")type('|\")\\W*:\\W*('|\")(?i)bool('|\")",
+							                                                                      "'type':'BOOL'")
+			                                                                      .replaceAll(
+					                                                                      "('|\")type('|\")\\W*:\\W*('|\")(?i)string('|\")",
+					                                                                      "'type':'STRING'"),
+			                                                      StreamDefinition.class);
 
-    public static StreamDefinition convertFromJson(String streamDefinition)
-            throws MalformedStreamDefinitionException {
-        try {
-            StreamDefinition tempStreamDefinition = gson.fromJson(streamDefinition.
-                    replaceAll("('|\")type('|\")\\W*:\\W*('|\")(?i)int('|\")", "'type':'INT'").replaceAll("('|\")type('|\")\\W*:\\W*('|\")(?i)long('|\")", "'type':'LONG'").
-                    replaceAll("('|\")type('|\")\\W*:\\W*('|\")(?i)float('|\")", "'type':'FLOAT'").replaceAll("('|\")type('|\")\\W*:\\W*('|\")(?i)double('|\")", "'type':'DOUBLE'").
-                    replaceAll("('|\")type('|\")\\W*:\\W*('|\")(?i)bool('|\")", "'type':'BOOL'").replaceAll("('|\")type('|\")\\W*:\\W*('|\")(?i)string('|\")", "'type':'STRING'"), StreamDefinition.class);
+			String name = tempStreamDefinition.getName();
+			String version = tempStreamDefinition.getVersion();
 
-            String name = tempStreamDefinition.getName();
-            String version = tempStreamDefinition.getVersion();
+			if (version == null) {
+				version =
+						"1.0.0";  //when populating the object using google gson the defaults are getting null values
+			}
+			if (name == null) {
+				throw new MalformedStreamDefinitionException("stream name is null");
+			}
 
+			StreamDefinition newStreamDefinition = new StreamDefinition(name, version);
 
-            if (version == null) {
-                version = "1.0.0";  //when populating the object using google gson the defaults are getting null values
-            }
-            if (name == null) {
-                throw new MalformedStreamDefinitionException("stream name is null");
-            }
+			boolean validAttributeList = false;
 
-            StreamDefinition newStreamDefinition = new StreamDefinition(name, version);
+			newStreamDefinition.setTags(tempStreamDefinition.getTags());
 
-            boolean validAttributeList = false;
+			List<Attribute> metaList = tempStreamDefinition.getMetaData();
+			validAttributeList =
+					EventDefinitionConverterUtils.checkInvalidAttributeType(metaList, "Meta");
+			if (metaList != null && metaList.size() > 0 && validAttributeList) {
+				newStreamDefinition.setMetaData(metaList);
+			}
+			List<Attribute> correlationList = tempStreamDefinition.getCorrelationData();
+			validAttributeList = EventDefinitionConverterUtils
+					.checkInvalidAttributeType(correlationList, "Correlation");
+			if (correlationList != null && correlationList.size() > 0 && validAttributeList) {
+				newStreamDefinition.setCorrelationData(correlationList);
+			}
+			List<Attribute> payloadList = tempStreamDefinition.getPayloadData();
+			validAttributeList =
+					EventDefinitionConverterUtils.checkInvalidAttributeType(payloadList, "Payload");
+			if (payloadList != null && payloadList.size() > 0 && validAttributeList) {
+				newStreamDefinition.setPayloadData(payloadList);
+			}
 
-            newStreamDefinition.setTags(tempStreamDefinition.getTags());
+			newStreamDefinition.setNickName(tempStreamDefinition.getNickName());
+			newStreamDefinition.setDescription(tempStreamDefinition.getDescription());
+			newStreamDefinition.setDescription(tempStreamDefinition.getDescription());
+			newStreamDefinition.setTags(tempStreamDefinition.getTags());
+			return newStreamDefinition;
+		} catch (RuntimeException e) {
+			throw new MalformedStreamDefinitionException(
+					" Malformed stream definition " + streamDefinition, e);
+		}
+	}
 
-            List<Attribute> metaList = tempStreamDefinition.getMetaData();
-            validAttributeList = EventDefinitionConverterUtils.checkInvalidAttributeType(metaList, "Meta");
-            if (metaList != null && metaList.size() > 0 && validAttributeList) {
-                newStreamDefinition.setMetaData(metaList);
-            }
-            List<Attribute> correlationList = tempStreamDefinition.getCorrelationData();
-            validAttributeList = EventDefinitionConverterUtils.checkInvalidAttributeType(correlationList, "Correlation");
-            if (correlationList != null && correlationList.size() > 0 && validAttributeList) {
-                newStreamDefinition.setCorrelationData(correlationList);
-            }
-            List<Attribute> payloadList = tempStreamDefinition.getPayloadData();
-            validAttributeList = EventDefinitionConverterUtils.checkInvalidAttributeType(payloadList, "Payload");
-            if (payloadList != null && payloadList.size() > 0 && validAttributeList) {
-                newStreamDefinition.setPayloadData(payloadList);
-            }
+	public static String convertToJson(List<StreamDefinition> existingDefinitions) {
+		JSONArray jsonDefnArray = new JSONArray();
+		for (StreamDefinition existingDefinition : existingDefinitions) {
+			jsonDefnArray.put(convertToJson(existingDefinition));
+		}
 
-            newStreamDefinition.setNickName(tempStreamDefinition.getNickName());
-            newStreamDefinition.setDescription(tempStreamDefinition.getDescription());
-            newStreamDefinition.setDescription(tempStreamDefinition.getDescription());
-            newStreamDefinition.setTags(tempStreamDefinition.getTags());
-            return newStreamDefinition;
-        } catch (RuntimeException e) {
-            throw new MalformedStreamDefinitionException(" Malformed stream definition " + streamDefinition, e);
-        }
-    }
+		return gson.toJson(existingDefinitions);
+	}
 
-    public static String convertToJson(List<StreamDefinition> existingDefinitions) {
-        JSONArray jsonDefnArray = new JSONArray();
-        for (StreamDefinition existingDefinition : existingDefinitions) {
-            jsonDefnArray.put(convertToJson(existingDefinition));
-        }
+	public static List<StreamDefinition> convertMultipleEventDefns(String jsonArrayOfEventDefns)
+			throws MalformedStreamDefinitionException {
+		try {
+			JSONArray jsonArray = new JSONArray(jsonArrayOfEventDefns);
+			List<StreamDefinition> streamDefinitions = new ArrayList<StreamDefinition>();
+			for (int i = 0; i < jsonArray.length(); i++) {
+				streamDefinitions.add(convertFromJson(jsonArray.getString(i)));
+			}
+			return streamDefinitions;
+		} catch (JSONException e) {
+			throw new MalformedStreamDefinitionException(
+					" Malformed stream definition " + jsonArrayOfEventDefns, e);
+		}
 
-        return gson.toJson(existingDefinitions);
-    }
+	}
 
-    public static List<StreamDefinition> convertMultipleEventDefns(String jsonArrayOfEventDefns)
-            throws MalformedStreamDefinitionException {
-        try {
-            JSONArray jsonArray = new JSONArray(jsonArrayOfEventDefns);
-            List<StreamDefinition> streamDefinitions = new ArrayList<StreamDefinition>();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                streamDefinitions.add(convertFromJson(jsonArray.getString(i)));
-            }
-            return streamDefinitions;
-        } catch (JSONException e) {
-            throw new MalformedStreamDefinitionException(" Malformed stream definition " + jsonArrayOfEventDefns, e);
-        }
+	public static String convertToJson(StreamDefinition existingDefinition) {
+		return gson.toJson(existingDefinition);
+	}
 
-    }
+	public static String convertToBasicJson(StreamDefinition existingDefinition) {
+		return gson.toJson(new StreamDefinitionTemplate(existingDefinition));
 
-    public static String convertToJson(StreamDefinition existingDefinition) {
-        return gson.toJson(existingDefinition);
-    }
+	}
 
-    public static String convertToBasicJson(StreamDefinition existingDefinition) {
-        return gson.toJson(new StreamDefinitionTemplate(existingDefinition));
+	private static boolean checkInvalidAttributeType(List<Attribute> attributeList,
+	                                                 String attributeType)
+			throws MalformedStreamDefinitionException {
+		if (attributeList != null) {
+			for (int i = 0; i < attributeList.size(); i++) {
+				if (attributeList.get(i).getType() != null) {
+					return true;
+				} else {
+					throw new MalformedStreamDefinitionException(
+							" Malformed stream definition, Invalid type assigned to attribute name \"" +
+							attributeList.get(i).getName() + "\" in " + attributeType +
+							" data attributes");
+				}
+			}
+		}
+		return false;
+	}
 
-    }
+	private static class StreamDefinitionTemplate {
 
-    private static boolean checkInvalidAttributeType(List<Attribute> attributeList, String attributeType)throws MalformedStreamDefinitionException {
-        if(attributeList!=null){
-            for(int i=0; i<attributeList.size(); i++){
-                if(attributeList.get(i).getType() != null){
-                    return true;
-                }else{
-                    throw new MalformedStreamDefinitionException(" Malformed stream definition, Invalid type assigned to attribute name \"" + attributeList.get(i).getName() + "\" in " + attributeType + " data attributes" );
-                }
-            }
-        }
-        return false;
-    }
+		private String name;
+		private String version = "1.0.0";
+		private String nickName;
+		private String description;
+		private List<String> tags;
 
-    private static class  StreamDefinitionTemplate{
+		private List<Attribute> metaData;
+		private List<Attribute> correlationData;
+		private List<Attribute> payloadData;
 
-        private String name;
-        private String version = "1.0.0";
-        private String nickName;
-        private String description;
-        private List<String> tags;
+		public StreamDefinitionTemplate(StreamDefinition existingDefinition) {
 
-        private List<Attribute> metaData;
-        private List<Attribute> correlationData;
-        private List<Attribute> payloadData;
+			this.name = existingDefinition.getName();
+			this.version = existingDefinition.getVersion();
+			this.nickName = existingDefinition.getNickName();
+			this.description = existingDefinition.getDescription();
+			this.tags = existingDefinition.getTags();
+			this.metaData = existingDefinition.getMetaData();
+			this.correlationData = existingDefinition.getCorrelationData();
+			this.payloadData = existingDefinition.getPayloadData();
+		}
 
+		public String getName() {
+			return name;
+		}
 
-        public StreamDefinitionTemplate(StreamDefinition existingDefinition) {
+		public void setName(String name) {
+			this.name = name;
+		}
 
-            this.name = existingDefinition.getName();
-            this.version = existingDefinition.getVersion();
-            this.nickName = existingDefinition.getNickName();
-            this.description = existingDefinition.getDescription();
-            this.tags = existingDefinition.getTags();
-            this.metaData = existingDefinition.getMetaData();
-            this.correlationData = existingDefinition.getCorrelationData();
-            this.payloadData = existingDefinition.getPayloadData();
-        }
+		public String getVersion() {
+			return version;
+		}
 
+		public void setVersion(String version) {
+			this.version = version;
+		}
 
-        public String getName() {
-            return name;
-        }
+		public String getNickName() {
+			return nickName;
+		}
 
-        public void setName(String name) {
-            this.name = name;
-        }
+		public void setNickName(String nickName) {
+			this.nickName = nickName;
+		}
 
-        public String getVersion() {
-            return version;
-        }
+		public String getDescription() {
+			return description;
+		}
 
-        public void setVersion(String version) {
-            this.version = version;
-        }
+		public void setDescription(String description) {
+			this.description = description;
+		}
 
-        public String getNickName() {
-            return nickName;
-        }
+		public List<String> getTags() {
+			return tags;
+		}
 
-        public void setNickName(String nickName) {
-            this.nickName = nickName;
-        }
+		public void setTags(List<String> tags) {
+			this.tags = tags;
+		}
 
-        public String getDescription() {
-            return description;
-        }
+		public List<Attribute> getMetaData() {
+			return metaData;
+		}
 
-        public void setDescription(String description) {
-            this.description = description;
-        }
+		public void setMetaData(List<Attribute> metaData) {
+			this.metaData = metaData;
+		}
 
-        public List<String> getTags() {
-            return tags;
-        }
+		public List<Attribute> getCorrelationData() {
+			return correlationData;
+		}
 
-        public void setTags(List<String> tags) {
-            this.tags = tags;
-        }
+		public void setCorrelationData(List<Attribute> correlationData) {
+			this.correlationData = correlationData;
+		}
 
-        public List<Attribute> getMetaData() {
-            return metaData;
-        }
+		public List<Attribute> getPayloadData() {
+			return payloadData;
+		}
 
-        public void setMetaData(List<Attribute> metaData) {
-            this.metaData = metaData;
-        }
-
-        public List<Attribute> getCorrelationData() {
-            return correlationData;
-        }
-
-        public void setCorrelationData(List<Attribute> correlationData) {
-            this.correlationData = correlationData;
-        }
-
-        public List<Attribute> getPayloadData() {
-            return payloadData;
-        }
-
-        public void setPayloadData(List<Attribute> payloadData) {
-            this.payloadData = payloadData;
-        }
-    }
+		public void setPayloadData(List<Attribute> payloadData) {
+			this.payloadData = payloadData;
+		}
+	}
 }

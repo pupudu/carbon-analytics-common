@@ -27,32 +27,31 @@ import org.wso2.carbon.databridge.agent.thrift.AgentHolder;
  * @scr.component name="agentservice.component" immediate="true"
  */
 public class AgentDS {
-    private static Log log = LogFactory.getLog(AgentDS.class);
-    private ServiceRegistration serviceRegistration;
-    private boolean agentLoaded = false;
+	private static Log log = LogFactory.getLog(AgentDS.class);
+	private ServiceRegistration serviceRegistration;
+	private boolean agentLoaded = false;
 
-    /**
-     * initialize the agent here.
-     *
-     * @param context
-     */
-    protected void activate(ComponentContext context) {
-        if (!agentLoaded) {
-            serviceRegistration = context.getBundleContext().
-                    registerService(Agent.class.getName(), AgentHolder.getOrCreateAgent(), null);
-            log.info("Successfully deployed Agent Client");
-            agentLoaded = true;
-        }
-    }
+	/**
+	 * initialize the agent here.
+	 *
+	 * @param context
+	 */
+	protected void activate(ComponentContext context) {
+		if (!agentLoaded) {
+			serviceRegistration = context.getBundleContext().
+					registerService(Agent.class.getName(), AgentHolder.getOrCreateAgent(), null);
+			log.info("Successfully deployed Agent Client");
+			agentLoaded = true;
+		}
+	}
 
-
-    protected void deactivate(ComponentContext context) {
-        context.getBundleContext().ungetService(serviceRegistration.getReference());
-        AgentHolder.getAgent().shutdown();
-        AgentHolder.setAgentConfiguration(null);
-        if (log.isDebugEnabled()) {
-            log.debug("Successfully stopped agent");
-        }
-    }
+	protected void deactivate(ComponentContext context) {
+		context.getBundleContext().ungetService(serviceRegistration.getReference());
+		AgentHolder.getAgent().shutdown();
+		AgentHolder.setAgentConfiguration(null);
+		if (log.isDebugEnabled()) {
+			log.debug("Successfully stopped agent");
+		}
+	}
 
 }

@@ -1,62 +1,95 @@
-
-<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ns="http://admin.dashboard.analytics.carbon.wso2.org" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:ax23="http://data.admin.dashboard.analytics.carbon.wso2.org/xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://admin.dashboard.analytics.carbon.wso2.org">
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:ns="http://admin.dashboard.analytics.carbon.wso2.org"
+                  xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:ax23="http://data.admin.dashboard.analytics.carbon.wso2.org/xsd"
+                  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+                  targetNamespace="http://admin.dashboard.analytics.carbon.wso2.org">
     <wsdl:documentation>DashboardAdminService</wsdl:documentation>
     <wsdl:types>
-        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://data.admin.dashboard.analytics.carbon.wso2.org/xsd">
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified"
+                   targetNamespace="http://data.admin.dashboard.analytics.carbon.wso2.org/xsd">
             <xs:complexType name="DataView">
                 <xs:sequence>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="columns" nillable="true" type="ax23:Column"></xs:element>
-                    <xs:element minOccurs="0" name="dataSource" nillable="true" type="xs:string"></xs:element>
-                    <xs:element minOccurs="0" name="name" nillable="true" type="xs:string"></xs:element>
-                    <xs:element minOccurs="0" name="filter" nillable="true" type="xs:string"></xs:element>
-                    <xs:element minOccurs="0" name="id" nillable="true" type="xs:string"></xs:element>
-                    <xs:element minOccurs="0" name="type" nillable="true" type="xs:string"></xs:element>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="widgetInstances" nillable="true" type="ax23:Widget"></xs:element>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="columns" nillable="true"
+                                type="ax23:Column"></xs:element>
+                    <xs:element minOccurs="0" name="dataSource" nillable="true"
+                                type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="name" nillable="true"
+                                type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="filter" nillable="true"
+                                type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="id" nillable="true"
+                                type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="type" nillable="true"
+                                type="xs:string"></xs:element>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="widgetInstances"
+                                nillable="true" type="ax23:Widget"></xs:element>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="Column">
                 <xs:sequence>
-                    <xs:element minOccurs="0" name="name" nillable="true" type="xs:string"></xs:element>
-                    <xs:element minOccurs="0" name="type" nillable="true" type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="name" nillable="true"
+                                type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="type" nillable="true"
+                                type="xs:string"></xs:element>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="Widget">
                 <xs:sequence>
-                    <xs:element minOccurs="0" name="config" nillable="true" type="xs:string"></xs:element>
-                    <xs:element minOccurs="0" name="id" nillable="true" type="xs:string"></xs:element>
-                    <xs:element minOccurs="0" name="title" nillable="true" type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="config" nillable="true"
+                                type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="id" nillable="true"
+                                type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="title" nillable="true"
+                                type="xs:string"></xs:element>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="Table">
                 <xs:sequence>
-                    <xs:element minOccurs="0" name="name" nillable="true" type="xs:string"></xs:element>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="rows" nillable="true" type="ax23:Row"></xs:element>
+                    <xs:element minOccurs="0" name="name" nillable="true"
+                                type="xs:string"></xs:element>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="rows" nillable="true"
+                                type="ax23:Row"></xs:element>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="Row">
                 <xs:sequence>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="cells" nillable="true" type="ax23:Cell"></xs:element>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="cells" nillable="true"
+                                type="ax23:Cell"></xs:element>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="Cell">
                 <xs:sequence>
-                    <xs:element minOccurs="0" name="key" nillable="true" type="xs:string"></xs:element>
-                    <xs:element minOccurs="0" name="value" nillable="true" type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="key" nillable="true"
+                                type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="value" nillable="true"
+                                type="xs:string"></xs:element>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="Dashboard">
                 <xs:sequence>
-                    <xs:element minOccurs="0" name="group" nillable="true" type="xs:string"></xs:element>
-                    <xs:element minOccurs="0" name="id" nillable="true" type="xs:string"></xs:element>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="roles" nillable="true" type="xs:string"></xs:element>
-                    <xs:element minOccurs="0" name="title" nillable="true" type="xs:string"></xs:element>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="widgetInstances" nillable="true" type="ax23:WidgetMetaData"></xs:element>
+                    <xs:element minOccurs="0" name="group" nillable="true"
+                                type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="id" nillable="true"
+                                type="xs:string"></xs:element>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="roles" nillable="true"
+                                type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="title" nillable="true"
+                                type="xs:string"></xs:element>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="widgetInstances"
+                                nillable="true" type="ax23:WidgetMetaData"></xs:element>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="WidgetMetaData">
                 <xs:sequence>
-                    <xs:element minOccurs="0" name="dimensions" nillable="true" type="ax23:WidgetDimensions"></xs:element>
-                    <xs:element minOccurs="0" name="id" nillable="true" type="xs:string"></xs:element>
+                    <xs:element minOccurs="0" name="dimensions" nillable="true"
+                                type="ax23:WidgetDimensions"></xs:element>
+                    <xs:element minOccurs="0" name="id" nillable="true"
+                                type="xs:string"></xs:element>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="WidgetDimensions">
@@ -68,8 +101,11 @@
                 </xs:sequence>
             </xs:complexType>
         </xs:schema>
-        <xs:schema xmlns:ax24="http://data.admin.dashboard.analytics.carbon.wso2.org/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://admin.dashboard.analytics.carbon.wso2.org">
-            <xs:import namespace="http://data.admin.dashboard.analytics.carbon.wso2.org/xsd"></xs:import>
+        <xs:schema
+                attributeFormDefault="qualified" elementFormDefault="qualified"
+                targetNamespace="http://admin.dashboard.analytics.carbon.wso2.org">
+            <xs:import
+                    namespace="http://data.admin.dashboard.analytics.carbon.wso2.org/xsd"></xs:import>
             <xs:element name="getDataViewsInfo">
                 <xs:complexType>
                     <xs:sequence></xs:sequence>
@@ -78,47 +114,54 @@
             <xs:element name="getDataViewsInfoResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax23:DataView"></xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return"
+                                    nillable="true" type="ax23:DataView"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="getRecords">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="tableName" nillable="true" type="xs:string"></xs:element>
+                        <xs:element minOccurs="0" name="tableName" nillable="true"
+                                    type="xs:string"></xs:element>
                         <xs:element minOccurs="0" name="timeFrom" type="xs:long"></xs:element>
                         <xs:element minOccurs="0" name="timeTo" type="xs:long"></xs:element>
                         <xs:element minOccurs="0" name="startIndex" type="xs:int"></xs:element>
                         <xs:element minOccurs="0" name="recordCount" type="xs:int"></xs:element>
-                        <xs:element minOccurs="0" name="searchQuery" nillable="true" type="xs:string"></xs:element>
+                        <xs:element minOccurs="0" name="searchQuery" nillable="true"
+                                    type="xs:string"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="getRecordsResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="return" nillable="true" type="ax23:Table"></xs:element>
+                        <xs:element minOccurs="0" name="return" nillable="true"
+                                    type="ax23:Table"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="getDataView">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="dataViewID" nillable="true" type="xs:string"></xs:element>
+                        <xs:element minOccurs="0" name="dataViewID" nillable="true"
+                                    type="xs:string"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="getDataViewResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="return" nillable="true" type="ax23:DataView"></xs:element>
+                        <xs:element minOccurs="0" name="return" nillable="true"
+                                    type="ax23:DataView"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="addDataView">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="dataView" nillable="true" type="ax23:DataView"></xs:element>
+                        <xs:element minOccurs="0" name="dataView" nillable="true"
+                                    type="ax23:DataView"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -132,7 +175,8 @@
             <xs:element name="updateDataView">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="dataView" nillable="true" type="ax23:DataView"></xs:element>
+                        <xs:element minOccurs="0" name="dataView" nillable="true"
+                                    type="ax23:DataView"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -146,7 +190,8 @@
             <xs:element name="deleteDataView">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="dataViewID" nillable="true" type="xs:string"></xs:element>
+                        <xs:element minOccurs="0" name="dataViewID" nillable="true"
+                                    type="xs:string"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -160,8 +205,10 @@
             <xs:element name="addWidget">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="dataViewID" nillable="true" type="xs:string"></xs:element>
-                        <xs:element minOccurs="0" name="widget" nillable="true" type="ax23:Widget"></xs:element>
+                        <xs:element minOccurs="0" name="dataViewID" nillable="true"
+                                    type="xs:string"></xs:element>
+                        <xs:element minOccurs="0" name="widget" nillable="true"
+                                    type="ax23:Widget"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -175,8 +222,10 @@
             <xs:element name="updateWidget">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="dataViewID" nillable="true" type="xs:string"></xs:element>
-                        <xs:element minOccurs="0" name="widget" nillable="true" type="ax23:Widget"></xs:element>
+                        <xs:element minOccurs="0" name="dataViewID" nillable="true"
+                                    type="xs:string"></xs:element>
+                        <xs:element minOccurs="0" name="widget" nillable="true"
+                                    type="ax23:Widget"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -190,29 +239,34 @@
             <xs:element name="getWidgetWithDataViewInfo">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="dataViewID" nillable="true" type="xs:string"></xs:element>
-                        <xs:element minOccurs="0" name="widgetID" nillable="true" type="xs:string"></xs:element>
+                        <xs:element minOccurs="0" name="dataViewID" nillable="true"
+                                    type="xs:string"></xs:element>
+                        <xs:element minOccurs="0" name="widgetID" nillable="true"
+                                    type="xs:string"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="getWidgetWithDataViewInfoResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="return" nillable="true" type="ax23:DataView"></xs:element>
+                        <xs:element minOccurs="0" name="return" nillable="true"
+                                    type="ax23:DataView"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="getWidgets">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="dataViewID" nillable="true" type="xs:string"></xs:element>
+                        <xs:element minOccurs="0" name="dataViewID" nillable="true"
+                                    type="xs:string"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="getWidgetsResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax23:Widget"></xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return"
+                                    nillable="true" type="ax23:Widget"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -224,28 +278,32 @@
             <xs:element name="getDashboardsResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax23:Dashboard"></xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return"
+                                    nillable="true" type="ax23:Dashboard"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="getDashboard">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="dashboardID" nillable="true" type="xs:string"></xs:element>
+                        <xs:element minOccurs="0" name="dashboardID" nillable="true"
+                                    type="xs:string"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="getDashboardResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="return" nillable="true" type="ax23:Dashboard"></xs:element>
+                        <xs:element minOccurs="0" name="return" nillable="true"
+                                    type="ax23:Dashboard"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="addDashboard">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="dashboard" nillable="true" type="ax23:Dashboard"></xs:element>
+                        <xs:element minOccurs="0" name="dashboard" nillable="true"
+                                    type="ax23:Dashboard"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -259,7 +317,8 @@
             <xs:element name="updateDashboard">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="dashboard" nillable="true" type="ax23:Dashboard"></xs:element>
+                        <xs:element minOccurs="0" name="dashboard" nillable="true"
+                                    type="ax23:Dashboard"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -273,8 +332,10 @@
             <xs:element name="addWidgetToDashboard">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="dashboardID" nillable="true" type="xs:string"></xs:element>
-                        <xs:element minOccurs="0" name="widget" nillable="true" type="ax23:WidgetMetaData"></xs:element>
+                        <xs:element minOccurs="0" name="dashboardID" nillable="true"
+                                    type="xs:string"></xs:element>
+                        <xs:element minOccurs="0" name="widget" nillable="true"
+                                    type="ax23:WidgetMetaData"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -288,8 +349,10 @@
             <xs:element name="updateWidgetInDashboard">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="dashboardID" nillable="true" type="xs:string"></xs:element>
-                        <xs:element minOccurs="0" name="widget" nillable="true" type="ax23:WidgetMetaData"></xs:element>
+                        <xs:element minOccurs="0" name="dashboardID" nillable="true"
+                                    type="xs:string"></xs:element>
+                        <xs:element minOccurs="0" name="widget" nillable="true"
+                                    type="ax23:WidgetMetaData"></xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -401,71 +464,99 @@
     <wsdl:portType name="DashboardAdminServicePortType">
         <wsdl:operation name="addWidget">
             <wsdl:input message="ns:addWidgetRequest" wsaw:Action="urn:addWidget"></wsdl:input>
-            <wsdl:output message="ns:addWidgetResponse" wsaw:Action="urn:addWidgetResponse"></wsdl:output>
+            <wsdl:output message="ns:addWidgetResponse"
+                         wsaw:Action="urn:addWidgetResponse"></wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="getDataViewsInfo">
-            <wsdl:input message="ns:getDataViewsInfoRequest" wsaw:Action="urn:getDataViewsInfo"></wsdl:input>
-            <wsdl:output message="ns:getDataViewsInfoResponse" wsaw:Action="urn:getDataViewsInfoResponse"></wsdl:output>
+            <wsdl:input message="ns:getDataViewsInfoRequest"
+                        wsaw:Action="urn:getDataViewsInfo"></wsdl:input>
+            <wsdl:output message="ns:getDataViewsInfoResponse"
+                         wsaw:Action="urn:getDataViewsInfoResponse"></wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="deleteDataView">
-            <wsdl:input message="ns:deleteDataViewRequest" wsaw:Action="urn:deleteDataView"></wsdl:input>
-            <wsdl:output message="ns:deleteDataViewResponse" wsaw:Action="urn:deleteDataViewResponse"></wsdl:output>
+            <wsdl:input message="ns:deleteDataViewRequest"
+                        wsaw:Action="urn:deleteDataView"></wsdl:input>
+            <wsdl:output message="ns:deleteDataViewResponse"
+                         wsaw:Action="urn:deleteDataViewResponse"></wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="getDashboard">
-            <wsdl:input message="ns:getDashboardRequest" wsaw:Action="urn:getDashboard"></wsdl:input>
-            <wsdl:output message="ns:getDashboardResponse" wsaw:Action="urn:getDashboardResponse"></wsdl:output>
+            <wsdl:input message="ns:getDashboardRequest"
+                        wsaw:Action="urn:getDashboard"></wsdl:input>
+            <wsdl:output message="ns:getDashboardResponse"
+                         wsaw:Action="urn:getDashboardResponse"></wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="updateWidgetInDashboard">
-            <wsdl:input message="ns:updateWidgetInDashboardRequest" wsaw:Action="urn:updateWidgetInDashboard"></wsdl:input>
-            <wsdl:output message="ns:updateWidgetInDashboardResponse" wsaw:Action="urn:updateWidgetInDashboardResponse"></wsdl:output>
+            <wsdl:input message="ns:updateWidgetInDashboardRequest"
+                        wsaw:Action="urn:updateWidgetInDashboard"></wsdl:input>
+            <wsdl:output message="ns:updateWidgetInDashboardResponse"
+                         wsaw:Action="urn:updateWidgetInDashboardResponse"></wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="updateDashboard">
-            <wsdl:input message="ns:updateDashboardRequest" wsaw:Action="urn:updateDashboard"></wsdl:input>
-            <wsdl:output message="ns:updateDashboardResponse" wsaw:Action="urn:updateDashboardResponse"></wsdl:output>
+            <wsdl:input message="ns:updateDashboardRequest"
+                        wsaw:Action="urn:updateDashboard"></wsdl:input>
+            <wsdl:output message="ns:updateDashboardResponse"
+                         wsaw:Action="urn:updateDashboardResponse"></wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="getWidgets">
             <wsdl:input message="ns:getWidgetsRequest" wsaw:Action="urn:getWidgets"></wsdl:input>
-            <wsdl:output message="ns:getWidgetsResponse" wsaw:Action="urn:getWidgetsResponse"></wsdl:output>
+            <wsdl:output message="ns:getWidgetsResponse"
+                         wsaw:Action="urn:getWidgetsResponse"></wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="getDashboards">
-            <wsdl:input message="ns:getDashboardsRequest" wsaw:Action="urn:getDashboards"></wsdl:input>
-            <wsdl:output message="ns:getDashboardsResponse" wsaw:Action="urn:getDashboardsResponse"></wsdl:output>
+            <wsdl:input message="ns:getDashboardsRequest"
+                        wsaw:Action="urn:getDashboards"></wsdl:input>
+            <wsdl:output message="ns:getDashboardsResponse"
+                         wsaw:Action="urn:getDashboardsResponse"></wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="addDataView">
             <wsdl:input message="ns:addDataViewRequest" wsaw:Action="urn:addDataView"></wsdl:input>
-            <wsdl:output message="ns:addDataViewResponse" wsaw:Action="urn:addDataViewResponse"></wsdl:output>
+            <wsdl:output message="ns:addDataViewResponse"
+                         wsaw:Action="urn:addDataViewResponse"></wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="addDashboard">
-            <wsdl:input message="ns:addDashboardRequest" wsaw:Action="urn:addDashboard"></wsdl:input>
-            <wsdl:output message="ns:addDashboardResponse" wsaw:Action="urn:addDashboardResponse"></wsdl:output>
+            <wsdl:input message="ns:addDashboardRequest"
+                        wsaw:Action="urn:addDashboard"></wsdl:input>
+            <wsdl:output message="ns:addDashboardResponse"
+                         wsaw:Action="urn:addDashboardResponse"></wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="updateWidget">
-            <wsdl:input message="ns:updateWidgetRequest" wsaw:Action="urn:updateWidget"></wsdl:input>
-            <wsdl:output message="ns:updateWidgetResponse" wsaw:Action="urn:updateWidgetResponse"></wsdl:output>
+            <wsdl:input message="ns:updateWidgetRequest"
+                        wsaw:Action="urn:updateWidget"></wsdl:input>
+            <wsdl:output message="ns:updateWidgetResponse"
+                         wsaw:Action="urn:updateWidgetResponse"></wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="addWidgetToDashboard">
-            <wsdl:input message="ns:addWidgetToDashboardRequest" wsaw:Action="urn:addWidgetToDashboard"></wsdl:input>
-            <wsdl:output message="ns:addWidgetToDashboardResponse" wsaw:Action="urn:addWidgetToDashboardResponse"></wsdl:output>
+            <wsdl:input message="ns:addWidgetToDashboardRequest"
+                        wsaw:Action="urn:addWidgetToDashboard"></wsdl:input>
+            <wsdl:output message="ns:addWidgetToDashboardResponse"
+                         wsaw:Action="urn:addWidgetToDashboardResponse"></wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="getWidgetWithDataViewInfo">
-            <wsdl:input message="ns:getWidgetWithDataViewInfoRequest" wsaw:Action="urn:getWidgetWithDataViewInfo"></wsdl:input>
-            <wsdl:output message="ns:getWidgetWithDataViewInfoResponse" wsaw:Action="urn:getWidgetWithDataViewInfoResponse"></wsdl:output>
+            <wsdl:input message="ns:getWidgetWithDataViewInfoRequest"
+                        wsaw:Action="urn:getWidgetWithDataViewInfo"></wsdl:input>
+            <wsdl:output message="ns:getWidgetWithDataViewInfoResponse"
+                         wsaw:Action="urn:getWidgetWithDataViewInfoResponse"></wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="updateDataView">
-            <wsdl:input message="ns:updateDataViewRequest" wsaw:Action="urn:updateDataView"></wsdl:input>
-            <wsdl:output message="ns:updateDataViewResponse" wsaw:Action="urn:updateDataViewResponse"></wsdl:output>
+            <wsdl:input message="ns:updateDataViewRequest"
+                        wsaw:Action="urn:updateDataView"></wsdl:input>
+            <wsdl:output message="ns:updateDataViewResponse"
+                         wsaw:Action="urn:updateDataViewResponse"></wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="getDataView">
             <wsdl:input message="ns:getDataViewRequest" wsaw:Action="urn:getDataView"></wsdl:input>
-            <wsdl:output message="ns:getDataViewResponse" wsaw:Action="urn:getDataViewResponse"></wsdl:output>
+            <wsdl:output message="ns:getDataViewResponse"
+                         wsaw:Action="urn:getDataViewResponse"></wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="getRecords">
             <wsdl:input message="ns:getRecordsRequest" wsaw:Action="urn:getRecords"></wsdl:input>
-            <wsdl:output message="ns:getRecordsResponse" wsaw:Action="urn:getRecordsResponse"></wsdl:output>
+            <wsdl:output message="ns:getRecordsResponse"
+                         wsaw:Action="urn:getRecordsResponse"></wsdl:output>
         </wsdl:operation>
     </wsdl:portType>
     <wsdl:binding name="DashboardAdminServiceSoap11Binding" type="ns:DashboardAdminServicePortType">
-        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"></soap:binding>
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+                      style="document"></soap:binding>
         <wsdl:operation name="addWidget">
             <soap:operation soapAction="urn:addWidget" style="document"></soap:operation>
             <wsdl:input>
@@ -503,7 +594,8 @@
             </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="updateWidgetInDashboard">
-            <soap:operation soapAction="urn:updateWidgetInDashboard" style="document"></soap:operation>
+            <soap:operation soapAction="urn:updateWidgetInDashboard"
+                            style="document"></soap:operation>
             <wsdl:input>
                 <soap:body use="literal"></soap:body>
             </wsdl:input>
@@ -575,7 +667,8 @@
             </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="getWidgetWithDataViewInfo">
-            <soap:operation soapAction="urn:getWidgetWithDataViewInfo" style="document"></soap:operation>
+            <soap:operation soapAction="urn:getWidgetWithDataViewInfo"
+                            style="document"></soap:operation>
             <wsdl:input>
                 <soap:body use="literal"></soap:body>
             </wsdl:input>
@@ -612,7 +705,8 @@
         </wsdl:operation>
     </wsdl:binding>
     <wsdl:binding name="DashboardAdminServiceSoap12Binding" type="ns:DashboardAdminServicePortType">
-        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"></soap12:binding>
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http"
+                        style="document"></soap12:binding>
         <wsdl:operation name="addWidget">
             <soap12:operation soapAction="urn:addWidget" style="document"></soap12:operation>
             <wsdl:input>
@@ -650,7 +744,8 @@
             </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="updateWidgetInDashboard">
-            <soap12:operation soapAction="urn:updateWidgetInDashboard" style="document"></soap12:operation>
+            <soap12:operation soapAction="urn:updateWidgetInDashboard"
+                              style="document"></soap12:operation>
             <wsdl:input>
                 <soap12:body use="literal"></soap12:body>
             </wsdl:input>
@@ -713,7 +808,8 @@
             </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="addWidgetToDashboard">
-            <soap12:operation soapAction="urn:addWidgetToDashboard" style="document"></soap12:operation>
+            <soap12:operation soapAction="urn:addWidgetToDashboard"
+                              style="document"></soap12:operation>
             <wsdl:input>
                 <soap12:body use="literal"></soap12:body>
             </wsdl:input>
@@ -722,7 +818,8 @@
             </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="getWidgetWithDataViewInfo">
-            <soap12:operation soapAction="urn:getWidgetWithDataViewInfo" style="document"></soap12:operation>
+            <soap12:operation soapAction="urn:getWidgetWithDataViewInfo"
+                              style="document"></soap12:operation>
             <wsdl:input>
                 <soap12:body use="literal"></soap12:body>
             </wsdl:input>
@@ -906,14 +1003,20 @@
         </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="DashboardAdminService">
-        <wsdl:port name="DashboardAdminServiceHttpsSoap11Endpoint" binding="ns:DashboardAdminServiceSoap11Binding">
-            <soap:address location="https://10.100.0.133:9443/services/DashboardAdminService.DashboardAdminServiceHttpsSoap11Endpoint/"></soap:address>
+        <wsdl:port name="DashboardAdminServiceHttpsSoap11Endpoint"
+                   binding="ns:DashboardAdminServiceSoap11Binding">
+            <soap:address
+                    location="https://10.100.0.133:9443/services/DashboardAdminService.DashboardAdminServiceHttpsSoap11Endpoint/"></soap:address>
         </wsdl:port>
-        <wsdl:port name="DashboardAdminServiceHttpsSoap12Endpoint" binding="ns:DashboardAdminServiceSoap12Binding">
-            <soap12:address location="https://10.100.0.133:9443/services/DashboardAdminService.DashboardAdminServiceHttpsSoap12Endpoint/"></soap12:address>
+        <wsdl:port name="DashboardAdminServiceHttpsSoap12Endpoint"
+                   binding="ns:DashboardAdminServiceSoap12Binding">
+            <soap12:address
+                    location="https://10.100.0.133:9443/services/DashboardAdminService.DashboardAdminServiceHttpsSoap12Endpoint/"></soap12:address>
         </wsdl:port>
-        <wsdl:port name="DashboardAdminServiceHttpsEndpoint" binding="ns:DashboardAdminServiceHttpBinding">
-            <http:address location="https://10.100.0.133:9443/services/DashboardAdminService.DashboardAdminServiceHttpsEndpoint/"></http:address>
+        <wsdl:port name="DashboardAdminServiceHttpsEndpoint"
+                   binding="ns:DashboardAdminServiceHttpBinding">
+            <http:address
+                    location="https://10.100.0.133:9443/services/DashboardAdminService.DashboardAdminServiceHttpsEndpoint/"></http:address>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>

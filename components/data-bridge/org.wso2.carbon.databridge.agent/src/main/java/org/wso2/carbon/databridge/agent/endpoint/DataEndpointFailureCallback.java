@@ -26,13 +26,12 @@ import java.util.List;
  */
 public interface DataEndpointFailureCallback {
 
-    /**
-     * Notifies the The failed events, and should try to send the events again successfully.
-     * In case if this couldn't send the events, then the unsuccessful events list needs to be returned back.
-     *
-     * @param events List failed events
-     *
-     */
-    public void tryResendEvents(List<Event> events);
+	/**
+	 * Notifies the The failed events, and should try to send the events again successfully.
+	 * In case if this couldn't send the events, then the unsuccessful events list needs to be returned back.
+	 *
+	 * @param events List failed events
+	 */
+	public void tryResendEvents(List<Event> events);
 
 }

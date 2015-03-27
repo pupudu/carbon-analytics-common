@@ -15,18 +15,18 @@
 package org.wso2.carbon.event.stream.admin.internal.exception;
 
 public class EventStreamAdminServiceException extends Exception {
-    public EventStreamAdminServiceException() {
-    }
+	public EventStreamAdminServiceException() {
+	}
 
-    public EventStreamAdminServiceException(String message) {
-        super(message);
-    }
+	public EventStreamAdminServiceException(String message) {
+		super(message);
+	}
 
-    public EventStreamAdminServiceException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public EventStreamAdminServiceException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public EventStreamAdminServiceException(Throwable cause) {
-        super(cause);
-    }
+	public EventStreamAdminServiceException(Throwable cause) {
+		super(cause);
+	}
 }

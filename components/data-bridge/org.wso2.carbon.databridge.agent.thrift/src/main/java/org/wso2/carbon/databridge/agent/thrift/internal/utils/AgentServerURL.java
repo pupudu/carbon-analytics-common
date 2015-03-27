@@ -26,65 +26,65 @@ import java.net.URL;
  * The Agent server endpoint url
  */
 public class AgentServerURL {
-    private ReceiverConfiguration.Protocol protocol;
-    private String host;
-    private int port;
-    private boolean isSecured = false;
+	private ReceiverConfiguration.Protocol protocol;
+	private String host;
+	private int port;
+	private boolean isSecured = false;
 
-    public AgentServerURL(String url) throws MalformedURLException {
-        URL theUrl;
-        if (url.startsWith("http:")) {
-            this.protocol= ReceiverConfiguration.Protocol.HTTP;
-            theUrl = new URL(url);
-            isSecured=false;
-        } else  if (url.startsWith("https:")) {
-            this.protocol= ReceiverConfiguration.Protocol.HTTP;
-            theUrl = new URL(url);
-            isSecured=true;
-        } else  if (url.startsWith("tcp:")) {
-            theUrl = new URL(url.replaceFirst("tcp", "http"));
-            this.protocol= ReceiverConfiguration.Protocol.TCP;
-            isSecured=false;
-        } else if (url.startsWith("ssl:")) {
-            this.protocol= ReceiverConfiguration.Protocol.TCP;
-            theUrl = new URL(url.replaceFirst("ssl", "http"));
-            isSecured=true;
-        } else {
-            throw new MalformedURLException("The url protocol is not tcp or ssl " + url);
-        }
-        this.host = theUrl.getHost();
-        this.port = theUrl.getPort();
-    }
+	public AgentServerURL(String url) throws MalformedURLException {
+		URL theUrl;
+		if (url.startsWith("http:")) {
+			this.protocol = ReceiverConfiguration.Protocol.HTTP;
+			theUrl = new URL(url);
+			isSecured = false;
+		} else if (url.startsWith("https:")) {
+			this.protocol = ReceiverConfiguration.Protocol.HTTP;
+			theUrl = new URL(url);
+			isSecured = true;
+		} else if (url.startsWith("tcp:")) {
+			theUrl = new URL(url.replaceFirst("tcp", "http"));
+			this.protocol = ReceiverConfiguration.Protocol.TCP;
+			isSecured = false;
+		} else if (url.startsWith("ssl:")) {
+			this.protocol = ReceiverConfiguration.Protocol.TCP;
+			theUrl = new URL(url.replaceFirst("ssl", "http"));
+			isSecured = true;
+		} else {
+			throw new MalformedURLException("The url protocol is not tcp or ssl " + url);
+		}
+		this.host = theUrl.getHost();
+		this.port = theUrl.getPort();
+	}
 
-    public ReceiverConfiguration.Protocol getProtocol() {
-        return protocol;
-    }
+	public ReceiverConfiguration.Protocol getProtocol() {
+		return protocol;
+	}
 
-    public void setProtocol(ReceiverConfiguration.Protocol protocol) {
-        this.protocol = protocol;
-    }
+	public void setProtocol(ReceiverConfiguration.Protocol protocol) {
+		this.protocol = protocol;
+	}
 
-    public String getHost() {
-        return host;
-    }
+	public String getHost() {
+		return host;
+	}
 
-    public void setHost(String host) {
-        this.host = host;
-    }
+	public void setHost(String host) {
+		this.host = host;
+	}
 
-    public int getPort() {
-        return port;
-    }
+	public int getPort() {
+		return port;
+	}
 
-    public void setPort(int port) {
-        this.port = port;
-    }
+	public void setPort(int port) {
+		this.port = port;
+	}
 
-    public boolean isSecured() {
-        return isSecured;
-    }
+	public boolean isSecured() {
+		return isSecured;
+	}
 
-    public void setSecured(boolean secured) {
-        isSecured = secured;
-    }
+	public void setSecured(boolean secured) {
+		isSecured = secured;
+	}
 }

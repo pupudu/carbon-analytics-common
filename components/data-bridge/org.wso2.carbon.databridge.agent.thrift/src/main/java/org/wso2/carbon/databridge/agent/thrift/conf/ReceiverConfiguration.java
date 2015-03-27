@@ -18,7 +18,6 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.databridge.agent.thrift.conf;
 
 /**
@@ -26,106 +25,104 @@ package org.wso2.carbon.databridge.agent.thrift.conf;
  */
 public class ReceiverConfiguration {
 
-    public enum Protocol {
-        TCP, HTTP
-    }
+	public enum Protocol {
+		TCP, HTTP
+	}
 
-    private String userName;
-    private String password;
-    private String dataReceiverIp;
-    private int dataReceiverPort;
-    private String secureDataReceiverIp;
-    private int secureDataReceiverPort;
-    private boolean dataTransferSecured = false;
-    private Protocol dataReceiverProtocol = Protocol.TCP;
-    private Protocol secureDataReceiverProtocol = Protocol.TCP;
+	private String userName;
+	private String password;
+	private String dataReceiverIp;
+	private int dataReceiverPort;
+	private String secureDataReceiverIp;
+	private int secureDataReceiverPort;
+	private boolean dataTransferSecured = false;
+	private Protocol dataReceiverProtocol = Protocol.TCP;
+	private Protocol secureDataReceiverProtocol = Protocol.TCP;
 
-    public ReceiverConfiguration(String userName, String password, Protocol dataReceiverProtocol,
-                                 String dataReceiverIp,
-                                 int dataReceiverPort, Protocol secureDataReceiverProtocol,
-                                 String secureDataReceiverIp,
-                                 int secureDataReceiverPort, boolean secured) {
-        this.dataReceiverProtocol = dataReceiverProtocol;
-        this.secureDataReceiverProtocol = secureDataReceiverProtocol;
-        this.userName = userName;
-        this.password = password;
-        this.dataReceiverIp = dataReceiverIp;
-        this.dataReceiverPort = dataReceiverPort;
-        this.secureDataReceiverIp = secureDataReceiverIp;
-        this.secureDataReceiverPort = secureDataReceiverPort;
-        this.dataTransferSecured = secured;
-    }
+	public ReceiverConfiguration(String userName, String password, Protocol dataReceiverProtocol,
+	                             String dataReceiverIp, int dataReceiverPort,
+	                             Protocol secureDataReceiverProtocol, String secureDataReceiverIp,
+	                             int secureDataReceiverPort, boolean secured) {
+		this.dataReceiverProtocol = dataReceiverProtocol;
+		this.secureDataReceiverProtocol = secureDataReceiverProtocol;
+		this.userName = userName;
+		this.password = password;
+		this.dataReceiverIp = dataReceiverIp;
+		this.dataReceiverPort = dataReceiverPort;
+		this.secureDataReceiverIp = secureDataReceiverIp;
+		this.secureDataReceiverPort = secureDataReceiverPort;
+		this.dataTransferSecured = secured;
+	}
 
-    public String getDataReceiverIp() {
-        return dataReceiverIp;
-    }
+	public String getDataReceiverIp() {
+		return dataReceiverIp;
+	}
 
-    public void setDataReceiverIp(String dataReceiverIp) {
-        this.dataReceiverIp = dataReceiverIp;
-    }
+	public void setDataReceiverIp(String dataReceiverIp) {
+		this.dataReceiverIp = dataReceiverIp;
+	}
 
-    public int getDataReceiverPort() {
-        return dataReceiverPort;
-    }
+	public int getDataReceiverPort() {
+		return dataReceiverPort;
+	}
 
-    public void setDataReceiverPort(int dataReceiverPort) {
-        this.dataReceiverPort = dataReceiverPort;
-    }
+	public void setDataReceiverPort(int dataReceiverPort) {
+		this.dataReceiverPort = dataReceiverPort;
+	}
 
-    public String getSecureDataReceiverIp() {
-        return secureDataReceiverIp;
-    }
+	public String getSecureDataReceiverIp() {
+		return secureDataReceiverIp;
+	}
 
-    public void setSecureDataReceiverIp(String secureDataReceiverIp) {
-        this.secureDataReceiverIp = secureDataReceiverIp;
-    }
+	public void setSecureDataReceiverIp(String secureDataReceiverIp) {
+		this.secureDataReceiverIp = secureDataReceiverIp;
+	}
 
-    public int getSecureDataReceiverPort() {
-        return secureDataReceiverPort;
-    }
+	public int getSecureDataReceiverPort() {
+		return secureDataReceiverPort;
+	}
 
-    public void setSecureDataReceiverPort(int secureDataReceiverPort) {
-        this.secureDataReceiverPort = secureDataReceiverPort;
-    }
+	public void setSecureDataReceiverPort(int secureDataReceiverPort) {
+		this.secureDataReceiverPort = secureDataReceiverPort;
+	}
 
-    public String getUserName() {
-        return userName;
-    }
+	public String getUserName() {
+		return userName;
+	}
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public boolean isDataTransferSecured() {
-        return dataTransferSecured;
-    }
+	public boolean isDataTransferSecured() {
+		return dataTransferSecured;
+	}
 
-    public void setDataTransferSecured(boolean dataTransferSecured) {
-        this.dataTransferSecured = dataTransferSecured;
-    }
+	public void setDataTransferSecured(boolean dataTransferSecured) {
+		this.dataTransferSecured = dataTransferSecured;
+	}
 
-    public Protocol getDataReceiverProtocol() {
-        return dataReceiverProtocol;
-    }
+	public Protocol getDataReceiverProtocol() {
+		return dataReceiverProtocol;
+	}
 
-    public void setDataReceiverProtocol(Protocol dataReceiverProtocol) {
-        this.dataReceiverProtocol = dataReceiverProtocol;
-    }
+	public void setDataReceiverProtocol(Protocol dataReceiverProtocol) {
+		this.dataReceiverProtocol = dataReceiverProtocol;
+	}
 
-    public Protocol getSecureDataReceiverProtocol() {
-        return secureDataReceiverProtocol;
-    }
+	public Protocol getSecureDataReceiverProtocol() {
+		return secureDataReceiverProtocol;
+	}
 
-    public void setSecureDataReceiverProtocol(
-            Protocol secureDataReceiverProtocol) {
-        this.secureDataReceiverProtocol = secureDataReceiverProtocol;
-    }
+	public void setSecureDataReceiverProtocol(Protocol secureDataReceiverProtocol) {
+		this.secureDataReceiverProtocol = secureDataReceiverProtocol;
+	}
 }

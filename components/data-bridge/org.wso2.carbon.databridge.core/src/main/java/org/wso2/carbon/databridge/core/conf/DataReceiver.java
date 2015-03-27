@@ -22,33 +22,31 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.List;
 
 public class DataReceiver {
-    private String name;
-    private List<Configuration> configurations;
+	private String name;
+	private List<Configuration> configurations;
 
-    @XmlAttribute(name = "name")
-    public String getName() {
-        return name;
-    }
+	@XmlAttribute(name = "name") public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    @XmlElement(name = "config")
-    public List<Configuration> getConfigurations() {
-        return configurations;
-    }
+	@XmlElement(name = "config") public List<Configuration> getConfigurations() {
+		return configurations;
+	}
 
-    public void setConfigurations(List<Configuration> configurations) {
-        this.configurations = configurations;
-    }
+	public void setConfigurations(List<Configuration> configurations) {
+		this.configurations = configurations;
+	}
 
-    public Object getConfiguration(String configName, Object defaultValue){
-        for (Configuration configuration: configurations){
-            if (configuration.getName().equalsIgnoreCase(configName)){
-                return configuration.getValue();
-            }
-        }
-        return defaultValue;
-    }
+	public Object getConfiguration(String configName, Object defaultValue) {
+		for (Configuration configuration : configurations) {
+			if (configuration.getName().equalsIgnoreCase(configName)) {
+				return configuration.getValue();
+			}
+		}
+		return defaultValue;
+	}
 }

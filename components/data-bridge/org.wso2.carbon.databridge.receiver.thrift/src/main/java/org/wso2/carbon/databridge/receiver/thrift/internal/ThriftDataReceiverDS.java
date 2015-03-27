@@ -24,7 +24,6 @@ import org.osgi.service.http.HttpService;
 import org.wso2.carbon.base.api.ServerConfigurationService;
 import org.wso2.carbon.databridge.commons.thrift.service.general.ThriftEventTransmissionService;
 import org.wso2.carbon.databridge.commons.thrift.service.secure.ThriftSecureEventTransmissionService;
-import org.wso2.carbon.databridge.commons.thrift.utils.CommonThriftConstants;
 import org.wso2.carbon.databridge.commons.thrift.utils.HostAddressFinder;
 import org.wso2.carbon.databridge.core.DataBridgeReceiverService;
 import org.wso2.carbon.databridge.core.exception.DataBridgeException;
@@ -58,120 +57,130 @@ import java.util.Hashtable;
  * cardinality="1..1" policy="dynamic"  bind="setHttpService" unbind="unsetHttpService"
  */
 public class ThriftDataReceiverDS {
-    private static final Log log = LogFactory.getLog(ThriftDataReceiverDS.class);
-    private DataBridgeReceiverService dataBridgeReceiverService;
-    private ServerConfigurationService serverConfiguration;
-    private ConfigurationContextService configurationContext;
-    private ThriftDataReceiver dataReceiver;
-    private HttpService httpServiceInstance;
+	private static final Log log = LogFactory.getLog(ThriftDataReceiverDS.class);
+	private DataBridgeReceiverService dataBridgeReceiverService;
+	private ServerConfigurationService serverConfiguration;
+	private ConfigurationContextService configurationContext;
+	private ThriftDataReceiver dataReceiver;
+	private HttpService httpServiceInstance;
 
-    private static final String DISABLE_RECEIVER = "disable.receiver";
+	private static final String DISABLE_RECEIVER = "disable.receiver";
 
+	/**
+	 * initialize the agent server here.
+	 *
+	 * @param context
+	 */
+	protected void activate(ComponentContext context) {
 
-    /**
-     * initialize the agent server here.
-     *
-     * @param context
-     */
-    protected void activate(ComponentContext context) {
+		String disableReceiver = System.getProperty(DISABLE_RECEIVER);
+		if (disableReceiver != null && Boolean.parseBoolean(disableReceiver)) {
+			log.info("Receiver disabled.");
+			return;
+		}
 
-        String disableReceiver = System.getProperty(DISABLE_RECEIVER);
-        if (disableReceiver != null && Boolean.parseBoolean(disableReceiver)) {
-            log.info("Receiver disabled.");
-            return;
-        }
+		try {
+			ThriftDataReceiverConfiguration thriftDataReceiverConfiguration =
+					new ThriftDataReceiverConfiguration(
+							dataBridgeReceiverService.getInitialConfig());
 
-        try {
-            ThriftDataReceiverConfiguration thriftDataReceiverConfiguration = new
-                    ThriftDataReceiverConfiguration(dataBridgeReceiverService.getInitialConfig());
+			if (dataReceiver == null) {
+				dataReceiver = new ThriftDataReceiverFactory()
+						.createAgentServer(thriftDataReceiverConfiguration,
+						                   dataBridgeReceiverService);
+				String serverUrl = CarbonUtils.getServerURL(serverConfiguration,
+				                                            configurationContext
+						                                            .getServerConfigContext());
+				String hostName = thriftDataReceiverConfiguration.getReceiverHostName();
+				if (null == hostName) {
+					try {
+						hostName = new URL(serverUrl).getHost();
+					} catch (MalformedURLException e) {
+						hostName = HostAddressFinder.findAddress("localhost");
+						if (!serverUrl.matches("local:/.*/services/")) {
+							log.info("The server url :" + serverUrl +
+							         " is using local, hence hostname is assigned as '" + hostName +
+							         "'");
+						}
+					}
+				}
+				dataReceiver.start(hostName);
 
-            if (dataReceiver == null) {
-                dataReceiver = new ThriftDataReceiverFactory().createAgentServer(thriftDataReceiverConfiguration, dataBridgeReceiverService);
-                String serverUrl = CarbonUtils.getServerURL(serverConfiguration, configurationContext.getServerConfigContext());
-                String hostName = thriftDataReceiverConfiguration.getReceiverHostName();
-                if (null == hostName) {
-                    try {
-                        hostName = new URL(serverUrl).getHost();
-                    } catch (MalformedURLException e) {
-                        hostName = HostAddressFinder.findAddress("localhost");
-                        if (!serverUrl.matches("local:/.*/services/")) {
-                            log.info("The server url :" + serverUrl + " is using local, hence hostname is assigned as '" + hostName + "'");
-                        }
-                    }
-                }
-                dataReceiver.start(hostName);
+				ThriftEventTransmissionService.Processor<ThriftEventTransmissionServiceImpl>
+						processor =
+						new ThriftEventTransmissionService.Processor<ThriftEventTransmissionServiceImpl>(
+								new ThriftEventTransmissionServiceImpl(dataBridgeReceiverService));
+				TCompactProtocol.Factory inProtFactory = new TCompactProtocol.Factory();
+				TCompactProtocol.Factory outProtFactory = new TCompactProtocol.Factory();
 
+				httpServiceInstance.registerServlet("/thriftReceiver",
+				                                    new ThriftEventTransmissionServlet(processor,
+				                                                                       inProtFactory,
+				                                                                       outProtFactory),
+				                                    new Hashtable(),
+				                                    httpServiceInstance.createDefaultHttpContext());
 
-                ThriftEventTransmissionService.Processor<ThriftEventTransmissionServiceImpl> processor = new ThriftEventTransmissionService.Processor<ThriftEventTransmissionServiceImpl>(
-                        new ThriftEventTransmissionServiceImpl(dataBridgeReceiverService));
-                TCompactProtocol.Factory inProtFactory = new TCompactProtocol.Factory();
-                TCompactProtocol.Factory outProtFactory = new TCompactProtocol.Factory();
+				ThriftSecureEventTransmissionService.Processor<ThriftSecureEventTransmissionServiceImpl>
+						authProcessor =
+						new ThriftSecureEventTransmissionService.Processor<ThriftSecureEventTransmissionServiceImpl>(
+								new ThriftSecureEventTransmissionServiceImpl(
+										dataBridgeReceiverService));
+				httpServiceInstance.registerServlet("/securedThriftReceiver",
+				                                    new ThriftSecureEventTransmissionServlet(
+						                                    authProcessor, inProtFactory,
+						                                    outProtFactory), new Hashtable(),
+				                                    httpServiceInstance.createDefaultHttpContext());
 
-                httpServiceInstance.registerServlet("/thriftReceiver",
-                        new ThriftEventTransmissionServlet(processor, inProtFactory,
-                                outProtFactory),
-                        new Hashtable(),
-                        httpServiceInstance.createDefaultHttpContext());
+			}
+		} catch (DataBridgeException e) {
+			log.error("Can not create and start Agent Server ", e);
+		} catch (RuntimeException e) {
+			log.error("Error in starting Agent Server ", e);
+		} catch (Throwable e) {
+			log.error("Error in starting Agent Server ", e);
+		}
+	}
 
-                ThriftSecureEventTransmissionService.Processor<ThriftSecureEventTransmissionServiceImpl> authProcessor = new ThriftSecureEventTransmissionService.Processor<ThriftSecureEventTransmissionServiceImpl>(
-                        new ThriftSecureEventTransmissionServiceImpl(dataBridgeReceiverService));
-                httpServiceInstance.registerServlet("/securedThriftReceiver",
-                        new ThriftSecureEventTransmissionServlet(authProcessor, inProtFactory,
-                                outProtFactory),
-                        new Hashtable(),
-                        httpServiceInstance.createDefaultHttpContext());
+	protected void deactivate(ComponentContext context) {
+		log.info("Thrift server shutting down...");
+		dataReceiver.stop();
+		if (log.isDebugEnabled()) {
+			log.debug("Successfully stopped agent server");
+		}
+	}
 
-            }
-        } catch (DataBridgeException e) {
-            log.error("Can not create and start Agent Server ", e);
-        } catch (RuntimeException e) {
-            log.error("Error in starting Agent Server ", e);
-        } catch (Throwable e) {
-            log.error("Error in starting Agent Server ", e);
-        }
-    }
+	protected void setServerConfiguration(ServerConfigurationService serverConfiguration) {
+		this.serverConfiguration = serverConfiguration;
+	}
 
+	protected void unsetServerConfiguration(ServerConfigurationService serverConfiguration) {
+		this.serverConfiguration = null;
+	}
 
-    protected void deactivate(ComponentContext context) {
-        log.info("Thrift server shutting down...");
-        dataReceiver.stop();
-        if (log.isDebugEnabled()) {
-            log.debug("Successfully stopped agent server");
-        }
-    }
+	protected void setConfigurationContext(ConfigurationContextService configurationContext) {
+		this.configurationContext = configurationContext;
+	}
 
-    protected void setServerConfiguration(ServerConfigurationService serverConfiguration) {
-        this.serverConfiguration = serverConfiguration;
-    }
+	protected void unsetConfigurationContext(ConfigurationContextService configurationContext) {
+		this.configurationContext = null;
+	}
 
-    protected void unsetServerConfiguration(ServerConfigurationService serverConfiguration) {
-        this.serverConfiguration = null;
-    }
+	protected void setDataBridgeReceiverService(
+			DataBridgeReceiverService dataBridgeReceiverService) {
+		this.dataBridgeReceiverService = dataBridgeReceiverService;
+	}
 
-    protected void setConfigurationContext(ConfigurationContextService configurationContext) {
-        this.configurationContext = configurationContext;
-    }
+	protected void unsetDatabridgeReceiverService(
+			DataBridgeReceiverService dataBridgeReceiverService) {
+		this.dataBridgeReceiverService = null;
+	}
 
-    protected void unsetConfigurationContext(ConfigurationContextService configurationContext) {
-        this.configurationContext = null;
-    }
+	protected void setHttpService(HttpService httpService) {
+		httpServiceInstance = httpService;
+	}
 
-    protected void setDataBridgeReceiverService(
-            DataBridgeReceiverService dataBridgeReceiverService) {
-        this.dataBridgeReceiverService = dataBridgeReceiverService;
-    }
-
-    protected void unsetDatabridgeReceiverService(
-            DataBridgeReceiverService dataBridgeReceiverService) {
-        this.dataBridgeReceiverService = null;
-    }
-
-    protected void setHttpService(HttpService httpService) {
-        httpServiceInstance = httpService;
-    }
-
-    protected void unsetHttpService(HttpService httpService) {
-        httpServiceInstance = null;
-    }
+	protected void unsetHttpService(HttpService httpService) {
+		httpServiceInstance = null;
+	}
 
 }

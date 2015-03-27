@@ -27,19 +27,16 @@ import org.wso2.carbon.event.stream.core.EventStreamService;
  * policy="dynamic" bind="setEventStreamService" unbind="unsetEventStreamService"
  */
 public class EventStreamAdminServiceDS {
-    protected void activate(ComponentContext context) {
+	protected void activate(ComponentContext context) {
 
-    }
+	}
 
-    protected void setEventStreamService(
-            EventStreamService eventStreamService) {
-        EventStreamAdminServiceValueHolder.registerEventStreamService(eventStreamService);
-    }
+	protected void setEventStreamService(EventStreamService eventStreamService) {
+		EventStreamAdminServiceValueHolder.registerEventStreamService(eventStreamService);
+	}
 
-    protected void unsetEventStreamService(
-            EventStreamService eventStreamService) {
+	protected void unsetEventStreamService(EventStreamService eventStreamService) {
 
-    }
-
+	}
 
 }

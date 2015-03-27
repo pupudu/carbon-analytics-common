@@ -19,117 +19,132 @@ package org.wso2.carbon.databridge.agent.endpoint;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.databridge.agent.conf.DataEndpointConfiguration;
 import org.wso2.carbon.databridge.agent.exception.DataEndpointAuthenticationException;
 import org.wso2.carbon.databridge.agent.exception.DataEndpointException;
-import org.wso2.carbon.databridge.agent.conf.DataEndpointConfiguration;
 
 /**
  * DataEndpoint Connection worker class implementation.
- *
  */
 
 public class DataEndpointConnectionWorker implements Runnable {
 
-    private static Log log = LogFactory.getLog(DataEndpointConnectionWorker.class);
+	private static Log log = LogFactory.getLog(DataEndpointConnectionWorker.class);
 
-    private DataEndpointConfiguration dataEndpointConfiguration;
+	private DataEndpointConfiguration dataEndpointConfiguration;
 
-    private DataEndpoint dataEndpoint;
+	private DataEndpoint dataEndpoint;
 
-    @Override
-    public void run() {
-        if (isInitialized()) {
-            try {
-                connect();
-                dataEndpoint.activate();
-            } catch (DataEndpointAuthenticationException e) {
-                log.error("Error while trying to connect to the endpoint. " + e.getErrorMessage(), e);
-                dataEndpoint.deactivate();
-            }
-        } else {
-            String errorMsg = "Data endpoint connection worker is not properly initialized ";
-            if (dataEndpoint == null) errorMsg += ", data Endpoint is not provided ";
-            if (dataEndpointConfiguration == null) errorMsg += ", data Endpoint configuration is not provided";
-            errorMsg += ".";
-            log.error(errorMsg);
-        }
-    }
+	@Override public void run() {
+		if (isInitialized()) {
+			try {
+				connect();
+				dataEndpoint.activate();
+			} catch (DataEndpointAuthenticationException e) {
+				log.error("Error while trying to connect to the endpoint. " + e.getErrorMessage(),
+				          e);
+				dataEndpoint.deactivate();
+			}
+		} else {
+			String errorMsg = "Data endpoint connection worker is not properly initialized ";
+			if (dataEndpoint == null)
+				errorMsg += ", data Endpoint is not provided ";
+			if (dataEndpointConfiguration == null)
+				errorMsg += ", data Endpoint configuration is not provided";
+			errorMsg += ".";
+			log.error(errorMsg);
+		}
+	}
 
-    DataEndpointConfiguration getDataEndpointConfiguration() {
-        return dataEndpointConfiguration;
-    }
+	DataEndpointConfiguration getDataEndpointConfiguration() {
+		return dataEndpointConfiguration;
+	}
 
-    /**
-     * Initialize the data endpoint connection worker.
-     * A connection worker can be instantiated only ONE time.
-     *
-     * @param dataEndpoint DataEndpoint instance to handle the connection.
-     * @param dataEndpointConfiguration DataEndpointConfiguration to handle the connection.
-     * @throws DataEndpointException
-     */
+	/**
+	 * Initialize the data endpoint connection worker.
+	 * A connection worker can be instantiated only ONE time.
+	 *
+	 * @param dataEndpoint              DataEndpoint instance to handle the connection.
+	 * @param dataEndpointConfiguration DataEndpointConfiguration to handle the connection.
+	 * @throws DataEndpointException
+	 */
 
-    public void initialize(DataEndpoint dataEndpoint, DataEndpointConfiguration dataEndpointConfiguration)
-            throws DataEndpointException {
-        if (this.dataEndpointConfiguration == null) {
-            this.dataEndpointConfiguration = dataEndpointConfiguration;
-        } else {
-            throw new DataEndpointException("Already data endpoint configuration is set: " +
-                    this.dataEndpointConfiguration.toString() + " for the endpoint " +
-                    dataEndpointConfiguration.toString());
-        }
+	public void initialize(DataEndpoint dataEndpoint,
+	                       DataEndpointConfiguration dataEndpointConfiguration)
+			throws DataEndpointException {
+		if (this.dataEndpointConfiguration == null) {
+			this.dataEndpointConfiguration = dataEndpointConfiguration;
+		} else {
+			throw new DataEndpointException("Already data endpoint configuration is set: " +
+			                                this.dataEndpointConfiguration.toString() +
+			                                " for the endpoint " +
+			                                dataEndpointConfiguration.toString());
+		}
 
-        if (this.dataEndpoint == null) {
-            this.dataEndpoint = dataEndpoint;
-        } else {
-            throw new DataEndpointException("Already data endpoint is configured for the connection worker");
-        }
-    }
+		if (this.dataEndpoint == null) {
+			this.dataEndpoint = dataEndpoint;
+		} else {
+			throw new DataEndpointException(
+					"Already data endpoint is configured for the connection worker");
+		}
+	}
 
+	private void connect() throws DataEndpointAuthenticationException {
+		Object client = null;
+		try {
+			client = this.dataEndpointConfiguration.getSecuredTransportPool().
+					borrowObject(dataEndpointConfiguration.getAuthKey());
+			String sessionId = this.dataEndpoint.
+					                                    login(client, dataEndpointConfiguration
+							                                    .getUsername(),
+					                                          dataEndpointConfiguration
+							                                          .getPassword());
+			dataEndpointConfiguration.setSessionId(sessionId);
+		} catch (Throwable e) {
+			log.error(e.getMessage(), e);
+			throw new DataEndpointAuthenticationException(
+					"Cannot borrow client for " + dataEndpointConfiguration.getAuthURL(), e);
+		} finally {
+			try {
+				this.dataEndpointConfiguration.getSecuredTransportPool()
+				                              .returnObject(dataEndpointConfiguration.getAuthKey(),
+				                                            client);
+			} catch (Exception e) {
+				this.dataEndpointConfiguration.getSecuredTransportPool()
+				                              .clear(dataEndpointConfiguration.getAuthKey());
+			}
+		}
 
-    private void connect() throws DataEndpointAuthenticationException {
-        Object client = null;
-        try {
-            client = this.dataEndpointConfiguration.getSecuredTransportPool().
-                    borrowObject(dataEndpointConfiguration.getAuthKey());
-            String sessionId = this.dataEndpoint.
-                    login(client, dataEndpointConfiguration.getUsername(),
-                            dataEndpointConfiguration.getPassword());
-            dataEndpointConfiguration.setSessionId(sessionId);
-        } catch (Throwable e) {
-            log.error(e.getMessage(), e);
-            throw new DataEndpointAuthenticationException("Cannot borrow client for " + dataEndpointConfiguration.getAuthURL(), e);
-        } finally {
-            try {
-                this.dataEndpointConfiguration.getSecuredTransportPool().returnObject(dataEndpointConfiguration.getAuthKey(), client);
-            } catch (Exception e) {
-                this.dataEndpointConfiguration.getSecuredTransportPool().clear(dataEndpointConfiguration.getAuthKey());
-            }
-        }
+	}
 
-    }
+	public void disconnect(DataEndpointConfiguration dataPublisherConfiguration) {
+		Object client = null;
 
-    public void disconnect(DataEndpointConfiguration dataPublisherConfiguration) {
-        Object client = null;
+		try {
+			client = this.dataEndpointConfiguration.getSecuredTransportPool().borrowObject(
+					dataPublisherConfiguration.getAuthKey());
+			this.dataEndpoint.logout(client, dataPublisherConfiguration.getSessionId());
+		} catch (Exception e) {
+			if (log.isDebugEnabled()) {
+				log.error("Cannot connect to the server at " +
+				          dataPublisherConfiguration.getAuthKey() + " Authenticator", e);
+			}
+			log.warn("Cannot connect to the server at " + dataPublisherConfiguration.getAuthKey() +
+			         " Authenticator");
+		} finally {
+			try {
+				this.dataEndpointConfiguration.getSecuredTransportPool()
+				                              .returnObject(dataPublisherConfiguration.getAuthKey(),
+				                                            client);
+			} catch (Exception e) {
+				this.dataEndpointConfiguration.getSecuredTransportPool()
+				                              .clear(dataPublisherConfiguration.getAuthKey());
+			}
+		}
+	}
 
-        try {
-            client = this.dataEndpointConfiguration.getSecuredTransportPool().borrowObject(dataPublisherConfiguration.getAuthKey());
-            this.dataEndpoint.logout(client, dataPublisherConfiguration.getSessionId());
-        } catch (Exception e) {
-            if (log.isDebugEnabled()) {
-                log.error("Cannot connect to the server at " + dataPublisherConfiguration.getAuthKey() + " Authenticator", e);
-            }
-            log.warn("Cannot connect to the server at " + dataPublisherConfiguration.getAuthKey() + " Authenticator");
-        } finally {
-            try {
-                this.dataEndpointConfiguration.getSecuredTransportPool().returnObject(dataPublisherConfiguration.getAuthKey(), client);
-            } catch (Exception e) {
-                this.dataEndpointConfiguration.getSecuredTransportPool().clear(dataPublisherConfiguration.getAuthKey());
-            }
-        }
-    }
-
-    private boolean isInitialized() {
-        return dataEndpoint != null && dataEndpointConfiguration != null;
-    }
+	private boolean isInitialized() {
+		return dataEndpoint != null && dataEndpointConfiguration != null;
+	}
 
 }

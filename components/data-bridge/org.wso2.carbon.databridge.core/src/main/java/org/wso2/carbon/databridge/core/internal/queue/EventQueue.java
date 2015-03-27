@@ -37,37 +37,38 @@ import java.util.concurrent.Executors;
  */
 public class EventQueue {
 
-    private static final Log log = LogFactory.getLog(EventQueue.class);
+	private static final Log log = LogFactory.getLog(EventQueue.class);
 
-    private BlockingQueue<EventComposite> eventQueue;
+	private BlockingQueue<EventComposite> eventQueue;
 
-    private ExecutorService executorService;
-    private List<AgentCallback> subscribers;
-    private List<RawDataAgentCallback> rawDataSubscribers;
+	private ExecutorService executorService;
+	private List<AgentCallback> subscribers;
+	private List<RawDataAgentCallback> rawDataSubscribers;
 
-    public EventQueue(List<AgentCallback> subscribers,
-                      List<RawDataAgentCallback> rawDataSubscribers,
-                      DataBridgeConfiguration dataBridgeConfiguration) {
-        this.subscribers = subscribers;
-        this.rawDataSubscribers = rawDataSubscribers;
-        // Note : Using a fixed worker thread pool and a bounded queue to prevent the server dying if load is too high
-        executorService = Executors.newFixedThreadPool(dataBridgeConfiguration.getWorkerThreads(), new DataBridgeThreadFactory("Core"));
-        eventQueue = new ArrayBlockingQueue<EventComposite>(dataBridgeConfiguration.getEventBufferCapacity());
-    }
+	public EventQueue(List<AgentCallback> subscribers,
+	                  List<RawDataAgentCallback> rawDataSubscribers,
+	                  DataBridgeConfiguration dataBridgeConfiguration) {
+		this.subscribers = subscribers;
+		this.rawDataSubscribers = rawDataSubscribers;
+		// Note : Using a fixed worker thread pool and a bounded queue to prevent the server dying if load is too high
+		executorService = Executors.newFixedThreadPool(dataBridgeConfiguration.getWorkerThreads(),
+		                                               new DataBridgeThreadFactory("Core"));
+		eventQueue = new ArrayBlockingQueue<EventComposite>(
+				dataBridgeConfiguration.getEventBufferCapacity());
+	}
 
-    public void publish(EventComposite eventComposite) {
-        try {
-            eventQueue.put(eventComposite);
-        } catch (InterruptedException e) {
-            String logMessage = "Failure to insert event into queue";
-            log.warn(logMessage);
-        }
-        executorService.submit(new QueueWorker(eventQueue, subscribers, rawDataSubscribers));
-    }
+	public void publish(EventComposite eventComposite) {
+		try {
+			eventQueue.put(eventComposite);
+		} catch (InterruptedException e) {
+			String logMessage = "Failure to insert event into queue";
+			log.warn(logMessage);
+		}
+		executorService.submit(new QueueWorker(eventQueue, subscribers, rawDataSubscribers));
+	}
 
-    @Override
-    protected void finalize() throws Throwable {
-        executorService.shutdown();
-        super.finalize();
-    }
+	@Override protected void finalize() throws Throwable {
+		executorService.shutdown();
+		super.finalize();
+	}
 }

@@ -16,7 +16,6 @@
 * under the License.
 */
 
-
 package org.wso2.carbon.databridge.core.internal.authentication;
 
 import org.apache.commons.logging.Log;
@@ -36,71 +35,73 @@ import java.util.UUID;
  */
 public final class Authenticator {
 
-    private static final Log log = LogFactory.getLog(Authenticator.class);
+	private static final Log log = LogFactory.getLog(Authenticator.class);
 
-    private SessionCache sessionCache;
-    private AuthenticationHandler authenticationHandler;
+	private SessionCache sessionCache;
+	private AuthenticationHandler authenticationHandler;
 
-    public Authenticator(AuthenticationHandler authenticationHandler,
-                         DataBridgeConfiguration dataBridgeConfiguration) {
-        this.authenticationHandler = authenticationHandler;
-        sessionCache = new SessionCache(dataBridgeConfiguration.getClientTimeoutMin());
-    }
+	public Authenticator(AuthenticationHandler authenticationHandler,
+	                     DataBridgeConfiguration dataBridgeConfiguration) {
+		this.authenticationHandler = authenticationHandler;
+		sessionCache = new SessionCache(dataBridgeConfiguration.getClientTimeoutMin());
+	}
 
-    public String authenticate(String userName, String password) throws AuthenticationException {
+	public String authenticate(String userName, String password) throws AuthenticationException {
 
-        if (userName == null) {
-            logAndAuthenticationException("Authentication request was missing the user name ");
-        }
-//
-//        if (userName.indexOf("@") > 0) {
-//            String domainName = userName.substring(userName.indexOf("@") + 1);
-//            if (domainName == null || domainName.trim().equals("")) {
-//                logAndAuthenticationException("Authentication request was missing the domain name of" +
-//                                              " the user");
-//            }
-//        }
-//
-        if (password == null) {
-            logAndAuthenticationException("Authentication request was missing the required password");
-        }
+		if (userName == null) {
+			logAndAuthenticationException("Authentication request was missing the user name ");
+		}
+		//
+		//        if (userName.indexOf("@") > 0) {
+		//            String domainName = userName.substring(userName.indexOf("@") + 1);
+		//            if (domainName == null || domainName.trim().equals("")) {
+		//                logAndAuthenticationException("Authentication request was missing the domain name of" +
+		//                                              " the user");
+		//            }
+		//        }
+		//
+		if (password == null) {
+			logAndAuthenticationException(
+					"Authentication request was missing the required password");
+		}
 
-        boolean isSuccessful = false;
-        try {
-        	isSuccessful = authenticationHandler.authenticate(userName, password);
+		boolean isSuccessful = false;
+		try {
+			isSuccessful = authenticationHandler.authenticate(userName, password);
 		} catch (Exception e) {
 			throw new AuthenticationException(e);
 		}
 
-        if (isSuccessful) {
-            String sessionId = UUID.randomUUID().toString();
-            int tenantId = 0;
-            try {
-                String tenantDomain = authenticationHandler.getTenantDomain(userName);
-                tenantId = authenticationHandler.getTenantId(tenantDomain);
-            } catch (UserStoreException e) {
-                logAndAuthenticationException("Could not resolve the user to a valid tenant.");
-            }
-            Credentials credentials = new Credentials(userName, password, authenticationHandler.getTenantDomain(userName), tenantId);
-            sessionCache.getSession(new SessionBean(sessionId, credentials));
-            return sessionId;
-        }
-        logAndAuthenticationException("wrong userName or password");
+		if (isSuccessful) {
+			String sessionId = UUID.randomUUID().toString();
+			int tenantId = 0;
+			try {
+				String tenantDomain = authenticationHandler.getTenantDomain(userName);
+				tenantId = authenticationHandler.getTenantId(tenantDomain);
+			} catch (UserStoreException e) {
+				logAndAuthenticationException("Could not resolve the user to a valid tenant.");
+			}
+			Credentials credentials = new Credentials(userName, password, authenticationHandler
+					.getTenantDomain(userName), tenantId);
+			sessionCache.getSession(new SessionBean(sessionId, credentials));
+			return sessionId;
+		}
+		logAndAuthenticationException("wrong userName or password");
 
-        return null;
+		return null;
 
-    }
+	}
 
-    private void logAndAuthenticationException(String msg) throws AuthenticationException {
-        log.error(msg);
-        throw new AuthenticationException(msg);
-    }
+	private void logAndAuthenticationException(String msg) throws AuthenticationException {
+		log.error(msg);
+		throw new AuthenticationException(msg);
+	}
 
-    public void logout(String sessionId) {
-        sessionCache.removeSession(sessionId);
-    }
+	public void logout(String sessionId) {
+		sessionCache.removeSession(sessionId);
+	}
 
-    public AgentSession getSession(String sessionId) {
-        return sessionCache.getSession(new SessionBean(sessionId));
-    }
+	public AgentSession getSession(String sessionId) {
+		return sessionCache.getSession(new SessionBean(sessionId));
+	}
 }

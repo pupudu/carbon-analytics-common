@@ -16,11 +16,11 @@ package org.wso2.carbon.databridge.core.exception;
  * limitations under the License.
  */
 public class EventProcessingException extends Exception {
-    public EventProcessingException(String s) {
-        super(s);
-    }
+	public EventProcessingException(String s) {
+		super(s);
+	}
 
-    public EventProcessingException(String s, Throwable throwable) {
-        super(s, throwable);
-    }
+	public EventProcessingException(String s, Throwable throwable) {
+		super(s, throwable);
+	}
 }

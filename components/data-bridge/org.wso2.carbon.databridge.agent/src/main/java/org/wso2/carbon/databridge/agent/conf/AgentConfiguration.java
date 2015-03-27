@@ -28,185 +28,172 @@ import javax.xml.bind.annotation.XmlElement;
  */
 public class AgentConfiguration {
 
-    private String dataEndpointName;
+	private String dataEndpointName;
 
-    private String className;
+	private String className;
 
-    private String trustStore;
+	private String trustStore;
 
-    private String trustStorePassword;
+	private String trustStorePassword;
 
-    private int reconnectionInterval;
+	private int reconnectionInterval;
 
-    private int queueSize;
+	private int queueSize;
 
-    private int batchSize;
+	private int batchSize;
 
-    private int maxTransportPoolSize;
+	private int maxTransportPoolSize;
 
-    private int maxIdleConnections;
+	private int maxIdleConnections;
 
-    private int minIdleTimeInPool;
+	private int minIdleTimeInPool;
 
-    private int evictionTimePeriod;
+	private int evictionTimePeriod;
 
-    private int secureMaxTransportPoolSize;
+	private int secureMaxTransportPoolSize;
 
-    private int secureMaxIdleConnections;
+	private int secureMaxIdleConnections;
 
-    private int secureMinIdleTimeInPool;
+	private int secureMinIdleTimeInPool;
 
-    private int secureEvictionTimePeriod;
+	private int secureEvictionTimePeriod;
 
-    @XmlElement(name = "Name")
-    public String getDataEndpointName() {
-        return dataEndpointName;
-    }
+	@XmlElement(name = "Name") public String getDataEndpointName() {
+		return dataEndpointName;
+	}
 
-    @XmlElement(name = "DataEndpointClass")
-    public String getClassName() {
-        return className;
-    }
+	@XmlElement(name = "DataEndpointClass") public String getClassName() {
+		return className;
+	}
 
-    @XmlElement(name = "TrustSore")
-    public String getTrustStore() {
-        return trustStore;
-    }
+	@XmlElement(name = "TrustSore") public String getTrustStore() {
+		return trustStore;
+	}
 
-    public void setTrustStore(String trustStore) {
-        this.trustStore = trustStore.trim();
-    }
+	public void setTrustStore(String trustStore) {
+		this.trustStore = trustStore.trim();
+	}
 
-    @XmlElement(name = "TrustSorePassword")
-    public String getTrustStorePassword() {
-        return trustStorePassword;
-    }
+	@XmlElement(name = "TrustSorePassword") public String getTrustStorePassword() {
+		return trustStorePassword;
+	}
 
-    public void setTrustStorePassword(String trustStorePassword) {
-        this.trustStorePassword = trustStorePassword.trim();
-    }
+	public void setTrustStorePassword(String trustStorePassword) {
+		this.trustStorePassword = trustStorePassword.trim();
+	}
 
-    @XmlElement(name = "QueueSize")
-    public int getQueueSize() {
-        return queueSize;
-    }
+	@XmlElement(name = "QueueSize") public int getQueueSize() {
+		return queueSize;
+	}
 
-    public void setQueueSize(int queueSize) {
-        this.queueSize = queueSize;
-    }
+	public void setQueueSize(int queueSize) {
+		this.queueSize = queueSize;
+	}
 
-    @XmlElement(name = "BatchSize")
-    public int getBatchSize() {
-        return batchSize;
-    }
+	@XmlElement(name = "BatchSize") public int getBatchSize() {
+		return batchSize;
+	}
 
-    public void setBatchSize(int batchSize) {
-        this.batchSize = batchSize;
-    }
+	public void setBatchSize(int batchSize) {
+		this.batchSize = batchSize;
+	}
 
-    @XmlElement(name = "ReconnectionInterval")
-    public int getReconnectionInterval() {
-        return reconnectionInterval;
-    }
+	@XmlElement(name = "ReconnectionInterval") public int getReconnectionInterval() {
+		return reconnectionInterval;
+	}
 
-    public void setReconnectionInterval(int reconnectionInterval) {
-        this.reconnectionInterval = reconnectionInterval;
-    }
+	public void setReconnectionInterval(int reconnectionInterval) {
+		this.reconnectionInterval = reconnectionInterval;
+	}
 
-    @XmlElement(name = "MaxTransportPoolSize")
-    public int getMaxTransportPoolSize() {
-        return maxTransportPoolSize;
-    }
+	@XmlElement(name = "MaxTransportPoolSize") public int getMaxTransportPoolSize() {
+		return maxTransportPoolSize;
+	}
 
-    public void setMaxTransportPoolSize(int maxTransportPoolSize) {
-        this.maxTransportPoolSize = maxTransportPoolSize;
-    }
+	public void setMaxTransportPoolSize(int maxTransportPoolSize) {
+		this.maxTransportPoolSize = maxTransportPoolSize;
+	}
 
-    @XmlElement(name = "MaxIdleConnections")
-    public int getMaxIdleConnections() {
-        return maxIdleConnections;
-    }
+	@XmlElement(name = "MaxIdleConnections") public int getMaxIdleConnections() {
+		return maxIdleConnections;
+	}
 
-    public void setMaxIdleConnections(int maxIdleConnections) {
-        this.maxIdleConnections = maxIdleConnections;
-    }
+	public void setMaxIdleConnections(int maxIdleConnections) {
+		this.maxIdleConnections = maxIdleConnections;
+	}
 
-    @XmlElement(name = "MinIdleTimeInPool")
-    public int getMinIdleTimeInPool() {
-        return minIdleTimeInPool;
-    }
+	@XmlElement(name = "MinIdleTimeInPool") public int getMinIdleTimeInPool() {
+		return minIdleTimeInPool;
+	}
 
-    public void setMinIdleTimeInPool(int minIdleTimeInPool) {
-        this.minIdleTimeInPool = minIdleTimeInPool;
-    }
+	public void setMinIdleTimeInPool(int minIdleTimeInPool) {
+		this.minIdleTimeInPool = minIdleTimeInPool;
+	}
 
-    @XmlElement(name = "EvictionTimePeriod")
-    public int getEvictionTimePeriod() {
-        return evictionTimePeriod;
-    }
+	@XmlElement(name = "EvictionTimePeriod") public int getEvictionTimePeriod() {
+		return evictionTimePeriod;
+	}
 
-    public void setEvictionTimePeriod(int evictionTimePeriod) {
-        this.evictionTimePeriod = evictionTimePeriod;
-    }
+	public void setEvictionTimePeriod(int evictionTimePeriod) {
+		this.evictionTimePeriod = evictionTimePeriod;
+	}
 
-    @XmlElement(name = "SecureMaxTransportPoolSize")
-    public int getSecureMaxTransportPoolSize() {
-        return secureMaxTransportPoolSize;
-    }
+	@XmlElement(name = "SecureMaxTransportPoolSize") public int getSecureMaxTransportPoolSize() {
+		return secureMaxTransportPoolSize;
+	}
 
-    public void setSecureMaxTransportPoolSize(int secureMaxTransportPoolSize) {
-        this.secureMaxTransportPoolSize = secureMaxTransportPoolSize;
-    }
+	public void setSecureMaxTransportPoolSize(int secureMaxTransportPoolSize) {
+		this.secureMaxTransportPoolSize = secureMaxTransportPoolSize;
+	}
 
-    @XmlElement(name = "SecureMaxIdleConnections")
-    public int getSecureMinIdleTimeInPool() {
-        return secureMinIdleTimeInPool;
-    }
+	@XmlElement(name = "SecureMaxIdleConnections") public int getSecureMinIdleTimeInPool() {
+		return secureMinIdleTimeInPool;
+	}
 
-    public void setSecureMinIdleTimeInPool(int secureMinIdleTimeInPool) {
-        this.secureMinIdleTimeInPool = secureMinIdleTimeInPool;
-    }
+	public void setSecureMinIdleTimeInPool(int secureMinIdleTimeInPool) {
+		this.secureMinIdleTimeInPool = secureMinIdleTimeInPool;
+	}
 
-    @XmlElement(name = "SecureEvictionTimePeriod")
-    public int getSecureMaxIdleConnections() {
-        return secureMaxIdleConnections;
-    }
+	@XmlElement(name = "SecureEvictionTimePeriod") public int getSecureMaxIdleConnections() {
+		return secureMaxIdleConnections;
+	}
 
-    public void setSecureMaxIdleConnections(int secureMaxIdleConnections) {
-        this.secureMaxIdleConnections = secureMaxIdleConnections;
-    }
+	public void setSecureMaxIdleConnections(int secureMaxIdleConnections) {
+		this.secureMaxIdleConnections = secureMaxIdleConnections;
+	}
 
-    @XmlElement(name = "SecureMinIdleTimeInPool")
-    public int getSecureEvictionTimePeriod() {
-        return secureEvictionTimePeriod;
-    }
+	@XmlElement(name = "SecureMinIdleTimeInPool") public int getSecureEvictionTimePeriod() {
+		return secureEvictionTimePeriod;
+	}
 
-    public void setSecureEvictionTimePeriod(int secureEvictionTimePeriod) {
-        this.secureEvictionTimePeriod = secureEvictionTimePeriod;
-    }
+	public void setSecureEvictionTimePeriod(int secureEvictionTimePeriod) {
+		this.secureEvictionTimePeriod = secureEvictionTimePeriod;
+	}
 
-    public void setDataEndpointName(String dataEndpointName) {
-        this.dataEndpointName = dataEndpointName.trim();
-    }
+	public void setDataEndpointName(String dataEndpointName) {
+		this.dataEndpointName = dataEndpointName.trim();
+	}
 
-    public void setClassName(String className) {
-        this.className = className.trim();
-    }
+	public void setClassName(String className) {
+		this.className = className.trim();
+	}
 
-    /**
-     * Validates the configurations that valid.
-     *
-     * @throws DataEndpointAgentConfigurationException
-     */
-    public void validate() throws DataEndpointAgentConfigurationException {
-        if (this.dataEndpointName == null || this.dataEndpointName.isEmpty()) {
-            throw new DataEndpointAgentConfigurationException("Endpoint name is not set in "
-                    + DataEndpointConstants.DATA_AGENT_CONF_FILE_NAME);
-        }
-        if (this.className == null || this.className.isEmpty()) {
-            throw new DataEndpointAgentConfigurationException("Endpoint class name is not set in "
-                    + DataEndpointConstants.DATA_AGENT_CONF_FILE_NAME + " for name: " + this.dataEndpointName);
-        }
-    }
+	/**
+	 * Validates the configurations that valid.
+	 *
+	 * @throws DataEndpointAgentConfigurationException
+	 */
+	public void validate() throws DataEndpointAgentConfigurationException {
+		if (this.dataEndpointName == null || this.dataEndpointName.isEmpty()) {
+			throw new DataEndpointAgentConfigurationException("Endpoint name is not set in " +
+			                                                  DataEndpointConstants.DATA_AGENT_CONF_FILE_NAME);
+		}
+		if (this.className == null || this.className.isEmpty()) {
+			throw new DataEndpointAgentConfigurationException("Endpoint class name is not set in " +
+			                                                  DataEndpointConstants.DATA_AGENT_CONF_FILE_NAME +
+			                                                  " for name: " +
+			                                                  this.dataEndpointName);
+		}
+	}
 }
 

@@ -27,39 +27,39 @@ import org.wso2.carbon.databridge.agent.thrift.internal.utils.AgentConstants;
  */
 public class DataPublisherConfiguration {
 
-    private String sessionId;
-    private String publisherKey;
-    private ReceiverConfiguration receiverConfiguration;
+	private String sessionId;
+	private String publisherKey;
+	private ReceiverConfiguration receiverConfiguration;
 
-    public DataPublisherConfiguration(ReceiverConfiguration receiverConfiguration) {
-        this.receiverConfiguration = receiverConfiguration;
-        publisherKey = receiverConfiguration.getDataReceiverProtocol().toString()+
-                       AgentConstants.SEPARATOR +
-                       receiverConfiguration.getDataReceiverIp() +
-                       AgentConstants.HOSTNAME_AND_PORT_SEPARATOR +
-                       receiverConfiguration.getDataReceiverPort() +
-                       AgentConstants.SEPARATOR +
-                       receiverConfiguration.getSecureDataReceiverProtocol().toString()+
-                       AgentConstants.SEPARATOR +
-                       receiverConfiguration.getSecureDataReceiverIp() +
-                       AgentConstants.HOSTNAME_AND_PORT_SEPARATOR +
-                       receiverConfiguration.getSecureDataReceiverPort();
-    }
+	public DataPublisherConfiguration(ReceiverConfiguration receiverConfiguration) {
+		this.receiverConfiguration = receiverConfiguration;
+		publisherKey = receiverConfiguration.getDataReceiverProtocol().toString() +
+		               AgentConstants.SEPARATOR +
+		               receiverConfiguration.getDataReceiverIp() +
+		               AgentConstants.HOSTNAME_AND_PORT_SEPARATOR +
+		               receiverConfiguration.getDataReceiverPort() +
+		               AgentConstants.SEPARATOR +
+		               receiverConfiguration.getSecureDataReceiverProtocol().toString() +
+		               AgentConstants.SEPARATOR +
+		               receiverConfiguration.getSecureDataReceiverIp() +
+		               AgentConstants.HOSTNAME_AND_PORT_SEPARATOR +
+		               receiverConfiguration.getSecureDataReceiverPort();
+	}
 
-    public String getSessionId() {
-        return sessionId;
-    }
+	public String getSessionId() {
+		return sessionId;
+	}
 
-    public String getPublisherKey() {
-        return publisherKey;
-    }
+	public String getPublisherKey() {
+		return publisherKey;
+	}
 
-    public ReceiverConfiguration getReceiverConfiguration() {
-        return receiverConfiguration;
-    }
+	public ReceiverConfiguration getReceiverConfiguration() {
+		return receiverConfiguration;
+	}
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
 
 }

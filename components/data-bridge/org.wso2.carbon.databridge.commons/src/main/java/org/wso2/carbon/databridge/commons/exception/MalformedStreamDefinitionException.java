@@ -18,30 +18,29 @@
  * limitations under the License.
  */
 
-
 package org.wso2.carbon.databridge.commons.exception;
 
 public class MalformedStreamDefinitionException extends Exception {
-    private String errorMessage;
+	private String errorMessage;
 
-    public MalformedStreamDefinitionException() {
-    }
+	public MalformedStreamDefinitionException() {
+	}
 
-    public MalformedStreamDefinitionException(String message) {
-        super(message);
-        errorMessage = message;
-    }
+	public MalformedStreamDefinitionException(String message) {
+		super(message);
+		errorMessage = message;
+	}
 
-    public MalformedStreamDefinitionException(String message, Throwable cause) {
-        super(message, cause);
-        errorMessage = message;
-    }
+	public MalformedStreamDefinitionException(String message, Throwable cause) {
+		super(message, cause);
+		errorMessage = message;
+	}
 
-    public MalformedStreamDefinitionException(Throwable cause) {
-        super(cause);
-    }
+	public MalformedStreamDefinitionException(Throwable cause) {
+		super(cause);
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

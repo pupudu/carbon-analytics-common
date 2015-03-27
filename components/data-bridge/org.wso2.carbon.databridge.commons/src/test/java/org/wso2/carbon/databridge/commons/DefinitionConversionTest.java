@@ -29,96 +29,91 @@ import java.util.List;
 
 public class DefinitionConversionTest {
 
-    private static Gson gson;
+	private static Gson gson;
 
-    @BeforeClass
-    public static void init() {
-        gson = new Gson();
-    }
+	@BeforeClass public static void init() {
+		gson = new Gson();
+	}
 
-    @Test
-    public void testDefinitionConversion()
-            throws MalformedStreamDefinitionException {
-        String definition = "{" +
-                            "  'name':'org.wso2.esb.MediatorStatistics'," +
-                            "  'version':'2.3.0'," +
-                            "  'nickName': 'Stock Quote Information'," +
-                            "  'description': 'Some Desc'," +
-                            "  'tags':['foo', 'bar']," +
-                            "  'metaData':[" +
-                            "          {'name':'ipAdd','type':'STRING'}" +
-                            "  ]," +
-                            "  'payloadData':[" +
-                            "          {'name':'symbol','type':'string'}," +
-                            "          {'name':'price','type':'double'}," +
-                            "          {'name':'volume','type':'int'}," +
-                            "          {'name':'maxTemp','type':'double'}," +
-                            "          {'name':'minTemp','type':'double'}" +
-                            "  ]" +
-                            "}";
+	@Test public void testDefinitionConversion() throws MalformedStreamDefinitionException {
+		String definition = "{" +
+		                    "  'name':'org.wso2.esb.MediatorStatistics'," +
+		                    "  'version':'2.3.0'," +
+		                    "  'nickName': 'Stock Quote Information'," +
+		                    "  'description': 'Some Desc'," +
+		                    "  'tags':['foo', 'bar']," +
+		                    "  'metaData':[" +
+		                    "          {'name':'ipAdd','type':'STRING'}" +
+		                    "  ]," +
+		                    "  'payloadData':[" +
+		                    "          {'name':'symbol','type':'string'}," +
+		                    "          {'name':'price','type':'double'}," +
+		                    "          {'name':'volume','type':'int'}," +
+		                    "          {'name':'maxTemp','type':'double'}," +
+		                    "          {'name':'minTemp','type':'double'}" +
+		                    "  ]" +
+		                    "}";
 
+		StreamDefinition streamDefinition1 =
+				EventDefinitionConverterUtils.convertFromJson(definition);
+		Assert.assertTrue(null != streamDefinition1.getStreamId());
+		//        System.out.println(gson.toJson(streamDefinition1));
 
-        StreamDefinition streamDefinition1 = EventDefinitionConverterUtils.convertFromJson(definition);
-        Assert.assertTrue(null != streamDefinition1.getStreamId());
-//        System.out.println(gson.toJson(streamDefinition1));
+		StreamDefinition streamDefinition2 =
+				new StreamDefinition("org.wso2.esb.MediatorStatistics", "2.3.0");
+		List<Attribute> meta = new ArrayList<Attribute>(1);
+		meta.add(new Attribute("ipAdd", AttributeType.STRING));
+		streamDefinition2.setMetaData(meta);
+		List<Attribute> payload = new ArrayList<Attribute>(5);
+		payload.add(new Attribute("symbol", AttributeType.STRING));
+		payload.add(new Attribute("price", AttributeType.DOUBLE));
+		payload.add(new Attribute("volume", AttributeType.INT));
+		payload.add(new Attribute("maxTemp", AttributeType.DOUBLE));
+		payload.add(new Attribute("minTemp", AttributeType.DOUBLE));
+		streamDefinition2.setPayloadData(payload);
 
-        StreamDefinition streamDefinition2 =
-                new StreamDefinition("org.wso2.esb.MediatorStatistics", "2.3.0");
-        List<Attribute> meta = new ArrayList<Attribute>(1);
-        meta.add(new Attribute("ipAdd", AttributeType.STRING));
-        streamDefinition2.setMetaData(meta);
-        List<Attribute> payload = new ArrayList<Attribute>(5);
-        payload.add(new Attribute("symbol", AttributeType.STRING));
-        payload.add(new Attribute("price", AttributeType.DOUBLE));
-        payload.add(new Attribute("volume", AttributeType.INT));
-        payload.add(new Attribute("maxTemp", AttributeType.DOUBLE));
-        payload.add(new Attribute("minTemp", AttributeType.DOUBLE));
-        streamDefinition2.setPayloadData(payload);
+		Assert.assertEquals(streamDefinition1, streamDefinition2);
+	}
 
-        Assert.assertEquals(streamDefinition1, streamDefinition2);
-    }
+	@Test public void testDefinitionConversionWithoutVersion()
+			throws MalformedStreamDefinitionException {
+		String definition = "{" +
+		                    "  'name':'org.wso2.esb.MediatorStatistics'," +
+				//                            "  'version':'2.3.0'," +
+		                    "  'nickName': 'Stock Quote Information'," +
+		                    "  'description': 'Some Desc'," +
+		                    "  'tags':['foo', 'bar']," +
+		                    "  'metaData':[" +
+		                    "          {'name':'ipAdd','type':'STRING'}" +
+		                    "  ]," +
+		                    "  'payloadData':[" +
+		                    "          {'name':'symbol','type':'string'}," +
+		                    "          {'name':'price','type':'double'}," +
+		                    "          {'name':'volume','type':'int'}," +
+		                    "          {'name':'max','type':'double'}," +
+		                    "          {'name':'min','type':'double'}" +
+		                    "  ]" +
+		                    "}";
 
-    @Test
-    public void testDefinitionConversionWithoutVersion()
-            throws MalformedStreamDefinitionException {
-        String definition = "{" +
-                            "  'name':'org.wso2.esb.MediatorStatistics'," +
-//                            "  'version':'2.3.0'," +
-                            "  'nickName': 'Stock Quote Information'," +
-                            "  'description': 'Some Desc'," +
-                            "  'tags':['foo', 'bar']," +
-                            "  'metaData':[" +
-                            "          {'name':'ipAdd','type':'STRING'}" +
-                            "  ]," +
-                            "  'payloadData':[" +
-                            "          {'name':'symbol','type':'string'}," +
-                            "          {'name':'price','type':'double'}," +
-                            "          {'name':'volume','type':'int'}," +
-                            "          {'name':'max','type':'double'}," +
-                            "          {'name':'min','type':'double'}" +
-                            "  ]" +
-                            "}";
+		StreamDefinition streamDefinition1 =
+				EventDefinitionConverterUtils.convertFromJson(definition);
+		Assert.assertTrue(null != streamDefinition1.getStreamId());
+		//        System.out.println(gson.toJson(streamDefinition1));
 
+		StreamDefinition streamDefinition2 =
+				new StreamDefinition("org.wso2.esb.MediatorStatistics", "1.0.0");
+		List<Attribute> meta = new ArrayList<Attribute>(1);
+		meta.add(new Attribute("ipAdd", AttributeType.STRING));
+		streamDefinition2.setMetaData(meta);
+		List<Attribute> payload = new ArrayList<Attribute>(5);
+		payload.add(new Attribute("symbol", AttributeType.STRING));
+		payload.add(new Attribute("price", AttributeType.DOUBLE));
+		payload.add(new Attribute("volume", AttributeType.INT));
+		payload.add(new Attribute("max", AttributeType.DOUBLE));
+		payload.add(new Attribute("min", AttributeType.DOUBLE));
+		streamDefinition2.setPayloadData(payload);
 
-        StreamDefinition streamDefinition1 = EventDefinitionConverterUtils.convertFromJson(definition);
-        Assert.assertTrue(null != streamDefinition1.getStreamId());
-//        System.out.println(gson.toJson(streamDefinition1));
-
-        StreamDefinition streamDefinition2 =
-                new StreamDefinition("org.wso2.esb.MediatorStatistics", "1.0.0");
-        List<Attribute> meta = new ArrayList<Attribute>(1);
-        meta.add(new Attribute("ipAdd", AttributeType.STRING));
-        streamDefinition2.setMetaData(meta);
-        List<Attribute> payload = new ArrayList<Attribute>(5);
-        payload.add(new Attribute("symbol", AttributeType.STRING));
-        payload.add(new Attribute("price", AttributeType.DOUBLE));
-        payload.add(new Attribute("volume", AttributeType.INT));
-        payload.add(new Attribute("max", AttributeType.DOUBLE));
-        payload.add(new Attribute("min", AttributeType.DOUBLE));
-        streamDefinition2.setPayloadData(payload);
-
-        Assert.assertEquals(streamDefinition1, streamDefinition2);
-    }
-
+		Assert.assertEquals(streamDefinition1, streamDefinition2);
+	}
 
 }

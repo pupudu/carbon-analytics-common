@@ -20,13 +20,13 @@ package org.wso2.carbon.databridge.streamdefn.filesystem.internal;
 import org.wso2.carbon.event.stream.core.EventStreamService;
 
 public class ServiceHolder {
-    private static EventStreamService eventStreamService;
+	private static EventStreamService eventStreamService;
 
-    public static EventStreamService getEventStreamService() {
-        return eventStreamService;
-    }
+	public static EventStreamService getEventStreamService() {
+		return eventStreamService;
+	}
 
-    public static void setEventStreamService(EventStreamService eventStreamService) {
-        ServiceHolder.eventStreamService = eventStreamService;
-    }
+	public static void setEventStreamService(EventStreamService eventStreamService) {
+		ServiceHolder.eventStreamService = eventStreamService;
+	}
 }

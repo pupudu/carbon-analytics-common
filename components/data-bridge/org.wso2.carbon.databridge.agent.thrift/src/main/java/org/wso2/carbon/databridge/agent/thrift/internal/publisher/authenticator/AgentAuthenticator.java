@@ -26,77 +26,83 @@ import org.apache.commons.pool.impl.GenericKeyedObjectPool;
 import org.wso2.carbon.databridge.agent.thrift.conf.DataPublisherConfiguration;
 import org.wso2.carbon.databridge.agent.thrift.exception.AgentAuthenticatorException;
 import org.wso2.carbon.databridge.agent.thrift.exception.AgentException;
-import org.wso2.carbon.databridge.commons.exception.TransportException;
 import org.wso2.carbon.databridge.commons.exception.AuthenticationException;
+import org.wso2.carbon.databridge.commons.exception.TransportException;
 
 /**
  * Authenticates all data publishers
  */
 public abstract class AgentAuthenticator {
 
-    private GenericKeyedObjectPool secureTransportPool;
+	private GenericKeyedObjectPool secureTransportPool;
 
-    private static Log log = LogFactory.getLog(AgentAuthenticator.class);
+	private static Log log = LogFactory.getLog(AgentAuthenticator.class);
 
-    public AgentAuthenticator(GenericKeyedObjectPool secureTransportPool) {
-        this.secureTransportPool = secureTransportPool;
-    }
+	public AgentAuthenticator(GenericKeyedObjectPool secureTransportPool) {
+		this.secureTransportPool = secureTransportPool;
+	}
 
-    public String connect(DataPublisherConfiguration dataPublisherConfiguration)
-            throws AuthenticationException, TransportException, AgentException {
-        Object client = null;
+	public String connect(DataPublisherConfiguration dataPublisherConfiguration)
+			throws AuthenticationException, TransportException, AgentException {
+		Object client = null;
 
-        try {
-            client = secureTransportPool.borrowObject(dataPublisherConfiguration.getPublisherKey());
-            return connect(client, dataPublisherConfiguration.getReceiverConfiguration().getUserName(),
-                           dataPublisherConfiguration.getReceiverConfiguration().getPassword());
-        } catch (AgentAuthenticatorException e) {
-            throw new AuthenticationException("Access denied for user " +
-                                              dataPublisherConfiguration.getReceiverConfiguration().getUserName() + " to login " +
-                                              dataPublisherConfiguration.getPublisherKey(), e);
-        } catch (Exception e) {
-            throw new AgentException("Cannot borrow client for " + dataPublisherConfiguration.getPublisherKey(), e);
-        } finally {
-            try {
-                secureTransportPool.returnObject(dataPublisherConfiguration.getPublisherKey(), client);
-            } catch (Exception e) {
-                secureTransportPool.clear(dataPublisherConfiguration.getPublisherKey());
-            }
-        }
+		try {
+			client = secureTransportPool.borrowObject(dataPublisherConfiguration.getPublisherKey());
+			return connect(client,
+			               dataPublisherConfiguration.getReceiverConfiguration().getUserName(),
+			               dataPublisherConfiguration.getReceiverConfiguration().getPassword());
+		} catch (AgentAuthenticatorException e) {
+			throw new AuthenticationException("Access denied for user " +
+			                                  dataPublisherConfiguration.getReceiverConfiguration()
+			                                                            .getUserName() +
+			                                  " to login " +
+			                                  dataPublisherConfiguration.getPublisherKey(), e);
+		} catch (Exception e) {
+			throw new AgentException(
+					"Cannot borrow client for " + dataPublisherConfiguration.getPublisherKey(), e);
+		} finally {
+			try {
+				secureTransportPool
+						.returnObject(dataPublisherConfiguration.getPublisherKey(), client);
+			} catch (Exception e) {
+				secureTransportPool.clear(dataPublisherConfiguration.getPublisherKey());
+			}
+		}
 
+	}
 
-    }
+	protected abstract String connect(Object client, String userName, String password)
+			throws AuthenticationException, AgentAuthenticatorException;
 
-    protected abstract String connect(Object client, String userName, String password)
-            throws AuthenticationException, AgentAuthenticatorException;
+	public void disconnect(DataPublisherConfiguration dataPublisherConfiguration) {
+		Object client = null;
 
+		try {
+			client = secureTransportPool.borrowObject(dataPublisherConfiguration.getPublisherKey());
+			disconnect(client, dataPublisherConfiguration.getSessionId());
+		} catch (Exception e) {
+			if (log.isDebugEnabled()) {
+				log.error("Cannot connect to the server at " +
+				          dataPublisherConfiguration.getPublisherKey() + " Authenticator", e);
+			}
+			log.warn("Cannot connect to the server at " +
+			         dataPublisherConfiguration.getPublisherKey() + " Authenticator");
+		} finally {
+			try {
+				secureTransportPool
+						.returnObject(dataPublisherConfiguration.getPublisherKey(), client);
+			} catch (Exception e) {
+				secureTransportPool.clear(dataPublisherConfiguration.getPublisherKey());
+			}
+		}
 
-    public void disconnect(DataPublisherConfiguration dataPublisherConfiguration) {
-        Object client = null;
+	}
 
-        try {
-            client = secureTransportPool.borrowObject(dataPublisherConfiguration.getPublisherKey());
-            disconnect(client,dataPublisherConfiguration.getSessionId());
-        } catch (Exception e) {
-            if(log.isDebugEnabled()){
-                log.error("Cannot connect to the server at " + dataPublisherConfiguration.getPublisherKey() + " Authenticator", e);
-            }
-            log.warn("Cannot connect to the server at " + dataPublisherConfiguration.getPublisherKey() + " Authenticator");
-        } finally {
-            try {
-                secureTransportPool.returnObject(dataPublisherConfiguration.getPublisherKey(), client);
-            } catch (Exception e) {
-                secureTransportPool.clear(dataPublisherConfiguration.getPublisherKey());
-            }
-        }
+	public GenericKeyedObjectPool getSecureTransportPool() {
+		return secureTransportPool;
+	}
 
-    }
-
-    public GenericKeyedObjectPool getSecureTransportPool() {
-        return secureTransportPool;
-    }
-
-    protected abstract void disconnect(Object client, String sessionId)
-            throws AgentAuthenticatorException;
+	protected abstract void disconnect(Object client, String sessionId)
+			throws AgentAuthenticatorException;
 
 }

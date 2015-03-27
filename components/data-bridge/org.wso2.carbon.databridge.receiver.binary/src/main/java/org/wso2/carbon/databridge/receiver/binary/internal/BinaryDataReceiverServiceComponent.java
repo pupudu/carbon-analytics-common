@@ -34,47 +34,48 @@ import java.io.IOException;
  * cardinality="1..1" policy="dynamic" bind="setDataBridgeReceiverService" unbind="unsetDatabridgeReceiverService"
  */
 public class BinaryDataReceiverServiceComponent {
-    private static final Log log = LogFactory.getLog(BinaryDataReceiverServiceComponent.class);
-    private DataBridgeReceiverService dataBridgeReceiverService;
-    private static final String DISABLE_RECEIVER = "disable.receiver";
-    private BinaryDataReceiver binaryDataReceiver;
+	private static final Log log = LogFactory.getLog(BinaryDataReceiverServiceComponent.class);
+	private DataBridgeReceiverService dataBridgeReceiverService;
+	private static final String DISABLE_RECEIVER = "disable.receiver";
+	private BinaryDataReceiver binaryDataReceiver;
 
-    /**
-     * initialize the agent server here.
-     *
-     * @param context
-     */
-    protected void activate(ComponentContext context) {
-        String disableReceiver = System.getProperty(DISABLE_RECEIVER);
-        if (disableReceiver != null && Boolean.parseBoolean(disableReceiver)) {
-            log.info("Receiver disabled.");
-            return;
-        }
-        binaryDataReceiver = new BinaryDataReceiver(new BinaryDataReceiverConfiguration(dataBridgeReceiverService.
-                getInitialConfig()), dataBridgeReceiverService);
-        try {
-            binaryDataReceiver.start();
-        } catch (IOException e) {
-            log.error("Error while starting binary data receiver ", e);
-        } catch (DataBridgeException e) {
-            log.error("Error while starting binary data receiver ", e);
-        }
-    }
+	/**
+	 * initialize the agent server here.
+	 *
+	 * @param context
+	 */
+	protected void activate(ComponentContext context) {
+		String disableReceiver = System.getProperty(DISABLE_RECEIVER);
+		if (disableReceiver != null && Boolean.parseBoolean(disableReceiver)) {
+			log.info("Receiver disabled.");
+			return;
+		}
+		binaryDataReceiver = new BinaryDataReceiver(
+				new BinaryDataReceiverConfiguration(dataBridgeReceiverService.
+						                                                             getInitialConfig()),
+				dataBridgeReceiverService);
+		try {
+			binaryDataReceiver.start();
+		} catch (IOException e) {
+			log.error("Error while starting binary data receiver ", e);
+		} catch (DataBridgeException e) {
+			log.error("Error while starting binary data receiver ", e);
+		}
+	}
 
-    protected void deactivate(ComponentContext context) {
-        log.info("Binary Data Receiver server shutting down...");
-        binaryDataReceiver.stop();
-    }
+	protected void deactivate(ComponentContext context) {
+		log.info("Binary Data Receiver server shutting down...");
+		binaryDataReceiver.stop();
+	}
 
-    protected void setDataBridgeReceiverService(
-            DataBridgeReceiverService dataBridgeReceiverService) {
-        this.dataBridgeReceiverService = dataBridgeReceiverService;
-    }
+	protected void setDataBridgeReceiverService(
+			DataBridgeReceiverService dataBridgeReceiverService) {
+		this.dataBridgeReceiverService = dataBridgeReceiverService;
+	}
 
-    protected void unsetDatabridgeReceiverService(
-            DataBridgeReceiverService dataBridgeReceiverService) {
-        this.dataBridgeReceiverService = null;
-    }
-
+	protected void unsetDatabridgeReceiverService(
+			DataBridgeReceiverService dataBridgeReceiverService) {
+		this.dataBridgeReceiverService = null;
+	}
 
 }

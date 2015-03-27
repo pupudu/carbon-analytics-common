@@ -20,14 +20,14 @@ package org.wso2.carbon.databridge.streamdefn.registry.internal;
 import org.wso2.carbon.registry.core.service.RegistryService;
 
 public class ServiceHolder {
-    private static RegistryService registryService;
+	private static RegistryService registryService;
 
-    public static void setRegistryService(RegistryService registryService) {
-        ServiceHolder.registryService = registryService;
-    }
+	public static void setRegistryService(RegistryService registryService) {
+		ServiceHolder.registryService = registryService;
+	}
 
-    public static RegistryService getRegistryService() {
-        return registryService;
-    }
+	public static RegistryService getRegistryService() {
+		return registryService;
+	}
 
 }

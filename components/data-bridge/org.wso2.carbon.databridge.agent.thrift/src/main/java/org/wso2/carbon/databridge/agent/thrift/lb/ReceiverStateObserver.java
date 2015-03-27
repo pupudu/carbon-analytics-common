@@ -23,11 +23,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public interface ReceiverStateObserver {
 
-    public void notifyConnectionFailure(String receiverUrl, String username, String password);
+	public void notifyConnectionFailure(String receiverUrl, String username, String password);
 
-    public void resendEvents(LinkedBlockingQueue<Event> events);
+	public void resendEvents(LinkedBlockingQueue<Event> events);
 
-    public void resendPublishedData(LinkedBlockingQueue<PublishData> publishDataQueue);
+	public void resendPublishedData(LinkedBlockingQueue<PublishData> publishDataQueue);
 
-    public void notifyConnectionSuccess(String receiverUrl, String username, String password);
+	public void notifyConnectionSuccess(String receiverUrl, String username, String password);
 }

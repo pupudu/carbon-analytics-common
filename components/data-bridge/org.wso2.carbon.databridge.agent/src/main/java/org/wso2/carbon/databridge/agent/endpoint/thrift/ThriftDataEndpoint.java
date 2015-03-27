@@ -18,9 +18,9 @@
 package org.wso2.carbon.databridge.agent.endpoint.thrift;
 
 import org.apache.thrift.TException;
+import org.wso2.carbon.databridge.agent.endpoint.DataEndpoint;
 import org.wso2.carbon.databridge.agent.exception.DataEndpointAuthenticationException;
 import org.wso2.carbon.databridge.agent.exception.DataEndpointException;
-import org.wso2.carbon.databridge.agent.endpoint.DataEndpoint;
 import org.wso2.carbon.databridge.commons.Event;
 import org.wso2.carbon.databridge.commons.exception.SessionTimeoutException;
 import org.wso2.carbon.databridge.commons.exception.UndefinedEventTypeException;
@@ -35,63 +35,59 @@ import java.util.List;
 
 /**
  * This is the DataEndpoint Implementation for thrift transport.
- *
  */
 public class ThriftDataEndpoint extends DataEndpoint {
 
-    @Override
-    protected String login(Object client, String userName, String password)
-            throws DataEndpointAuthenticationException {
-        try {
-            return ((ThriftSecureEventTransmissionService.Client) client).connect(userName, password);
-        } catch (ThriftAuthenticationException e) {
-            throw new DataEndpointAuthenticationException("Thrift Authentication Exception", e);
-        } catch (TException e) {
-            throw new DataEndpointAuthenticationException("Thrift exception", e);
-        }
-    }
+	@Override protected String login(Object client, String userName, String password)
+			throws DataEndpointAuthenticationException {
+		try {
+			return ((ThriftSecureEventTransmissionService.Client) client)
+					.connect(userName, password);
+		} catch (ThriftAuthenticationException e) {
+			throw new DataEndpointAuthenticationException("Thrift Authentication Exception", e);
+		} catch (TException e) {
+			throw new DataEndpointAuthenticationException("Thrift exception", e);
+		}
+	}
 
-    @Override
-    protected void logout(Object client, String sessionId)
-            throws DataEndpointAuthenticationException {
-        try {
-            ((ThriftSecureEventTransmissionService.Client) client).disconnect(sessionId);
-        } catch (TException e) {
-            throw new DataEndpointAuthenticationException("Thrift Exception", e);
-        }
-    }
+	@Override protected void logout(Object client, String sessionId)
+			throws DataEndpointAuthenticationException {
+		try {
+			((ThriftSecureEventTransmissionService.Client) client).disconnect(sessionId);
+		} catch (TException e) {
+			throw new DataEndpointAuthenticationException("Thrift Exception", e);
+		}
+	}
 
-    @Override
-    protected void send(Object client, List<Event> events) throws DataEndpointException,
-            SessionTimeoutException, UndefinedEventTypeException {
-        ThriftEventBundle thriftEventBundle = null;
-        for (Event event : events) {
-            thriftEventBundle = ThriftEventConverter.toThriftEventBundle(event, thriftEventBundle,
-                    getDataEndpointConfiguration().getSessionId());
-        }
-        try {
-            if (client instanceof ThriftSecureEventTransmissionService.Client) {
-                ((ThriftSecureEventTransmissionService.Client) client).publish(thriftEventBundle);
-            } else {
-                ((ThriftEventTransmissionService.Client) client).publish(thriftEventBundle);
-            }
-        } catch (ThriftUndefinedEventTypeException e) {
-            throw new UndefinedEventTypeException("Thrift Undefined Event Type Exception ", e);
-        } catch (ThriftSessionExpiredException e) {
-            throw new SessionTimeoutException("Thrift Session Expired Exception ", e);
-        } catch (TException e) {
-            throw new DataEndpointException("Cannot send Events", e);
-        }
-    }
+	@Override protected void send(Object client, List<Event> events)
+			throws DataEndpointException, SessionTimeoutException, UndefinedEventTypeException {
+		ThriftEventBundle thriftEventBundle = null;
+		for (Event event : events) {
+			thriftEventBundle = ThriftEventConverter.toThriftEventBundle(event, thriftEventBundle,
+			                                                             getDataEndpointConfiguration()
+					                                                             .getSessionId());
+		}
+		try {
+			if (client instanceof ThriftSecureEventTransmissionService.Client) {
+				((ThriftSecureEventTransmissionService.Client) client).publish(thriftEventBundle);
+			} else {
+				((ThriftEventTransmissionService.Client) client).publish(thriftEventBundle);
+			}
+		} catch (ThriftUndefinedEventTypeException e) {
+			throw new UndefinedEventTypeException("Thrift Undefined Event Type Exception ", e);
+		} catch (ThriftSessionExpiredException e) {
+			throw new SessionTimeoutException("Thrift Session Expired Exception ", e);
+		} catch (TException e) {
+			throw new DataEndpointException("Cannot send Events", e);
+		}
+	}
 
-    @Override
-    public String getClientPoolFactoryClass() {
-        return ThriftClientPoolFactory.class.getCanonicalName();
-    }
+	@Override public String getClientPoolFactoryClass() {
+		return ThriftClientPoolFactory.class.getCanonicalName();
+	}
 
-    @Override
-    public String getSecureClientPoolFactoryClass() {
-        return ThriftSecureClientPoolFactory.class.getCanonicalName();
-    }
+	@Override public String getSecureClientPoolFactoryClass() {
+		return ThriftSecureClientPoolFactory.class.getCanonicalName();
+	}
 
 }

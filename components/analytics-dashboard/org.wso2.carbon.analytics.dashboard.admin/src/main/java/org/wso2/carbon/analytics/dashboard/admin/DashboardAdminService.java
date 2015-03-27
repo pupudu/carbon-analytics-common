@@ -24,7 +24,6 @@ import org.wso2.carbon.analytics.dashboard.admin.Authentication.UserAdminClient;
 import org.wso2.carbon.analytics.dashboard.admin.data.*;
 import org.wso2.carbon.analytics.dashboard.admin.exception.InvalidRequestException;
 import org.wso2.carbon.analytics.dashboard.admin.exception.RegistryResourceException;
-import org.wso2.carbon.analytics.dashboard.admin.data.*;
 import org.wso2.carbon.analytics.dashboard.admin.internal.ServiceHolder;
 import org.wso2.carbon.analytics.dataservice.SecureAnalyticsDataService;
 import org.wso2.carbon.analytics.datasource.commons.Record;
@@ -54,87 +53,90 @@ public class DashboardAdminService extends AbstractAdmin {
 			"components" + RegistryConstants.PATH_SEPARATOR +
 			"org.wso2.carbon.analytics.dashboards" + RegistryConstants.PATH_SEPARATOR;
 
-    private SecureAnalyticsDataService analyticsDataService;
+	private SecureAnalyticsDataService analyticsDataService;
 
-    public DashboardAdminService() {
-        this.analyticsDataService = ServiceHolder.getAnalyticsDataService();
-    }
+	public DashboardAdminService() {
+		this.analyticsDataService = ServiceHolder.getAnalyticsDataService();
+	}
 
 	/**
 	 * Logger
 	 */
 	private Log logger = LogFactory.getLog(DashboardAdminService.class);
 
-    public Table getRecords(String tableName, long timeFrom, long timeTo, int startIndex, int recordCount,
-                                       String searchQuery)
-            throws AxisFault {
+	public Table getRecords(String tableName, long timeFrom, long timeTo, int startIndex,
+	                        int recordCount, String searchQuery) throws AxisFault {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Search Query: " + searchQuery);
-            logger.debug("timeFrom: " + timeFrom);
-            logger.debug("timeTo: " + timeTo);
-            logger.debug("Start Index: " + startIndex);
-            logger.debug("Page Size: " + recordCount);
-        }
+		if (logger.isDebugEnabled()) {
+			logger.debug("Search Query: " + searchQuery);
+			logger.debug("timeFrom: " + timeFrom);
+			logger.debug("timeTo: " + timeTo);
+			logger.debug("Start Index: " + startIndex);
+			logger.debug("Page Size: " + recordCount);
+		}
 
-        String username = getUsername();
+		String username = getUsername();
 
-        Table table = new Table();
-        table.setName(tableName);
-        RecordGroup[] results = new RecordGroup[0];
-        long searchCount = 0;
+		Table table = new Table();
+		table.setName(tableName);
+		RecordGroup[] results = new RecordGroup[0];
+		long searchCount = 0;
 
-        if (searchQuery != null && !searchQuery.isEmpty()) {
-            //TODO implement me :(
-        } else {
-            try {
-                results = analyticsDataService.get(username, tableName, 1, null, timeFrom, timeTo, startIndex, recordCount);
-            } catch (Exception e) {
-                logger.error("Unable to get records from Analytics data layer for tenant: " + username +
-                        " and for table:" + tableName, e);
-                throw new AxisFault("Unable to get records from Analytics data layer for tenant: " + username +
-                        " and for table:" + tableName, e);
-            }
-        }
+		if (searchQuery != null && !searchQuery.isEmpty()) {
+			//TODO implement me :(
+		} else {
+			try {
+				results = analyticsDataService
+						.get(username, tableName, 1, null, timeFrom, timeTo, startIndex,
+						     recordCount);
+			} catch (Exception e) {
+				logger.error(
+						"Unable to get records from Analytics data layer for tenant: " + username +
+						" and for table:" + tableName, e);
+				throw new AxisFault(
+						"Unable to get records from Analytics data layer for tenant: " + username +
+						" and for table:" + tableName, e);
+			}
+		}
 
-        if (results != null) {
-            List<Record> records;
-            List<Row> rowList = new ArrayList<Row>();
-            try {
-                records = GenericUtils.listRecords(analyticsDataService, results);
-            } catch (Exception e) {
-                logger.error("Unable to convert result to record for tenant: " + username +
-                        " and for table:" + tableName, e);
-                throw new AxisFault("Unable to convert result to record for tenant: " + username +
-                        " and for table:" + tableName, e);
-            }
-            if (records != null && !records.isEmpty()) {
-                for (Record record : records) {
-                    rowList.add(createRow(record));
-                }
-            }
-            Row[] rows = new Row[rowList.size()];
-            rowList.toArray(rows);
-            table.setRows(rows);
-        }
-        return table;
-    }
+		if (results != null) {
+			List<Record> records;
+			List<Row> rowList = new ArrayList<Row>();
+			try {
+				records = GenericUtils.listRecords(analyticsDataService, results);
+			} catch (Exception e) {
+				logger.error("Unable to convert result to record for tenant: " + username +
+				             " and for table:" + tableName, e);
+				throw new AxisFault("Unable to convert result to record for tenant: " + username +
+				                    " and for table:" + tableName, e);
+			}
+			if (records != null && !records.isEmpty()) {
+				for (Record record : records) {
+					rowList.add(createRow(record));
+				}
+			}
+			Row[] rows = new Row[rowList.size()];
+			rowList.toArray(rows);
+			table.setRows(rows);
+		}
+		return table;
+	}
 
-    private Row createRow(Record record) {
-        Row row = new Row();
-        Cell[] cells = new Cell[record.getValues().size()];
-        int i = 0;
-        for (Map.Entry<String, Object> entry : record.getValues().entrySet()) {
-            cells[i++] = createCell(entry.getKey(), entry.getValue());
-        }
-        row.setCells(cells);
-        return row;
-    }
+	private Row createRow(Record record) {
+		Row row = new Row();
+		Cell[] cells = new Cell[record.getValues().size()];
+		int i = 0;
+		for (Map.Entry<String, Object> entry : record.getValues().entrySet()) {
+			cells[i++] = createCell(entry.getKey(), entry.getValue());
+		}
+		row.setCells(cells);
+		return row;
+	}
 
-    private Cell createCell(String key,Object value) {
-        Cell cell = new Cell(key,String.valueOf(value));
-        return cell;
-    }
+	private Cell createCell(String key, Object value) {
+		Cell cell = new Cell(key, String.valueOf(value));
+		return cell;
+	}
 
 	/**
 	 * @return All the dataView objects saved in the registry.
@@ -385,12 +387,12 @@ public class DashboardAdminService extends AbstractAdmin {
 		return updateDashboard(dashboard);
 	}
 
-	public boolean authenticateUser(String username,String password) {
+	public boolean authenticateUser(String username, String password) {
 		boolean status = false;
 		String SEVER_URL = "https://localhost:9443/services/";//TODO update this
 		try {
-			ConfigurationContext configContext =
-					ConfigurationContextFactory.createConfigurationContextFromFileSystem(null, null);
+			ConfigurationContext configContext = ConfigurationContextFactory
+					.createConfigurationContextFromFileSystem(null, null);
 			UserAdminClient sampleUserAdminClient = new UserAdminClient(configContext, SEVER_URL);
 			if (status = sampleUserAdminClient.authenticate(username, password)) {
 				System.out.println("User is successfully authenticated");
@@ -403,9 +405,8 @@ public class DashboardAdminService extends AbstractAdmin {
 		return status;
 	}
 
-    @Override
-    protected String getUsername() {
-        return super.getUsername() + "@" + getTenantDomain();
-    }
+	@Override protected String getUsername() {
+		return super.getUsername() + "@" + getTenantDomain();
+	}
 
 }

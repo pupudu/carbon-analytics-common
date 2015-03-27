@@ -34,30 +34,30 @@ import org.wso2.carbon.databridge.commons.thrift.service.secure.ThriftSecureEven
  */
 public class ThriftAgentAuthenticator extends AgentAuthenticator {
 
-    private static Log log = LogFactory.getLog(ThriftAgentAuthenticator.class);
+	private static Log log = LogFactory.getLog(ThriftAgentAuthenticator.class);
 
-    public ThriftAgentAuthenticator(GenericKeyedObjectPool secureTransportPool) {
-        super(secureTransportPool);
-    }
+	public ThriftAgentAuthenticator(GenericKeyedObjectPool secureTransportPool) {
+		super(secureTransportPool);
+	}
 
-    @Override
-    protected String connect(Object client, String userName, String password)
-            throws AuthenticationException, AgentAuthenticatorException {
-        try {
-            return ((ThriftSecureEventTransmissionService.Client) client).connect(userName, password);
-        } catch (ThriftAuthenticationException e) {
-            throw new AuthenticationException("Thrift Authentication Exception", e);
-        } catch (TException e) {
-            throw new AgentAuthenticatorException("Thrift exception", e);
-        }
-    }
+	@Override protected String connect(Object client, String userName, String password)
+			throws AuthenticationException, AgentAuthenticatorException {
+		try {
+			return ((ThriftSecureEventTransmissionService.Client) client)
+					.connect(userName, password);
+		} catch (ThriftAuthenticationException e) {
+			throw new AuthenticationException("Thrift Authentication Exception", e);
+		} catch (TException e) {
+			throw new AgentAuthenticatorException("Thrift exception", e);
+		}
+	}
 
-    @Override
-    protected void disconnect(Object client, String sessionId) throws AgentAuthenticatorException {
-        try {
-            ((ThriftSecureEventTransmissionService.Client) client).disconnect(sessionId);
-        } catch (TException e) {
-            throw new AgentAuthenticatorException("Thrift Exception", e);
-        }
-    }
+	@Override protected void disconnect(Object client, String sessionId)
+			throws AgentAuthenticatorException {
+		try {
+			((ThriftSecureEventTransmissionService.Client) client).disconnect(sessionId);
+		} catch (TException e) {
+			throw new AgentAuthenticatorException("Thrift Exception", e);
+		}
+	}
 }

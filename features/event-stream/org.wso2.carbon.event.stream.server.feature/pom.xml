@@ -14,7 +14,9 @@
   ~ specific language governing permissions and limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>org.wso2.carbon.analytics-common</groupId>
@@ -28,7 +30,9 @@
     <packaging>pom</packaging>
     <name>WSO2 Carbon - Event Stream Server Feature</name>
     <url>http://wso2.org</url>
-    <description>This feature contains the core bundles required for Back-end Event Stream functionality</description>
+    <description>This feature contains the core bundles required for Back-end Event Stream
+        functionality
+    </description>
 
 
     <dependencies>
@@ -75,7 +79,8 @@
                                 </bundleDef>
                             </bundles>
                             <importFeatures>
-                                <importFeatureDef>org.wso2.carbon.core.server:${carbon.kernel.version}
+                                <importFeatureDef>
+                                    org.wso2.carbon.core.server:${carbon.kernel.version}
                                 </importFeatureDef>
                             </importFeatures>
                         </configuration>

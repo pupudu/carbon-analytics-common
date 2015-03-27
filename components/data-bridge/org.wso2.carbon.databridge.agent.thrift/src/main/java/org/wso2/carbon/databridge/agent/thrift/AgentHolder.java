@@ -13,36 +13,36 @@ import org.wso2.carbon.databridge.agent.thrift.internal.utils.AgentBuilder;
  * To change this template use File | Settings | File Templates.
  */
 public class AgentHolder {
-    private static Agent agent;
-    private static AgentConfiguration agentConfiguration;
+	private static Agent agent;
+	private static AgentConfiguration agentConfiguration;
 
-    private static final Log log = LogFactory.getLog(AgentHolder.class);
+	private static final Log log = LogFactory.getLog(AgentHolder.class);
 
-    public static Agent getAgent() {
-        return agent;
-    }
+	public static Agent getAgent() {
+		return agent;
+	}
 
-    public static void setAgent(Agent agent) {
-        AgentHolder.agent = agent;
-    }
+	public static void setAgent(Agent agent) {
+		AgentHolder.agent = agent;
+	}
 
-    public static AgentConfiguration getAgentConfiguration() {
-        return agentConfiguration;
-    }
+	public static AgentConfiguration getAgentConfiguration() {
+		return agentConfiguration;
+	}
 
-    public static void setAgentConfiguration(AgentConfiguration agentConfiguration) {
-        AgentHolder.agentConfiguration = agentConfiguration;
-    }
+	public static void setAgentConfiguration(AgentConfiguration agentConfiguration) {
+		AgentHolder.agentConfiguration = agentConfiguration;
+	}
 
-    public static Agent getOrCreateAgent() {
-        if (agent == null) {
-            if (agentConfiguration == null) {
-                agentConfiguration = AgentBuilder.loadAgentConfiguration();
-                log.info("Agent created !");
-            }
-            agent = new Agent(agentConfiguration);
-        }
-        return agent;
-    }
+	public static Agent getOrCreateAgent() {
+		if (agent == null) {
+			if (agentConfiguration == null) {
+				agentConfiguration = AgentBuilder.loadAgentConfiguration();
+				log.info("Agent created !");
+			}
+			agent = new Agent(agentConfiguration);
+		}
+		return agent;
+	}
 }
 
