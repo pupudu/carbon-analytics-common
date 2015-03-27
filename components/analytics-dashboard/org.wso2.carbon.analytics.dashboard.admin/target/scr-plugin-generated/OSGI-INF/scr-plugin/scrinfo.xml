@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
+    <scr:component enabled="true" immediate="true" name="dashboard.component">
+        <implementation class="org.wso2.carbon.analytics.dashboard.admin.internal.DashboardAdminComponent"/>
+        <property name="service.pid" value="dashboard.component" private="false"/>
+        <reference name="analytics.component" interface="org.wso2.carbon.analytics.dataservice.SecureAnalyticsDataService" cardinality="1..1" policy="dynamic" bind="setAnalyticsDataService" unbind="unsetAnalyticsDataService" checked="true" strategy="event"/>
+    </scr:component>
+</components>
