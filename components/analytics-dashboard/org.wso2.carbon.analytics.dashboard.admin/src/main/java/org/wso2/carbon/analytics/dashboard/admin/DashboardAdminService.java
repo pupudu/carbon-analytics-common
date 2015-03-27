@@ -15,6 +15,7 @@
  */
 package org.wso2.carbon.analytics.dashboard.admin;
 
+import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.commons.logging.Log;
