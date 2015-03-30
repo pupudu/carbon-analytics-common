@@ -1,0 +1,6 @@
+/home/dodan/Programs/analytics-dashboard-ui/carbon-analytics-common/components/analytics-dashboard/org.wso2.carbon.analytics.dashboard.ui/src/main/java/org/wso2/carbon/analytics/dashboard/ui/dto/ColumnDTO.java
+/home/dodan/Programs/analytics-dashboard-ui/carbon-analytics-common/components/analytics-dashboard/org.wso2.carbon.analytics.dashboard.ui/src/main/java/org/wso2/carbon/analytics/dashboard/ui/dto/DashboardDTO.java
+/home/dodan/Programs/analytics-dashboard-ui/carbon-analytics-common/components/analytics-dashboard/org.wso2.carbon.analytics.dashboard.ui/src/main/java/org/wso2/carbon/analytics/dashboard/ui/dto/DataViewDTO.java
+/home/dodan/Programs/analytics-dashboard-ui/carbon-analytics-common/components/analytics-dashboard/org.wso2.carbon.analytics.dashboard.ui/src/main/java/org/wso2/carbon/analytics/dashboard/ui/dto/TableDTO.java
+/home/dodan/Programs/analytics-dashboard-ui/carbon-analytics-common/components/analytics-dashboard/org.wso2.carbon.analytics.dashboard.ui/src/main/java/org/wso2/carbon/analytics/dashboard/ui/dto/WidgetDTO.java
+/home/dodan/Programs/analytics-dashboard-ui/carbon-analytics-common/components/analytics-dashboard/org.wso2.carbon.analytics.dashboard.ui/src/main/java/org/wso2/carbon/analytics/dashboard/ui/DashboardAdminClient.java
