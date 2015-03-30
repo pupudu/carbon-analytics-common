@@ -1,6 +1,0 @@
-org/wso2/carbon/analytics/dashboard/ui/dto/ColumnDTO.class
-org/wso2/carbon/analytics/dashboard/ui/dto/DashboardDTO.class
-org/wso2/carbon/analytics/dashboard/ui/dto/DataViewDTO.class
-org/wso2/carbon/analytics/dashboard/ui/dto/WidgetDTO.class
-org/wso2/carbon/analytics/dashboard/ui/dto/TableDTO.class
-org/wso2/carbon/analytics/dashboard/ui/DashboardAdminClient.class

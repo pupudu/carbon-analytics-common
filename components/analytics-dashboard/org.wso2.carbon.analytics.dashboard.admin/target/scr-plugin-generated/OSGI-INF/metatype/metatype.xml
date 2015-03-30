@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0" localization="OSGI-INF/metatype/metatype">
-    <OCD id="dashboard.component" name="%dashboard.component.name" description="%dashboard.component.description"/>
-    <Designate pid="dashboard.component">
-        <Object ocdref="dashboard.component"/>
-    </Designate>
-</metatype:MetaData>
